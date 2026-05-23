@@ -1,11 +1,14 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { useAuthStore } from '../store/authStore'
+import { useAuthStore } from '../../store/authStore'
+import { authService } from '../../services/authService'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, ChevronRight, Home, Mail, Lock, ArrowRight } from 'lucide-react'
+import { toast } from 'sonner'
+import type { AxiosError } from 'axios'
 
 const schema = z.object({
   email: z.string().email('Adresse e-mail invalide'),
@@ -16,8 +19,10 @@ type FormData = z.infer<typeof schema>
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
-  const { login } = useAuthStore()
+  const { setAuth } = useAuthStore()
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = (location.state as { from?: Location })?.from?.pathname ?? '/user/profile'
 
   const {
     register,
@@ -26,9 +31,15 @@ export default function LoginPage() {
   } = useForm<FormData>({ resolver: zodResolver(schema) })
 
   const onSubmit = async (data: FormData) => {
-    await new Promise((r) => setTimeout(r, 1000))
-    login(data.email)
-    navigate('/user/profile')
+    try {
+      const { user, tokens } = await authService.login(data)
+      setAuth(user, tokens.accessToken)
+      toast.success('Connexion réussie !')
+      navigate(from, { replace: true })
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>
+      toast.error(error.response?.data?.message ?? 'Identifiants incorrects')
+    }
   }
 
   return (
@@ -84,6 +95,19 @@ export default function LoginPage() {
                   Accédez à votre espace CuisineXpress
                 </p>
               </div>
+
+              {/* Demo credentials banner */}
+              {import.meta.env.VITE_USE_MOCK !== 'false' && (
+                <div className="mb-4 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
+                  <p className="text-[11.5px] font-bold text-amber-700 uppercase tracking-wide mb-1.5">
+                    Compte de démonstration
+                  </p>
+                  <div className="flex flex-col gap-1 text-[12.5px] text-amber-800 font-mono">
+                    <span><span className="text-amber-500 font-semibold">Email :</span> demo@cuisinexpress.ca</span>
+                    <span><span className="text-amber-500 font-semibold">Mot de passe :</span> demo1234</span>
+                  </div>
+                </div>
+              )}
 
               {/* Form */}
               <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>

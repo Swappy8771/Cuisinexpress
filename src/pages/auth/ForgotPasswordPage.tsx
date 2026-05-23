@@ -5,6 +5,9 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mail, ChevronRight, Home, ArrowRight, CheckCircle2, ArrowLeft } from 'lucide-react'
+import { toast } from 'sonner'
+import { authService } from '../../services/authService'
+import type { AxiosError } from 'axios'
 
 const schema = z.object({
   email: z.string().email('Adresse e-mail invalide'),
@@ -23,9 +26,14 @@ export default function ForgotPasswordPage() {
   } = useForm<FormData>({ resolver: zodResolver(schema) })
 
   const onSubmit = async ({ email }: FormData) => {
-    await new Promise((r) => setTimeout(r, 1000))
-    setSubmittedEmail(email)
-    setSent(true)
+    try {
+      await authService.forgotPassword(email)
+      setSubmittedEmail(email)
+      setSent(true)
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>
+      toast.error(error.response?.data?.message ?? "Erreur lors de l'envoi")
+    }
   }
 
   return (

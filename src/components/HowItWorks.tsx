@@ -1,29 +1,9 @@
 import { motion } from 'framer-motion'
 import { ShoppingCart, Truck, UtensilsCrossed } from 'lucide-react'
+import { useLang } from '../contexts/LangContext'
 
-const steps = [
-  {
-    icon: ShoppingCart,
-    step: '01',
-    title: 'Commander',
-    description:
-      "Connectez-vous à votre compte pour commander les repas de vos enfants, payez en ligne et voyez l'historique des repas et des commandes.",
-  },
-  {
-    icon: Truck,
-    step: '02',
-    title: 'Préparation et livraison',
-    description:
-      "Nous préparons tous les repas la veille avec des aliments frais, puis allons les livrer directement à l'école une heure avant le repas.",
-  },
-  {
-    icon: UtensilsCrossed,
-    step: '03',
-    title: 'Un bon repas chaud',
-    description:
-      'Tous nos repas sont faits maison et préparés avec soin. Nous sommes fiers de livrer des repas froids et chauds dans nos écoles.',
-  },
-]
+const STEP_ICONS = [ShoppingCart, Truck, UtensilsCrossed]
+const STEP_NUMS = ['01', '02', '03']
 
 const containerVariants = {
   hidden: {},
@@ -36,6 +16,14 @@ const cardVariants = {
 }
 
 export default function HowItWorks() {
+  const { t } = useLang()
+  const steps = t.how.steps.map((s, i) => ({
+    icon: STEP_ICONS[i],
+    step: STEP_NUMS[i],
+    title: s.title,
+    description: s.description,
+  }))
+
   return (
     <section className="w-full bg-white py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -49,13 +37,13 @@ export default function HowItWorks() {
           className="text-center mb-16"
         >
           <span className="inline-block text-[#C41E3A] text-sm font-semibold tracking-widest uppercase mb-3">
-            Simple &amp; rapide
+            {t.how.tag}
           </span>
           <h2 className="text-[#0A0A0A] text-4xl sm:text-5xl font-extrabold tracking-tight">
-            Fonctionnement
+            {t.how.title}
           </h2>
           <p className="mt-4 text-[#555] text-[16px] max-w-xl mx-auto leading-relaxed">
-            Trois étapes simples pour offrir un repas chaud et équilibré à vos enfants chaque jour.
+            {t.how.subtitle}
           </p>
         </motion.div>
 

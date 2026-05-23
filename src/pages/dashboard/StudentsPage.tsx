@@ -3,8 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Users, Plus, Trash2, User, GraduationCap, X, CheckCircle2 } from 'lucide-react'
-import DashboardLayout from '../layouts/DashboardLayout'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { Users, Plus, Trash2, User, GraduationCap, X } from 'lucide-react'
+import DashboardLayout from '../../layouts/DashboardLayout'
+import { studentsService } from '../../services/studentsService'
+import type { Student } from '../../types'
+import type { AxiosError } from 'axios'
 
 const schema = z.object({
   firstName: z.string().min(1, 'Requis'),
@@ -14,32 +19,66 @@ const schema = z.object({
 })
 type FormData = z.infer<typeof schema>
 
-const mockStudents = [
-  { id: 1, firstName: 'Emma', lastName: 'Charles', school: 'École Primaire Saint-Jean', grade: '3e année' },
-  { id: 2, firstName: 'Lucas', lastName: 'Charles', school: 'École Primaire Saint-Jean', grade: '5e année' },
-]
-
 const grades = ['1re année', '2e année', '3e année', '4e année', '5e année', '6e année', 'Secondaire 1', 'Secondaire 2', 'Secondaire 3', 'Secondaire 4', 'Secondaire 5']
 
-export default function StudentsPage() {
-  const [students, setStudents] = useState(mockStudents)
-  const [showForm, setShowForm] = useState(false)
-  const [saved, setSaved] = useState(false)
+function SkeletonRow() {
+  return (
+    <div className="flex items-center gap-4 px-6 sm:px-8 py-5">
+      <div className="w-10 h-10 rounded-xl bg-gray-100 animate-pulse flex-shrink-0" />
+      <div className="flex flex-col gap-2 flex-1">
+        <div className="h-4 w-40 bg-gray-100 rounded animate-pulse" />
+        <div className="h-3 w-56 bg-gray-100 rounded animate-pulse" />
+      </div>
+    </div>
+  )
+}
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
+export default function StudentsPage() {
+  const [showForm, setShowForm] = useState(false)
+  const queryClient = useQueryClient()
+
+  const { data: students = [], isLoading } = useQuery({
+    queryKey: ['students'],
+    queryFn: studentsService.list,
+  })
+
+  const addMutation = useMutation({
+    mutationFn: studentsService.add,
+    onSuccess: (newStudent) => {
+      queryClient.setQueryData<Student[]>(['students'], (prev = []) => [...prev, newStudent])
+      toast.success('Élève ajouté !')
+      reset()
+      setShowForm(false)
+    },
+    onError: (err: AxiosError<{ message?: string }>) => {
+      toast.error(err.response?.data?.message ?? "Erreur lors de l'ajout")
+    },
+  })
+
+  const removeMutation = useMutation({
+    mutationFn: studentsService.remove,
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['students'] })
+      const prev = queryClient.getQueryData<Student[]>(['students'])
+      queryClient.setQueryData<Student[]>(['students'], (old = []) =>
+        old.filter((s) => s.id !== id)
+      )
+      return { prev }
+    },
+    onError: (_err, _id, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(['students'], ctx.prev)
+      toast.error('Erreur lors de la suppression')
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['students'] })
+    },
+  })
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   })
 
-  const onSubmit = async (data: FormData) => {
-    await new Promise(r => setTimeout(r, 700))
-    setStudents(prev => [...prev, { id: Date.now(), ...data }])
-    reset()
-    setShowForm(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
-  }
-
-  const remove = (id: number) => setStudents(prev => prev.filter(s => s.id !== id))
+  const onSubmit = (data: FormData) => addMutation.mutate(data)
 
   return (
     <DashboardLayout>
@@ -57,23 +96,14 @@ export default function StudentsPage() {
               <h2 className="text-[#0A0A0A] text-[22px] font-extrabold tracking-tight">Élèves / personnel</h2>
               <p className="text-gray-400 text-[13px] mt-0.5">Gérez les élèves rattachés à votre compte</p>
             </div>
-            <div className="flex items-center gap-3">
-              {saved && (
-                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                  className="flex items-center gap-2 text-green-600 bg-green-50 border border-green-200
-                    rounded-xl px-4 py-2 text-[13px] font-medium">
-                  <CheckCircle2 size={15} /> Élève ajouté !
-                </motion.div>
-              )}
-              <button
-                onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 bg-[#7B2535] hover:bg-[#9B3045] text-white
-                  font-semibold text-[13.5px] px-5 py-2.5 rounded-xl transition-all duration-200
-                  hover:shadow-[0_4px_16px_rgba(196,30,58,0.3)] hover:-translate-y-0.5"
-              >
-                <Plus size={15} /> Ajouter
-              </button>
-            </div>
+            <button
+              onClick={() => setShowForm(true)}
+              className="inline-flex items-center gap-2 bg-[#7B2535] hover:bg-[#9B3045] text-white
+                font-semibold text-[13.5px] px-5 py-2.5 rounded-xl transition-all duration-200
+                hover:shadow-[0_4px_16px_rgba(196,30,58,0.3)] hover:-translate-y-0.5"
+            >
+              <Plus size={15} /> Ajouter
+            </button>
           </div>
         </div>
 
@@ -100,8 +130,8 @@ export default function StudentsPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {[
                       { name: 'firstName' as const, label: 'Prénom', icon: User, placeholder: 'Emma' },
-                      { name: 'lastName' as const, label: 'Nom', icon: User, placeholder: 'Charles' },
-                      { name: 'school' as const, label: 'École', icon: GraduationCap, placeholder: 'Nom de l\'école' },
+                      { name: 'lastName' as const, label: 'Nom', icon: User, placeholder: 'Tremblay' },
+                      { name: 'school' as const, label: 'École', icon: GraduationCap, placeholder: "Nom de l'école" },
                     ].map(({ name, label, icon: Icon, placeholder }) => (
                       <div key={name} className="flex flex-col gap-1.5">
                         <label className="text-[13px] font-semibold text-[#333]">{label}</label>
@@ -136,11 +166,11 @@ export default function StudentsPage() {
                         text-[#555] hover:border-gray-300 transition-colors">
                       Annuler
                     </button>
-                    <button type="submit" disabled={isSubmitting}
+                    <button type="submit" disabled={addMutation.isPending}
                       className="px-6 py-2.5 rounded-xl bg-[#7B2535] hover:bg-[#9B3045] text-white
                         font-bold text-[13.5px] uppercase tracking-widest transition-all duration-200
                         disabled:bg-gray-200 disabled:text-gray-400">
-                      {isSubmitting ? (
+                      {addMutation.isPending ? (
                         <span className="flex items-center gap-2">
                           <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
                           Ajout…
@@ -157,7 +187,12 @@ export default function StudentsPage() {
         {/* Students list */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.05)] overflow-hidden">
           <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
-          {students.length === 0 ? (
+
+          {isLoading ? (
+            <div className="divide-y divide-gray-50">
+              {Array.from({ length: 3 }).map((_, i) => <SkeletonRow key={i} />)}
+            </div>
+          ) : students.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center px-6">
               <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
                 <Users size={28} className="text-gray-300" />
@@ -183,9 +218,12 @@ export default function StudentsPage() {
                       <p className="text-gray-400 text-[12.5px] mt-0.5">{s.school} · {s.grade}</p>
                     </div>
                   </div>
-                  <button onClick={() => remove(s.id)}
+                  <button
+                    onClick={() => removeMutation.mutate(s.id)}
+                    disabled={removeMutation.isPending}
                     className="opacity-0 group-hover:opacity-100 p-2 rounded-lg hover:bg-red-50
-                      text-gray-300 hover:text-red-500 transition-all duration-200">
+                      text-gray-300 hover:text-red-500 transition-all duration-200 disabled:opacity-30"
+                  >
                     <Trash2 size={15} />
                   </button>
                 </motion.div>

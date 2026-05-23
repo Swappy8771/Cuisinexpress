@@ -1,45 +1,14 @@
+import type React from 'react'
 import { motion } from 'framer-motion'
 import { Flame, ShieldCheck, CreditCard, Award, CalendarX } from 'lucide-react'
+import { useLang } from '../contexts/LangContext'
 
-const advantages = [
-  {
-    icon: Flame,
-    title: 'Repas chauds',
-    description: "Nous sommes fiers de livrer des repas chauds dans nos écoles.",
-    accent: '#C41E3A',
-    bg: '#FFF0F2',
-  },
-  {
-    icon: ShieldCheck,
-    title: "On s'occupe de tout !",
-    description: "Nous livrons les repas prêts et chauds chaque jour à l'école.",
-    accent: '#1A6FC4',
-    bg: '#EFF6FF',
-  },
-  {
-    icon: CreditCard,
-    title: 'Paiement facile',
-    description:
-      'Nous acceptons les cartes de crédits Visa / Mastercard ainsi que les virements Interac.',
-    accent: '#0A7C59',
-    bg: '#EDFAF4',
-  },
-  {
-    icon: Award,
-    title: 'Qualité supérieure',
-    description:
-      "Nos repas-maison sont préparés avec une sélection de produits d'excellente qualité et toujours frais. Ici, nous n'achetons pas de légumes congelés ou en canne !",
-    accent: '#B45309',
-    bg: '#FFFBEB',
-  },
-  {
-    icon: CalendarX,
-    title: 'Annulation facile',
-    description:
-      "Il vous est possible d'annuler et de modifier jusqu'à 8h le matin même de la livraison. Le repas est remboursé à 100 %. Pour toute modification, veuillez nous contacter par e-mail ou par téléphone au 581-992-9952.",
-    accent: '#7B2535',
-    bg: '#FDF2F4',
-  },
+const ADVANTAGE_META = [
+  { icon: Flame,      accent: '#C41E3A', bg: '#FFF0F2' },
+  { icon: ShieldCheck, accent: '#1A6FC4', bg: '#EFF6FF' },
+  { icon: CreditCard,  accent: '#0A7C59', bg: '#EDFAF4' },
+  { icon: Award,       accent: '#B45309', bg: '#FFFBEB' },
+  { icon: CalendarX,   accent: '#7B2535', bg: '#FDF2F4' },
 ]
 
 const containerVariants = {
@@ -52,11 +21,18 @@ const cardVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] },
   },
 }
 
 export default function Advantages() {
+  const { t } = useLang()
+  const advantages = t.advantages.items.map((item, i) => ({
+    ...ADVANTAGE_META[i],
+    title: item.title,
+    description: item.description,
+  }))
+
   return (
     <section className="w-full bg-[#F7F7F7] py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -70,13 +46,13 @@ export default function Advantages() {
           className="text-center mb-16"
         >
           <span className="inline-block text-[#C41E3A] text-sm font-semibold tracking-widest uppercase mb-3">
-            Pourquoi nous choisir
+            {t.advantages.tag}
           </span>
           <h2 className="text-[#0A0A0A] text-4xl sm:text-5xl font-extrabold tracking-tight">
-            Avantages CuisineXpress
+            {t.advantages.title}
           </h2>
           <p className="mt-4 text-[#555] text-[16px] max-w-xl mx-auto leading-relaxed">
-            Des repas équilibrés livrés avec soin, chaque jour, pour le bien-être de vos enfants.
+            {t.advantages.subtitle}
           </p>
         </motion.div>
 
@@ -107,13 +83,15 @@ export default function Advantages() {
   )
 }
 
-function AdvantageCard({
-  icon: Icon,
-  title,
-  description,
-  accent,
-  bg,
-}: (typeof advantages)[number]) {
+type AdvantageCardProps = {
+  icon: React.ElementType
+  title: string
+  description: string
+  accent: string
+  bg: string
+}
+
+function AdvantageCard({ icon: Icon, title, description, accent, bg }: AdvantageCardProps) {
   return (
     <motion.div
       variants={cardVariants}

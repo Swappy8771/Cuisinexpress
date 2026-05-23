@@ -1,13 +1,8 @@
 import { motion } from 'framer-motion'
 import { MapPin, Phone, Mail } from 'lucide-react'
+import { useLang } from '../contexts/LangContext'
 
-const infoLinks = [
-  { label: 'Nos écoles', href: '#nos-ecoles' },
-  { label: 'Nos menus', href: '#menus' },
-  { label: 'Contactez-nous', href: '#contact' },
-  { label: 'Gestion des données', href: '#donnees' },
-  { label: 'Notre politique en matière de gestion des données', href: '#politique' },
-]
+const INFO_HREFS = ['#nos-ecoles', '#menus', '#contact', '#donnees', '#politique']
 
 const contactItems = [
   { icon: Phone, text: '581-992-9952', href: 'tel:5819929952' },
@@ -20,11 +15,14 @@ const fadeUp = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { delay: i * 0.1, duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] },
   }),
 }
 
 export default function Footer() {
+  const { t } = useLang()
+  const infoLinks = t.footer.links.map((label, i) => ({ label, href: INFO_HREFS[i] ?? '#' }))
+
   return (
     <footer className="w-full bg-[#0A0A0A] text-white">
 
@@ -57,7 +55,7 @@ export default function Footer() {
             <div>
               <p className="text-white/90 font-semibold text-[15px] mb-1">CuisineXpress</p>
               <p className="text-white/50 text-[14px] leading-relaxed">
-                Votre traiteur école de confiance.
+                {t.footer.tagline}
               </p>
             </div>
 
@@ -94,16 +92,14 @@ export default function Footer() {
             <div className="flex items-center gap-2 mb-1">
               <span className="h-px w-6 bg-[#C41E3A]" />
               <h4 className="text-white/40 text-[11px] font-semibold tracking-widest uppercase">
-                Partenaire
+                {t.footer.partnerTag}
               </h4>
             </div>
             <h3 className="text-white font-bold text-[18px] tracking-tight">
-              Partenaire kntera
+              {t.footer.partnerTitle}
             </h3>
             <p className="text-white/50 text-[13.5px] leading-[1.75]">
-              Studio créatif kntera INC. est un fournisseur de service de commandes en
-              ligne et d'autres produits de technologie de l'information. Vous trouverez
-              toutes les détails de notre service Boîte à lunch sur notre site web.
+              {t.footer.partnerText}
             </p>
           </motion.div>
 
@@ -119,11 +115,11 @@ export default function Footer() {
             <div className="flex items-center gap-2 mb-1">
               <span className="h-px w-6 bg-[#C41E3A]" />
               <h4 className="text-white/40 text-[11px] font-semibold tracking-widest uppercase">
-                Navigation
+                {t.footer.navTag}
               </h4>
             </div>
             <h3 className="text-white font-bold text-[18px] tracking-tight">
-              Informations
+              {t.footer.navTitle}
             </h3>
             <ul className="flex flex-col gap-2.5 mt-1">
               {infoLinks.map((link) => (
@@ -161,12 +157,12 @@ export default function Footer() {
             >
               Studio créatif kntera INC.
             </a>
-            {' '}— Tous droits réservés.
+            {' '}— {t.footer.copyright}
           </p>
           <div className="flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C41E3A] animate-pulse" />
             <span className="text-white/25 text-[11px] tracking-wide">
-              Fait avec soin au Québec
+              {t.footer.madeWith}
             </span>
           </div>
         </div>

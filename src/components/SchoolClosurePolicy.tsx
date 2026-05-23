@@ -1,26 +1,13 @@
 import { motion } from 'framer-motion'
 import { CloudSnow, Building2, Ban, Heart } from 'lucide-react'
+import { useLang } from '../contexts/LangContext'
 
-const points = [
-  {
-    icon: CloudSnow,
-    text: "En cas de fermeture d'école annoncée moins de 48h à l'avance, pour toute raison dont nous ne sommes pas responsables (grève, tempête, panne d'électricité…), nous livrerons les repas si le service de garde demeure ouvert.",
-  },
-  {
-    icon: Building2,
-    text: "Si ce n'est pas le cas, nous vous invitons à passer récupérer votre commande à nos bureaux.",
-  },
-  {
-    icon: Ban,
-    text: "Nous ne pouvons rembourser les repas non livrés / non récupérés étant donné l'ampleur des pertes et de la gestion engendrées.",
-  },
-  {
-    icon: Heart,
-    text: 'La nourriture perdue est remise à un organisme de charité.',
-  },
-]
+const POINT_ICONS = [CloudSnow, Building2, Ban, Heart]
 
 export default function SchoolClosurePolicy() {
+  const { t } = useLang()
+  const points = t.closure.points.map((text, i) => ({ icon: POINT_ICONS[i], text }))
+
   return (
     <section className="w-full bg-white py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
@@ -34,12 +21,12 @@ export default function SchoolClosurePolicy() {
           className="text-center mb-14"
         >
           <span className="inline-block text-[#C41E3A] text-sm font-semibold tracking-widest uppercase mb-3">
-            À savoir
+            {t.closure.tag}
           </span>
           <h2 className="text-[#0A0A0A] text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
-            Notre politique lors de
+            {t.closure.title1}
             <br className="hidden sm:block" />
-            <span className="text-[#C41E3A]"> fermeture d'école</span>
+            <span className="text-[#C41E3A]"> {t.closure.title2}</span>
           </h2>
         </motion.div>
 
@@ -99,7 +86,7 @@ export default function SchoolClosurePolicy() {
             bg-[#FFF4F5] border border-[#C41E3A]/15 rounded-xl px-5 py-4">
             <span className="flex-shrink-0 w-1.5 h-8 rounded-full bg-[#C41E3A]" />
             <p className="text-[#7B2535] text-[13px] font-medium leading-relaxed">
-              Pour toute modification ou question, contactez-nous par e-mail ou au{' '}
+              {t.closure.note}{' '}
               <a href="tel:5819929952" className="font-bold hover:underline underline-offset-2">
                 581-992-9952
               </a>.

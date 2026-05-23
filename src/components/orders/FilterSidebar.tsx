@@ -1,0 +1,219 @@
+import { X, RotateCcw, Search } from 'lucide-react'
+import type { MealFilters, MealTag, OrderingSchool, MealWeek, MenuCategory } from '../../types'
+
+interface Props {
+  filters: MealFilters
+  schools: OrderingSchool[]
+  weeks: MealWeek[]
+  categories: MenuCategory[]
+  activeCount: number
+  onFiltersChange: (patch: Partial<MealFilters>) => void
+  onClear: () => void
+  onClose?: () => void
+}
+
+const TAG_CONFIG: Record<MealTag, { label: string; emoji: string; active: string; inactive: string }> = {
+  vegetarian:   { label: 'Végétarien',  emoji: '🌿', active: 'bg-green-100   text-green-700   ring-1 ring-green-300',  inactive: 'bg-gray-50 text-gray-500 hover:bg-green-50  hover:text-green-700' },
+  vegan:        { label: 'Vegan',       emoji: '🌱', active: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300', inactive: 'bg-gray-50 text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' },
+  hot:          { label: 'Chaud',       emoji: '🔥', active: 'bg-red-100     text-red-700     ring-1 ring-red-300',     inactive: 'bg-gray-50 text-gray-500 hover:bg-red-50    hover:text-red-700' },
+  cold:         { label: 'Froid',       emoji: '❄️', active: 'bg-blue-100    text-blue-700    ring-1 ring-blue-300',    inactive: 'bg-gray-50 text-gray-500 hover:bg-blue-50   hover:text-blue-700' },
+  halal:        { label: 'Halal',       emoji: '☪️', active: 'bg-amber-100   text-amber-700   ring-1 ring-amber-300',   inactive: 'bg-gray-50 text-gray-500 hover:bg-amber-50  hover:text-amber-700' },
+  'gluten-free':{ label: 'Sans gluten', emoji: '✅', active: 'bg-violet-100  text-violet-700  ring-1 ring-violet-300',  inactive: 'bg-gray-50 text-gray-500 hover:bg-violet-50 hover:text-violet-700' },
+}
+
+const ALL_TAGS = Object.keys(TAG_CONFIG) as MealTag[]
+
+function fmtWeekRange(startDate: string, endDate: string): string {
+  const fmt = (d: string) =>
+    new Date(d + 'T12:00:00').toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' })
+  const s = fmt(startDate)
+  const e = fmt(endDate)
+  // If same month, show "25–29 mai" else "29 mai – 2 juin"
+  const sMonth = s.split(' ')[1]
+  const eMonth = e.split(' ')[1]
+  return sMonth === eMonth
+    ? `${s.split(' ')[0]}–${e}`
+    : `${s} – ${e}`
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[11px] font-bold tracking-[0.08em] uppercase text-gray-400 mb-2.5">
+      {children}
+    </p>
+  )
+}
+
+export default function FilterSidebar({
+  filters,
+  schools,
+  weeks,
+  categories,
+  activeCount,
+  onFiltersChange,
+  onClear,
+  onClose,
+}: Props) {
+  const toggleTag = (tag: MealTag) => {
+    const next = filters.tags.includes(tag)
+      ? filters.tags.filter((t) => t !== tag)
+      : [...filters.tags, tag]
+    onFiltersChange({ tags: next })
+  }
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_20px_rgba(0,0,0,0.06)] overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <div className="flex items-center gap-2">
+          <span className="text-[15px] font-bold text-[#0A0A0A]">Filtres</span>
+          {activeCount > 0 && (
+            <span className="flex h-5 w-5 items-center justify-center rounded-full
+              bg-[#C41E3A] text-white text-[10px] font-bold">
+              {activeCount}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          {activeCount > 0 && (
+            <button
+              onClick={onClear}
+              className="flex items-center gap-1 text-[12px] text-gray-400 hover:text-[#C41E3A]
+                transition-colors px-2 py-1 rounded-lg hover:bg-red-50"
+            >
+              <RotateCcw size={11} />
+              Effacer
+            </button>
+          )}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-gray-400 hover:text-[#0A0A0A]
+                hover:bg-gray-100 transition-colors lg:hidden"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="px-5 py-4 flex flex-col gap-6">
+
+        {/* Search */}
+        <div>
+          <SectionTitle>Recherche</SectionTitle>
+          <div className="relative">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <input
+              type="search"
+              placeholder="Nom du repas…"
+              value={filters.search}
+              onChange={(e) => onFiltersChange({ search: e.target.value })}
+              className="w-full pl-8 pr-3 py-2.5 text-[13.5px] bg-gray-50 border border-gray-200
+                rounded-xl outline-none transition-all
+                focus:border-[#C41E3A] focus:bg-white focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
+                placeholder:text-gray-300"
+            />
+          </div>
+        </div>
+
+        {/* School */}
+        <div>
+          <SectionTitle>École</SectionTitle>
+          <select
+            value={filters.schoolId}
+            onChange={(e) => onFiltersChange({ schoolId: e.target.value })}
+            className="w-full px-3 py-2.5 text-[13.5px] bg-gray-50 border border-gray-200
+              rounded-xl outline-none transition-all text-[#333]
+              focus:border-[#C41E3A] focus:bg-white focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
+              cursor-pointer"
+          >
+            {schools.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Week */}
+        <div>
+          <SectionTitle>Semaine</SectionTitle>
+          <div className="grid grid-cols-2 gap-1.5">
+            {weeks.map((w) => {
+              const active = filters.weekId === w.id
+              return (
+                <button
+                  key={w.id}
+                  onClick={() => onFiltersChange({ weekId: w.id })}
+                  className={`flex flex-col items-center py-2.5 px-2 rounded-xl transition-all duration-200 ${
+                    active
+                      ? 'bg-[#7B2535] text-white shadow-[0_2px_8px_rgba(123,37,53,0.3)]'
+                      : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                  }`}
+                >
+                  <span className={`text-[11px] font-bold tracking-wide uppercase ${active ? 'text-white/70' : 'text-gray-400'}`}>
+                    {w.label}
+                  </span>
+                  <span className={`text-[12px] font-semibold mt-0.5 leading-tight text-center ${active ? 'text-white' : 'text-gray-600'}`}>
+                    {fmtWeekRange(w.startDate, w.endDate)}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Category */}
+        <div>
+          <SectionTitle>Catégorie</SectionTitle>
+          <div className="flex flex-col gap-1">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => onFiltersChange({ categoryId: cat.id })}
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13.5px]
+                  font-medium transition-all duration-200 text-left ${
+                  filters.categoryId === cat.id
+                    ? 'bg-[#FFF0F2] text-[#C41E3A] font-semibold'
+                    : 'text-gray-500 hover:bg-gray-50 hover:text-[#0A0A0A]'
+                }`}
+              >
+                <span className="text-[16px] leading-none">{cat.emoji}</span>
+                {cat.label}
+                {filters.categoryId === cat.id && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C41E3A]" />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div>
+          <SectionTitle>Régimes & Température</SectionTitle>
+          <div className="flex flex-wrap gap-2">
+            {ALL_TAGS.map((tag) => {
+              const cfg = TAG_CONFIG[tag]
+              const active = filters.tags.includes(tag)
+              return (
+                <button
+                  key={tag}
+                  onClick={() => toggleTag(tag)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full
+                    text-[12px] font-semibold transition-all duration-200 ${
+                    active ? cfg.active : cfg.inactive
+                  }`}
+                >
+                  <span>{cfg.emoji}</span>
+                  {cfg.label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  )
+}

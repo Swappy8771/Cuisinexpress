@@ -1,40 +1,27 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
+import { useLang } from '../contexts/LangContext'
 
-const slides = [
-  {
-    image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1600&q=80',
-    label: 'Repas du jour',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1600&q=80',
-    label: 'Bols santé',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600&q=80',
-    label: 'Cuisine fraîche',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=1600&q=80',
-    label: 'Plats chauds',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1600&q=80',
-    label: 'Légumes frais',
-  },
+const SLIDE_IMAGES = [
+  'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1600&q=80',
+  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1600&q=80',
+  'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600&q=80',
+  'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=1600&q=80',
+  'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1600&q=80',
 ]
 
 const INTERVAL = 4500
 
 export default function Hero() {
+  const { t } = useLang()
   const [current, setCurrent] = useState(0)
   const [direction, setDirection] = useState(1)
 
   useEffect(() => {
     const timer = setInterval(() => {
       setDirection(1)
-      setCurrent((prev) => (prev + 1) % slides.length)
+      setCurrent((prev) => (prev + 1) % SLIDE_IMAGES.length)
     }, INTERVAL)
     return () => clearInterval(timer)
   }, [])
@@ -54,13 +41,13 @@ export default function Hero() {
       x: 0,
       opacity: 1,
       scale: 1,
-      transition: { duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] },
+      transition: { duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] },
     },
     exit: (dir: number) => ({
       x: dir > 0 ? '-8%' : '8%',
       opacity: 0,
       scale: 0.97,
-      transition: { duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] },
+      transition: { duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] },
     }),
   }
 
@@ -79,8 +66,8 @@ export default function Hero() {
           className="absolute inset-0"
         >
           <img
-            src={slides[current].image}
-            alt={slides[current].label}
+            src={SLIDE_IMAGES[current]}
+            alt={t.hero.slides[current]}
             className="w-full h-full object-cover"
           />
         </motion.div>
@@ -104,7 +91,7 @@ export default function Hero() {
         >
           <span className="h-px w-8 bg-[#C41E3A]" />
           <span className="text-[#C41E3A] text-sm font-semibold tracking-widest uppercase">
-            {slides[current].label}
+            {t.hero.slides[current]}
           </span>
         </motion.div>
 
@@ -117,11 +104,11 @@ export default function Hero() {
           className="text-white font-extrabold leading-[1.1] tracking-tight
             text-4xl sm:text-5xl lg:text-6xl max-w-2xl"
         >
-          Repas chauds et santé
+          {t.hero.title1}
           <br />
-          <span className="text-white/90">pour vos enfants</span>
+          <span className="text-white/90">{t.hero.title2}</span>
           <br />
-          <span className="text-[#C41E3A]">à l'école</span>
+          <span className="text-[#C41E3A]">{t.hero.title3}</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -132,8 +119,7 @@ export default function Hero() {
           transition={{ delay: 0.35, duration: 0.6 }}
           className="mt-5 text-white/70 text-[16px] max-w-md leading-relaxed"
         >
-          Des repas équilibrés, préparés chaque jour avec des ingrédients frais,
-          livrés directement dans votre école.
+          {t.hero.subtitle}
         </motion.p>
 
         {/* CTA */}
@@ -150,7 +136,7 @@ export default function Hero() {
               transition-all duration-300 hover:shadow-[0_8px_30px_rgba(196,30,58,0.5)]
               hover:-translate-y-0.5"
           >
-            Explorer notre menu
+            {t.hero.cta1}
             <span className="bg-white/20 group-hover:bg-white/30 rounded-full p-1
               transition-all duration-300 group-hover:translate-x-1">
               <ArrowRight size={14} />
@@ -162,14 +148,14 @@ export default function Hero() {
             className="text-white/70 hover:text-white text-[15px] font-medium
               transition-colors duration-200 underline-offset-4 hover:underline"
           >
-            Nos écoles partenaires
+            {t.hero.cta2}
           </a>
         </motion.div>
       </div>
 
       {/* Progress dots */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
-        {slides.map((_, i) => (
+        {SLIDE_IMAGES.map((_, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
@@ -193,7 +179,7 @@ export default function Hero() {
 
       {/* Slide counter */}
       <div className="absolute bottom-8 right-8 z-20 text-white/40 text-xs font-mono tracking-widest">
-        {String(current + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+        {String(current + 1).padStart(2, '0')} / {String(SLIDE_IMAGES.length).padStart(2, '0')}
       </div>
     </section>
   )

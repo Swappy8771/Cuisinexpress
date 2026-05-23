@@ -1,0 +1,259 @@
+import { Link, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, ShoppingBag, Tag } from 'lucide-react'
+import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cartStore'
+
+const fmt = (n: number) =>
+  new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(n)
+
+export default function CartPage() {
+  const items      = useCartStore((s) => s.items)
+  const total      = useCartStore(selectCartTotal)
+  const count      = useCartStore(selectCartCount)
+  const updateQty  = useCartStore((s) => s.updateQty)
+  const removeItem = useCartStore((s) => s.removeItem)
+  const clearCart  = useCartStore((s) => s.clearCart)
+  const navigate   = useNavigate()
+
+  const TAX_RATE = 0.14975 // QC TPS + TVQ
+  const subtotal = total
+  const taxes    = subtotal * TAX_RATE
+  const grandTotal = subtotal + taxes
+
+  return (
+    <div className="min-h-screen bg-[#F5F5F5]">
+      {/* Page header */}
+      <div className="bg-white border-b border-gray-100 shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-[13.5px] text-gray-400 hover:text-[#C41E3A]
+              transition-colors font-medium"
+          >
+            <ArrowLeft size={16} />
+            Retour
+          </button>
+          <div className="h-5 w-px bg-gray-200" />
+          <div className="flex items-center gap-2">
+            <ShoppingCart size={18} className="text-[#C41E3A]" />
+            <h1 className="text-[17px] font-extrabold text-[#0A0A0A]">Mon panier</h1>
+            {count > 0 && (
+              <span className="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5
+                rounded-full bg-[#C41E3A] text-white text-[11px] font-bold">
+                {count}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {/* Empty state */}
+        {items.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center py-24 text-center"
+          >
+            <div className="w-20 h-20 rounded-full bg-[#FFF0F2] flex items-center justify-center mb-6">
+              <ShoppingBag size={32} className="text-[#C41E3A]" strokeWidth={1.5} />
+            </div>
+            <h2 className="text-[20px] font-bold text-[#0A0A0A] mb-2">Votre panier est vide</h2>
+            <p className="text-gray-400 text-[14px] mb-8 max-w-xs">
+              Parcourez notre menu et ajoutez des repas pour vos enfants.
+            </p>
+            <Link
+              to="/commander"
+              className="inline-flex items-center gap-2 bg-[#C41E3A] hover:bg-[#a01830]
+                text-white font-semibold text-[14px] px-6 py-3 rounded-full
+                transition-all duration-200 hover:shadow-[0_4px_20px_rgba(196,30,58,0.35)]"
+            >
+              <ShoppingCart size={15} />
+              Voir le menu
+            </Link>
+          </motion.div>
+        )}
+
+        {items.length > 0 && (
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+
+            {/* ── Item list ───────────────────────────────────────── */}
+            <div className="flex-1 min-w-0 flex flex-col gap-3">
+
+              {/* List header */}
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-[13px] text-gray-400 font-medium">
+                  {count} repas sélectionné{count > 1 ? 's' : ''}
+                </p>
+                <button
+                  onClick={clearCart}
+                  className="flex items-center gap-1.5 text-[12.5px] text-gray-400
+                    hover:text-[#C41E3A] transition-colors"
+                >
+                  <Trash2 size={13} />
+                  Vider le panier
+                </button>
+              </div>
+
+              <AnimatePresence initial={false}>
+                {items.map((item) => (
+                  <motion.div
+                    key={item.meal.id}
+                    layout
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 16, height: 0, marginBottom: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="bg-white rounded-2xl border border-gray-100
+                      shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden"
+                  >
+                    <div className="flex items-center gap-4 p-4">
+
+                      {/* Image */}
+                      <div className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gray-100">
+                        <img
+                          src={item.meal.image}
+                          alt={item.meal.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[14.5px] font-bold text-[#0A0A0A] truncate">
+                          {item.meal.name}
+                        </p>
+                        <p className="text-[12.5px] text-gray-400 mt-0.5 line-clamp-1">
+                          {item.meal.description}
+                        </p>
+                        <p className="text-[13px] font-semibold text-[#C41E3A] mt-1.5">
+                          {fmt(item.meal.price)} / repas
+                        </p>
+                      </div>
+
+                      {/* Right side: qty + subtotal + remove */}
+                      <div className="flex flex-col items-end gap-3 flex-shrink-0">
+
+                        {/* Subtotal */}
+                        <p className="text-[15px] font-extrabold text-[#0A0A0A]">
+                          {fmt(item.meal.price * item.quantity)}
+                        </p>
+
+                        {/* Qty controls */}
+                        <div className="flex items-center gap-1 bg-gray-50 rounded-xl p-1">
+                          <button
+                            onClick={() => updateQty(item.meal.id, -1)}
+                            className="w-7 h-7 flex items-center justify-center rounded-lg
+                              text-gray-500 hover:bg-[#FFF0F2] hover:text-[#C41E3A]
+                              transition-colors duration-150"
+                            aria-label="Diminuer"
+                          >
+                            <Minus size={13} />
+                          </button>
+                          <span className="w-7 text-center text-[13.5px] font-bold text-[#0A0A0A]">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateQty(item.meal.id, +1)}
+                            className="w-7 h-7 flex items-center justify-center rounded-lg
+                              text-gray-500 hover:bg-[#FFF0F2] hover:text-[#C41E3A]
+                              transition-colors duration-150"
+                            aria-label="Augmenter"
+                          >
+                            <Plus size={13} />
+                          </button>
+                        </div>
+
+                        {/* Remove */}
+                        <button
+                          onClick={() => removeItem(item.meal.id)}
+                          className="text-gray-300 hover:text-[#C41E3A] transition-colors"
+                          aria-label="Supprimer"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              {/* Continue shopping */}
+              <Link
+                to="/commander"
+                className="mt-2 flex items-center gap-2 text-[13px] text-[#C41E3A]
+                  font-semibold hover:underline underline-offset-2 w-fit"
+              >
+                <Plus size={14} />
+                Ajouter d'autres repas
+              </Link>
+            </div>
+
+            {/* ── Order summary ────────────────────────────────────── */}
+            <div className="w-full lg:w-80 flex-shrink-0">
+              <div className="bg-white rounded-2xl border border-gray-100
+                shadow-[0_4px_24px_rgba(0,0,0,0.07)] overflow-hidden sticky top-[96px]">
+
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-gray-100">
+                  <h2 className="text-[15px] font-extrabold text-[#0A0A0A]">Récapitulatif</h2>
+                </div>
+
+                {/* Line items */}
+                <div className="px-6 py-4 flex flex-col gap-3">
+                  {items.map((item) => (
+                    <div key={item.meal.id} className="flex items-center justify-between gap-3">
+                      <p className="text-[13px] text-gray-500 truncate flex-1">
+                        <span className="font-semibold text-[#0A0A0A]">{item.quantity}×</span>{' '}
+                        {item.meal.name}
+                      </p>
+                      <p className="text-[13px] font-semibold text-[#0A0A0A] flex-shrink-0">
+                        {fmt(item.meal.price * item.quantity)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Totals */}
+                <div className="px-6 py-4 border-t border-gray-100 flex flex-col gap-2.5">
+                  <div className="flex justify-between text-[13px]">
+                    <span className="text-gray-400">Sous-total</span>
+                    <span className="font-semibold text-[#0A0A0A]">{fmt(subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between text-[13px]">
+                    <span className="text-gray-400 flex items-center gap-1">
+                      <Tag size={11} />
+                      TPS + TVQ (14,975 %)
+                    </span>
+                    <span className="font-semibold text-[#0A0A0A]">{fmt(taxes)}</span>
+                  </div>
+                  <div className="mt-2 pt-3 border-t border-gray-100 flex justify-between">
+                    <span className="text-[15px] font-extrabold text-[#0A0A0A]">Total</span>
+                    <span className="text-[15px] font-extrabold text-[#C41E3A]">{fmt(grandTotal)}</span>
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <div className="px-6 pb-6">
+                  <button
+                    className="w-full bg-[#C41E3A] hover:bg-[#a01830] text-white font-bold
+                      text-[14.5px] py-3.5 rounded-xl transition-all duration-200
+                      hover:shadow-[0_4px_20px_rgba(196,30,58,0.4)]
+                      active:scale-[0.98]"
+                  >
+                    Passer la commande
+                  </button>
+                  <p className="mt-3 text-center text-[11.5px] text-gray-400">
+                    Paiement sécurisé · Visa / Mastercard / Interac
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
