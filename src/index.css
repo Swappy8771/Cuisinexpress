@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ── Leaflet map pin ── */
+.cx-pin {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
+.cx-pin-dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #7B2535;
+  border: 2.5px solid #fff;
+  box-shadow: 0 2px 10px rgba(123,37,53,0.45);
+  transition: all 0.25s ease;
+}
+.cx-pin.selected .cx-pin-dot {
+  background: #F59E0B;
+  width: 18px; height: 18px;
+  box-shadow: 0 2px 14px rgba(245,158,11,0.6);
+}
+.cx-pin-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: rgba(123,37,53,0.25);
+  opacity: 0;
+}
+.cx-pin.selected .cx-pin-ring {
+  animation: pin-pulse 1.6s ease-out infinite;
+}
+@keyframes pin-pulse {
+  0%   { opacity: 0.7; width: 14px;  height: 14px; }
+  100% { opacity: 0;   width: 44px;  height: 44px; }
+}
+
+/* Hide default Leaflet attribution for cleanliness */
+.leaflet-control-attribution { display: none !important; }
+.leaflet-container { font-family: inherit; }
