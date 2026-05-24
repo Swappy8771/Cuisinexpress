@@ -9,8 +9,8 @@ export default function SchoolClosurePolicy() {
   const points = t.closure.points.map((text, i) => ({ icon: POINT_ICONS[i], text }))
 
   return (
-    <section className="w-full bg-white py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
+    <section className="w-full bg-white py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Heading */}
         <motion.div

@@ -68,7 +68,7 @@ export default function LoginPage() {
       </div>
 
       {/* Page body */}
-      <div className="flex-1 flex items-center justify-center px-4 py-16">
+      <div className="flex-1 flex items-center justify-center px-4 py-6">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
@@ -81,28 +81,28 @@ export default function LoginPage() {
             {/* Card top accent */}
             <div className="h-1.5 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
 
-            <div className="px-8 sm:px-10 py-10">
+            <div className="px-8 sm:px-10 py-7">
 
               {/* Heading */}
-              <div className="mb-8 text-center">
+              <div className="mb-5 text-center">
                 <Link to="/">
-                  <img src="/logo.jpg" alt="CuisineXpress" className="h-14 w-auto mx-auto mb-5 rounded-sm" />
+                  <img src="/logo.jpg" alt="CuisineXpress" className="h-12 w-auto mx-auto mb-3 rounded-sm" />
                 </Link>
-                <h1 className="text-[#0A0A0A] text-[28px] font-extrabold tracking-tight">
+                <h1 className="text-[#0A0A0A] text-[26px] font-extrabold tracking-tight">
                   Connexion
                 </h1>
-                <p className="text-gray-400 text-[14px] mt-1">
+                <p className="text-gray-400 text-[13.5px] mt-0.5">
                   Accédez à votre espace CuisineXpress
                 </p>
               </div>
 
               {/* Demo credentials banner */}
               {import.meta.env.VITE_USE_MOCK !== 'false' && (
-                <div className="mb-4 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
-                  <p className="text-[11.5px] font-bold text-amber-700 uppercase tracking-wide mb-1.5">
+                <div className="mb-4 rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5">
+                  <p className="text-[11px] font-bold text-amber-700 uppercase tracking-wide mb-1">
                     Compte de démonstration
                   </p>
-                  <div className="flex flex-col gap-1 text-[12.5px] text-amber-800 font-mono">
+                  <div className="flex flex-col gap-0.5 text-[12px] text-amber-800 font-mono">
                     <span><span className="text-amber-500 font-semibold">Email :</span> demo@cuisinexpress.ca</span>
                     <span><span className="text-amber-500 font-semibold">Mot de passe :</span> demo1234</span>
                   </div>
@@ -110,7 +110,7 @@ export default function LoginPage() {
               )}
 
               {/* Form */}
-              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
+              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3" noValidate>
 
                 {/* Email */}
                 <div className="flex flex-col gap-1.5">
@@ -184,10 +184,10 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="mt-2 w-full flex items-center justify-center gap-2
+                  className="mt-1 w-full flex items-center justify-center gap-2
                     bg-[#7B2535] hover:bg-[#9B3045] disabled:bg-gray-300
                     text-white font-bold text-[14px] tracking-widest uppercase
-                    py-4 rounded-xl transition-all duration-300
+                    py-3.5 rounded-xl transition-all duration-300
                     hover:shadow-[0_8px_24px_rgba(196,30,58,0.35)]
                     hover:-translate-y-0.5 active:translate-y-0"
                 >
@@ -207,14 +207,14 @@ export default function LoginPage() {
               </form>
 
               {/* Divider */}
-              <div className="flex items-center gap-3 my-7">
+              <div className="flex items-center gap-3 my-4">
                 <div className="flex-1 h-px bg-gray-100" />
                 <span className="text-gray-300 text-[12px]">ou</span>
                 <div className="flex-1 h-px bg-gray-100" />
               </div>
 
               {/* Register */}
-              <p className="text-center text-[13.5px] text-gray-400">
+              <p className="text-center text-[13px] text-gray-400">
                 Vous n'avez pas de compte ?{' '}
                 <Link
                   to="/register"

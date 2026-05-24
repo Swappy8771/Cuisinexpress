@@ -149,7 +149,7 @@ export default function Header() {
               <Link
                 to="/login"
                 className="hidden md:inline-flex items-center bg-[#7B2535] hover:bg-[#9B3045]
-                  text-white text-[15px] font-semibold px-6 py-2.5 rounded-sm
+                  text-white !text-white text-[15px] font-semibold px-6 py-2.5 rounded-sm
                   transition-all duration-300 hover:shadow-[0_4px_20px_rgba(196,30,58,0.35)]
                   hover:-translate-y-px active:translate-y-0"
               >
@@ -214,7 +214,7 @@ export default function Header() {
                   to="/login"
                   onClick={() => setMenuOpen(false)}
                   className="mt-1 inline-flex justify-center items-center bg-[#7B2535] hover:bg-[#9B3045]
-                    text-white text-[15px] font-semibold px-6 py-2.5 rounded-sm transition-colors duration-200"
+                    text-white !text-white text-[15px] font-semibold px-6 py-2.5 rounded-sm transition-colors duration-200"
                 >
                   {t.nav.login}
                 </Link>

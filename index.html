@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CuisineXpress</title>
 
-    <!-- Hide the Google Translate toolbar that appears at the top -->
+    <!-- Hide the Google Translate toolbar and prevent colour overrides -->
     <style>
       body { top: 0 !important; }
       .skiptranslate { display: none !important; }
       #goog-gt-tt, .goog-te-banner-frame { display: none !important; }
       .goog-te-combo { display: none !important; }
+      /* Stop GT <font> wrappers from overriding explicit text colours */
+      header a font, header button font { color: inherit !important; }
     </style>
   </head>
   <body>

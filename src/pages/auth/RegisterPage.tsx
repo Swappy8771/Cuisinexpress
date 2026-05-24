@@ -114,7 +114,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Page body */}
-      <div className="flex-1 flex items-center justify-center px-4 py-16">
+      <div className="flex-1 flex items-center justify-center px-4 py-6">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
@@ -126,23 +126,23 @@ export default function RegisterPage() {
             {/* Top accent */}
             <div className="h-1.5 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
 
-            <div className="px-8 sm:px-10 py-10">
+            <div className="px-8 sm:px-10 py-7">
 
               {/* Heading */}
-              <div className="mb-8 text-center">
+              <div className="mb-5 text-center">
                 <Link to="/">
-                  <img src="/logo.jpg" alt="CuisineXpress" className="h-14 w-auto mx-auto mb-5 rounded-sm" />
+                  <img src="/logo.jpg" alt="CuisineXpress" className="h-12 w-auto mx-auto mb-3 rounded-sm" />
                 </Link>
-                <h1 className="text-[#0A0A0A] text-[28px] font-extrabold tracking-tight">
+                <h1 className="text-[#0A0A0A] text-[26px] font-extrabold tracking-tight">
                   Créer votre compte
                 </h1>
-                <p className="text-gray-400 text-[14px] mt-1">
+                <p className="text-gray-400 text-[13.5px] mt-0.5">
                   Rejoignez CuisineXpress dès aujourd'hui
                 </p>
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
+              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3" noValidate>
 
                 {/* First + Last name */}
                 <div className="grid grid-cols-2 gap-3">
@@ -288,7 +288,7 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Privacy policy note */}
-                <div className="flex items-start gap-2.5 bg-[#F7F7F7] rounded-xl px-4 py-3.5 mt-1">
+                <div className="flex items-start gap-2.5 bg-[#F7F7F7] rounded-xl px-4 py-3 mt-0">
                   <ShieldCheck size={15} className="text-[#C41E3A] flex-shrink-0 mt-0.5" />
                   <p className="text-[12.5px] text-gray-400 leading-relaxed">
                     Lien pour consulter{' '}
@@ -302,10 +302,10 @@ export default function RegisterPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="mt-2 w-full flex items-center justify-center gap-2
+                  className="mt-1 w-full flex items-center justify-center gap-2
                     bg-[#7B2535] hover:bg-[#9B3045] disabled:bg-gray-300
                     text-white font-bold text-[14px] tracking-widest uppercase
-                    py-4 rounded-xl transition-all duration-300
+                    py-3.5 rounded-xl transition-all duration-300
                     hover:shadow-[0_8px_24px_rgba(196,30,58,0.35)]
                     hover:-translate-y-0.5 active:translate-y-0"
                 >
@@ -325,14 +325,14 @@ export default function RegisterPage() {
               </form>
 
               {/* Divider */}
-              <div className="flex items-center gap-3 my-7">
+              <div className="flex items-center gap-3 my-4">
                 <div className="flex-1 h-px bg-gray-100" />
                 <span className="text-gray-300 text-[12px]">ou</span>
                 <div className="flex-1 h-px bg-gray-100" />
               </div>
 
               {/* Login link */}
-              <p className="text-center text-[13.5px] text-gray-400">
+              <p className="text-center text-[13px] text-gray-400">
                 Vous avez déjà un compte ?{' '}
                 <Link
                   to="/login"

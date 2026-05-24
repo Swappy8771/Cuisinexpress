@@ -130,11 +130,13 @@ export default function Hero() {
           className="mt-8 flex items-center gap-4"
         >
           <a
-            href="#commander"
+            href="/commander"
             className="group inline-flex items-center gap-3 bg-[#C41E3A] hover:bg-[#a01830]
-              text-white font-semibold text-[15px] px-7 py-3.5 rounded-full
-              transition-all duration-300 hover:shadow-[0_8px_30px_rgba(196,30,58,0.5)]
-              hover:-translate-y-0.5"
+              text-white font-bold text-[15px] px-7 py-3.5 rounded-full
+              transition-all duration-300
+              shadow-[0_4px_20px_rgba(196,30,58,0.45)]
+              hover:shadow-[0_8px_32px_rgba(196,30,58,0.6)]
+              hover:-translate-y-0.5 active:translate-y-0"
           >
             {t.hero.cta1}
             <span className="bg-white/20 group-hover:bg-white/30 rounded-full p-1
@@ -144,11 +146,19 @@ export default function Hero() {
           </a>
 
           <a
-            href="#nos-ecoles"
-            className="text-white/70 hover:text-white text-[15px] font-medium
-              transition-colors duration-200 underline-offset-4 hover:underline"
+            href="/nos-ecoles"
+            className="group inline-flex items-center gap-3 bg-[#7B2535] hover:bg-[#9B3045]
+              text-white font-bold text-[15px] px-7 py-3.5 rounded-full
+              transition-all duration-300
+              shadow-[0_4px_20px_rgba(123,37,53,0.45)]
+              hover:shadow-[0_8px_32px_rgba(123,37,53,0.6)]
+              hover:-translate-y-0.5 active:translate-y-0"
           >
             {t.hero.cta2}
+            <span className="bg-white/20 group-hover:bg-white/30 rounded-full p-1
+              transition-all duration-300 group-hover:translate-x-1">
+              <ArrowRight size={14} />
+            </span>
           </a>
         </motion.div>
       </div>

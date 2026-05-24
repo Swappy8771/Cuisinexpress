@@ -62,7 +62,7 @@ export default function ForgotPasswordPage() {
       </div>
 
       {/* Page body */}
-      <div className="flex-1 flex items-center justify-center px-4 py-16">
+      <div className="flex-1 flex items-center justify-center px-4 py-6">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
             {/* Top accent */}
             <div className="h-1.5 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
 
-            <div className="px-8 sm:px-10 py-10">
+            <div className="px-8 sm:px-10 py-7">
 
               <AnimatePresence mode="wait">
 
@@ -88,29 +88,29 @@ export default function ForgotPasswordPage() {
                     transition={{ duration: 0.3 }}
                   >
                     {/* Logo + heading */}
-                    <div className="mb-8 text-center">
+                    <div className="mb-5 text-center">
                       <Link to="/">
                         <img
                           src="/logo.jpg"
                           alt="CuisineXpress"
-                          className="h-14 w-auto mx-auto mb-5 rounded-sm"
+                          className="h-12 w-auto mx-auto mb-3 rounded-sm"
                         />
                       </Link>
-                      <div className="w-14 h-14 rounded-2xl bg-[#FFF0F2] flex items-center
-                        justify-center mx-auto mb-5">
-                        <Mail size={24} className="text-[#C41E3A]" strokeWidth={1.75} />
+                      <div className="w-12 h-12 rounded-2xl bg-[#FFF0F2] flex items-center
+                        justify-center mx-auto mb-3">
+                        <Mail size={22} className="text-[#C41E3A]" strokeWidth={1.75} />
                       </div>
-                      <h1 className="text-[#0A0A0A] text-[26px] font-extrabold tracking-tight">
+                      <h1 className="text-[#0A0A0A] text-[24px] font-extrabold tracking-tight">
                         Mot de passe oublié ?
                       </h1>
-                      <p className="text-gray-400 text-[14px] mt-2 leading-relaxed">
+                      <p className="text-gray-400 text-[13.5px] mt-1.5 leading-relaxed">
                         Entrez votre adresse e-mail et nous vous enverrons
                         un lien pour réinitialiser votre mot de passe.
                       </p>
                     </div>
 
                     {/* Form */}
-                    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
+                    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-3">
 
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[13px] font-semibold text-[#333]">
@@ -140,10 +140,10 @@ export default function ForgotPasswordPage() {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="mt-2 w-full flex items-center justify-center gap-2
+                        className="mt-1 w-full flex items-center justify-center gap-2
                           bg-[#7B2535] hover:bg-[#9B3045] disabled:bg-gray-300
                           text-white font-bold text-[14px] tracking-widest uppercase
-                          py-4 rounded-xl transition-all duration-300
+                          py-3.5 rounded-xl transition-all duration-300
                           hover:shadow-[0_8px_24px_rgba(196,30,58,0.35)]
                           hover:-translate-y-0.5 active:translate-y-0"
                       >
@@ -163,12 +163,12 @@ export default function ForgotPasswordPage() {
                     </form>
 
                     {/* Back to login */}
-                    <div className="flex items-center gap-3 my-7">
+                    <div className="flex items-center gap-3 my-4">
                       <div className="flex-1 h-px bg-gray-100" />
                       <span className="text-gray-300 text-[12px]">ou</span>
                       <div className="flex-1 h-px bg-gray-100" />
                     </div>
-                    <p className="text-center text-[13.5px] text-gray-400">
+                    <p className="text-center text-[13px] text-gray-400">
                       Vous souhaitez réessayer la connexion ?{' '}
                       <Link
                         to="/login"
@@ -187,23 +187,23 @@ export default function ForgotPasswordPage() {
                     initial={{ opacity: 0, scale: 0.95, y: 12 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="py-4 flex flex-col items-center text-center gap-5"
+                    className="py-2 flex flex-col items-center text-center gap-4"
                   >
                     {/* Animated checkmark */}
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.15, type: 'spring', stiffness: 200, damping: 14 }}
-                      className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center"
+                      className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center"
                     >
-                      <CheckCircle2 size={40} className="text-green-500" strokeWidth={1.5} />
+                      <CheckCircle2 size={34} className="text-green-500" strokeWidth={1.5} />
                     </motion.div>
 
                     <div>
-                      <h2 className="text-[#0A0A0A] text-[22px] font-extrabold tracking-tight mb-2">
+                      <h2 className="text-[#0A0A0A] text-[20px] font-extrabold tracking-tight mb-1.5">
                         E-mail envoyé !
                       </h2>
-                      <p className="text-gray-400 text-[14px] leading-relaxed max-w-xs mx-auto">
+                      <p className="text-gray-400 text-[13.5px] leading-relaxed max-w-xs mx-auto">
                         Un lien de réinitialisation a été envoyé à{' '}
                         <span className="text-[#0A0A0A] font-semibold">{submittedEmail}</span>.
                         Vérifiez votre boîte de réception.
@@ -211,7 +211,7 @@ export default function ForgotPasswordPage() {
                     </div>
 
                     <div className="w-full bg-[#FFF4F5] border border-[#C41E3A]/15 rounded-xl
-                      px-5 py-4 text-[13px] text-[#7B2535] leading-relaxed text-left">
+                      px-4 py-3 text-[13px] text-[#7B2535] leading-relaxed text-left">
                       Vous n'avez pas reçu l'e-mail ? Vérifiez votre dossier spam ou{' '}
                       <button
                         onClick={() => setSent(false)}
@@ -223,9 +223,9 @@ export default function ForgotPasswordPage() {
 
                     <Link
                       to="/login"
-                      className="mt-2 w-full flex items-center justify-center gap-2
+                      className="mt-1 w-full flex items-center justify-center gap-2
                         bg-[#7B2535] hover:bg-[#9B3045] text-white font-bold
-                        text-[14px] tracking-widest uppercase py-4 rounded-xl
+                        text-[14px] tracking-widest uppercase py-3.5 rounded-xl
                         transition-all duration-300
                         hover:shadow-[0_8px_24px_rgba(196,30,58,0.35)]"
                     >

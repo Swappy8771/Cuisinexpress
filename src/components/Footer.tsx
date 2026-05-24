@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion'
 import { MapPin, Phone, Mail } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useLang } from '../contexts/LangContext'
 
-const INFO_HREFS = ['#nos-ecoles', '#menus', '#contact', '#donnees', '#politique']
+const INFO_HREFS = ['/nos-ecoles', '/commander', '/contact', '/politique', '/confidentialite']
+
 
 const contactItems = [
   { icon: Phone, text: '581-992-9952', href: 'tel:5819929952' },
@@ -19,6 +21,50 @@ const fadeUp = {
   }),
 }
 
+function NavColumn({
+  custom,
+  tag,
+  title,
+  links,
+}: {
+  custom: number
+  tag: string
+  title: string
+  links: { label: string; href: string }[]
+}) {
+  return (
+    <motion.div
+      custom={custom}
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="flex flex-col gap-4"
+    >
+      <div className="flex items-center gap-2 mb-1">
+        <span className="h-px w-6 bg-[#C41E3A]" />
+        <h4 className="text-white/40 text-[11px] font-semibold tracking-widest uppercase">{tag}</h4>
+      </div>
+      <h3 className="text-white font-bold text-[18px] tracking-tight">{title}</h3>
+      <ul className="flex flex-col gap-2.5 mt-1">
+        {links.map((link) => (
+          <li key={link.label}>
+            <Link
+              to={link.href}
+              className="group/nav flex items-start gap-2 text-white/50
+                hover:text-white text-[13.5px] transition-colors duration-200"
+            >
+              <span className="mt-[5px] flex-shrink-0 w-1 h-1 rounded-full bg-[#C41E3A]/50
+                group-hover/nav:bg-[#C41E3A] transition-colors duration-200" />
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  )
+}
+
 export default function Footer() {
   const { t } = useLang()
   const infoLinks = t.footer.links.map((label, i) => ({ label, href: INFO_HREFS[i] ?? '#' }))
@@ -27,8 +73,8 @@ export default function Footer() {
     <footer className="w-full bg-[#0A0A0A] text-white">
 
       {/* Main footer body */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
 
           {/* Column 1 — Brand */}
           <motion.div
@@ -37,10 +83,10 @@ export default function Footer() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="flex flex-col gap-6"
+            className="flex flex-col gap-6 sm:col-span-2 lg:col-span-1"
           >
             {/* Logo */}
-            <a href="/" className="inline-block w-fit group">
+            <Link to="/" className="inline-block w-fit group">
               <img
                 src="/logo.jpg"
                 alt="CuisineXpress"
@@ -49,7 +95,7 @@ export default function Footer() {
                   group-hover:shadow-[0_0_0_2px_#C41E3A]
                   transition-all duration-300"
               />
-            </a>
+            </Link>
 
             {/* Tagline */}
             <div>
@@ -80,7 +126,7 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          {/* Column 2 — Partenaire kntera */}
+          {/* Column 2 — Partner */}
           <motion.div
             custom={1}
             variants={fadeUp}
@@ -103,50 +149,24 @@ export default function Footer() {
             </p>
           </motion.div>
 
-          {/* Column 3 — Informations */}
-          <motion.div
+          {/* Column 3 — Navigation */}
+          <NavColumn
             custom={2}
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="flex flex-col gap-4"
-          >
-            <div className="flex items-center gap-2 mb-1">
-              <span className="h-px w-6 bg-[#C41E3A]" />
-              <h4 className="text-white/40 text-[11px] font-semibold tracking-widest uppercase">
-                {t.footer.navTag}
-              </h4>
-            </div>
-            <h3 className="text-white font-bold text-[18px] tracking-tight">
-              {t.footer.navTitle}
-            </h3>
-            <ul className="flex flex-col gap-2.5 mt-1">
-              {infoLinks.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="group/nav flex items-start gap-2 text-white/50
-                      hover:text-white text-[13.5px] transition-colors duration-200"
-                  >
-                    <span className="mt-[5px] flex-shrink-0 w-1 h-1 rounded-full bg-[#C41E3A]/50
-                      group-hover/nav:bg-[#C41E3A] transition-colors duration-200" />
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+            tag={t.footer.navTag}
+            title={t.footer.navTitle}
+            links={infoLinks}
+          />
+
         </div>
       </div>
 
       {/* Divider */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </div>
 
       {/* Copyright bar */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white/35 text-[12.5px]">
             Copyright ©2026{' '}

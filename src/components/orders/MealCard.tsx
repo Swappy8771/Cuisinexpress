@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, Plus, Minus, ShoppingCart, Flame, Leaf, Snowflake, Star, Zap, CheckCircle2 } from 'lucide-react'
 import type { Meal, Allergy, MenuCategory, MealTag } from '../../types'
@@ -44,6 +45,7 @@ function MealCardSkeleton() {
 export { MealCardSkeleton }
 
 export default function MealCard({ meal, allergies, categories }: Props) {
+  const navigate = useNavigate()
   const [isFav, setIsFav] = useState(false)
   const [justAdded, setJustAdded] = useState(false)
   const { addItem, updateQty, getQty } = useCartStore()
@@ -74,8 +76,11 @@ export default function MealCard({ meal, allergies, categories }: Props) {
         shadow-[0_2px_16px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]
         transition-shadow duration-300 flex flex-col ${!meal.available ? 'opacity-70' : ''}`}
     >
-      {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+      {/* Image — click navigates to detail */}
+      <div
+        className="relative aspect-[4/3] overflow-hidden bg-gray-100 cursor-pointer"
+        onClick={() => navigate(`/commander/${meal.id}`)}
+      >
         <motion.img
           src={meal.image}
           alt={meal.name}
@@ -159,7 +164,11 @@ export default function MealCard({ meal, allergies, categories }: Props) {
         )}
 
         {/* Title */}
-        <h3 className="text-[15px] font-bold text-[#0A0A0A] leading-snug line-clamp-1">
+        <h3
+          className="text-[15px] font-bold text-[#0A0A0A] leading-snug line-clamp-1
+            hover:text-[#C41E3A] transition-colors cursor-pointer"
+          onClick={() => navigate(`/commander/${meal.id}`)}
+        >
           {meal.name}
         </h3>
 
