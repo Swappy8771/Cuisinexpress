@@ -52,7 +52,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   </div>
                   <div className="min-w-0">
                     <p className="text-[#0A0A0A] font-semibold text-[14px] truncate">
-                      {user?.name ?? 'Mon compte'}
+                      {user ? `${user.firstName} ${user.lastName}` : 'Mon compte'}
                     </p>
                     <p className="text-gray-400 text-[12px] truncate">{user?.email}</p>
                   </div>

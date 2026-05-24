@@ -21,7 +21,7 @@ const schema = z.object({
     .regex(/[A-Z]/, 'Au moins une majuscule')
     .regex(/[0-9]/, 'Au moins un chiffre'),
   terms: z.literal(true, {
-    errorMap: () => ({ message: "Vous devez accepter les conditions d'utilisation" }),
+    error: "Vous devez accepter les conditions d'utilisation",
   }),
 })
 
