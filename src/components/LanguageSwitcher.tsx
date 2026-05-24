@@ -50,7 +50,7 @@ export default function LanguageSwitcher({ className }: { className?: string }) 
   }
 
   return (
-    <div className={`flex items-center bg-gray-50 border border-gray-200
+    <div className={`flex items-center bg-cx-fill border border-cx-edge
       rounded-xl overflow-hidden text-[12.5px] font-bold tracking-wide
       ${!ready ? 'opacity-50 pointer-events-none' : ''} ${className ?? ''}`}>
       {(['fr', 'en'] as Lang[]).map((l, i) => (
@@ -60,8 +60,8 @@ export default function LanguageSwitcher({ className }: { className?: string }) 
           className={`px-3 py-1.5 transition-all duration-200 uppercase
             ${lang === l
               ? 'bg-[#7B2535] text-white shadow-inner'
-              : 'text-gray-400 hover:text-[#7B2535] hover:bg-gray-100'
-            } ${i === 0 ? '' : 'border-l border-gray-200'}`}
+              : 'text-cx-soft hover:text-[#7B2535] hover:bg-cx-muted'
+            } ${i === 0 ? '' : 'border-l border-cx-edge'}`}
         >
           {l}
         </button>

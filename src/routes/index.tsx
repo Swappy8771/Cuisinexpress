@@ -28,6 +28,9 @@ import StudentsPage from '../pages/dashboard/StudentsPage'
 import StatementPage from '../pages/dashboard/StatementPage'
 import InvoicesPage from '../pages/dashboard/InvoicesPage'
 
+// 404
+import NotFoundPage from '../pages/NotFoundPage'
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -49,6 +52,9 @@ export default function AppRoutes() {
       <Route path="/user/students"  element={<PrivateRoute><StudentsPage /></PrivateRoute>} />
       <Route path="/user/statement" element={<PrivateRoute><StatementPage /></PrivateRoute>} />
       <Route path="/user/invoices"  element={<PrivateRoute><InvoicesPage /></PrivateRoute>} />
+
+      {/* ── 404 catch-all ── */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
 }

@@ -62,12 +62,12 @@ export default function CookiePreferencesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
+    <div className="min-h-screen bg-cx-page transition-colors duration-300">
 
       {/* Breadcrumb bar */}
-      <div className="w-full bg-white border-b border-gray-100">
+      <div className="w-full bg-cx-card border-b border-cx-line">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <ol className="flex items-center gap-1.5 text-[13px] text-gray-400">
+          <ol className="flex items-center gap-1.5 text-[13px] text-cx-soft">
             <li>
               <Link to="/" className="flex items-center gap-1 hover:text-[#C41E3A] transition-colors">
                 <Home size={13} />
@@ -75,7 +75,7 @@ export default function CookiePreferencesPage() {
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
-            <li className="text-[#0A0A0A] font-medium">Préférences de confidentialité</li>
+            <li className="text-cx-base font-medium">Préférences de confidentialité</li>
           </ol>
         </div>
       </div>
@@ -86,7 +86,7 @@ export default function CookiePreferencesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="bg-white rounded-2xl border border-gray-100
+            className="bg-cx-card rounded-2xl border border-cx-line
               shadow-[0_4px_24px_rgba(0,0,0,0.07)] overflow-hidden"
           >
             <div className="h-1 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
@@ -98,31 +98,31 @@ export default function CookiePreferencesPage() {
                 <div className="w-10 h-10 rounded-xl bg-[#FFF0F2] flex items-center justify-center flex-shrink-0">
                   <ShieldCheck size={18} className="text-[#C41E3A]" />
                 </div>
-                <h1 className="text-[20px] font-extrabold text-[#0A0A0A] tracking-tight">
+                <h1 className="text-[20px] font-extrabold text-cx-base tracking-tight">
                   Préférences de confidentialité
                 </h1>
               </div>
 
-              <div className="h-px bg-gray-100 mb-5" />
+              <div className="h-px bg-cx-line mb-5" />
 
               {/* Intro */}
-              <p className="text-[13.5px] text-gray-500 leading-relaxed mb-3">
+              <p className="text-[13.5px] text-cx-soft leading-relaxed mb-3">
                 When you visit websites, they may store or retrieve data about you using cookies and
                 similar technologies. Cookies may be necessary for the basic functionality of the website
                 as well as for other purposes. You have the option to disable certain types of cookies,
                 although this may impact your experience on the website.
               </p>
-              <p className="text-[13.5px] text-gray-500 leading-relaxed mb-6">
+              <p className="text-[13.5px] text-cx-soft leading-relaxed mb-6">
                 Your selection can be modified at any time, see{' '}
                 <Link to="/politique" className="text-[#C41E3A] hover:underline underline-offset-2 font-medium">
                   our data management policy
                 </Link>.
               </p>
 
-              <div className="h-px bg-gray-100 mb-2" />
+              <div className="h-px bg-cx-line mb-2" />
 
               {/* Categories */}
-              <div className="flex flex-col divide-y divide-gray-100">
+              <div className="flex flex-col divide-y divide-cx-line">
                 {CATEGORIES.map((cat) => (
                   <div key={cat.id}>
                     <div className="flex items-center justify-between py-4 gap-4">
@@ -133,10 +133,10 @@ export default function CookiePreferencesPage() {
                       >
                         <ChevronDown
                           size={15}
-                          className={`flex-shrink-0 text-gray-400 group-hover:text-[#C41E3A]
+                          className={`flex-shrink-0 text-cx-soft group-hover:text-[#C41E3A]
                             transition-all duration-200 ${expanded === cat.id ? 'rotate-180' : ''}`}
                         />
-                        <span className="text-[14px] font-bold text-[#0A0A0A]
+                        <span className="text-[14px] font-bold text-cx-base
                           group-hover:text-[#C41E3A] transition-colors duration-200">
                           {cat.name}
                         </span>
@@ -145,7 +145,7 @@ export default function CookiePreferencesPage() {
                       {/* Controls */}
                       {cat.required ? (
                         <span className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1
-                          bg-gray-50 rounded-full text-[12px] font-semibold text-gray-400 border border-gray-200">
+                          bg-cx-fill rounded-full text-[12px] font-semibold text-cx-soft border border-cx-edge">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#C41E3A]" />
                           Accept
                         </span>
@@ -163,14 +163,14 @@ export default function CookiePreferencesPage() {
                                   className="sr-only"
                                 />
                                 <div className={`w-4 h-4 rounded-full border-2 transition-colors flex items-center justify-center
-                                  ${consents[cat.id] === val ? 'border-[#7B2535]' : 'border-gray-300'}`}>
+                                  ${consents[cat.id] === val ? 'border-[#7B2535]' : 'border-cx-edge'}`}>
                                   {consents[cat.id] === val && (
                                     <div className="w-2 h-2 rounded-full bg-[#7B2535]" />
                                   )}
                                 </div>
                               </div>
                               <span className={`text-[12.5px] font-semibold capitalize transition-colors
-                                ${consents[cat.id] === val ? 'text-[#7B2535]' : 'text-gray-400 group-hover/radio:text-gray-600'}`}>
+                                ${consents[cat.id] === val ? 'text-[#7B2535]' : 'text-cx-soft group-hover/radio:text-cx-body'}`}>
                                 {val === 'accept' ? 'Accept' : 'Refuse'}
                               </span>
                             </label>
@@ -189,7 +189,7 @@ export default function CookiePreferencesPage() {
                           transition={{ duration: 0.22, ease: 'easeInOut' }}
                           className="overflow-hidden"
                         >
-                          <p className="pb-4 pl-7 text-[13px] text-gray-400 leading-relaxed">
+                          <p className="pb-4 pl-7 text-[13px] text-cx-soft leading-relaxed">
                             {cat.description}
                           </p>
                         </motion.div>
@@ -199,7 +199,7 @@ export default function CookiePreferencesPage() {
                 ))}
               </div>
 
-              <div className="h-px bg-gray-100 mt-2 mb-6" />
+              <div className="h-px bg-cx-line mt-2 mb-6" />
 
               {/* Actions */}
               <div className="flex items-center justify-between gap-3">
@@ -214,8 +214,8 @@ export default function CookiePreferencesPage() {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => navigate(-1)}
-                    className="px-5 py-2.5 rounded-full border-2 border-gray-300 text-gray-500
-                      text-[13px] font-bold hover:border-gray-400 hover:text-gray-700
+                    className="px-5 py-2.5 rounded-full border-2 border-cx-edge text-cx-soft
+                      text-[13px] font-bold hover:border-cx-muted hover:text-cx-body
                       transition-all duration-200"
                   >
                     Cancel

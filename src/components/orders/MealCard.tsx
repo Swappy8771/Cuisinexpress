@@ -1,18 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, Plus, Minus, ShoppingCart, Flame, Leaf, Snowflake, Star, Zap, CheckCircle2 } from 'lucide-react'
-import type { Meal, Allergy, MenuCategory, MealTag } from '../../types'
+import { Heart, Plus, Minus, ShoppingCart, Flame, Star, CheckCircle2 } from 'lucide-react'
+import type { Meal, Allergy, MenuCategory } from '../../types'
+import { fmt, TAG_CONFIG } from '../../lib/menuConfig'
 import { useCartStore } from '../../store/cartStore'
-
-const TAG_CONFIG: Record<MealTag, { label: string; icon: React.ElementType; color: string }> = {
-  hot:           { label: 'Chaud',       icon: Flame,     color: 'bg-red-100   text-red-700'   },
-  cold:          { label: 'Froid',       icon: Snowflake, color: 'bg-blue-100  text-blue-700'  },
-  vegetarian:    { label: 'Végétarien',  icon: Leaf,      color: 'bg-green-100 text-green-700' },
-  vegan:         { label: 'Vegan',       icon: Leaf,      color: 'bg-emerald-100 text-emerald-700' },
-  halal:         { label: 'Halal',       icon: Star,      color: 'bg-amber-100 text-amber-700' },
-  'gluten-free': { label: 'Sans gluten', icon: Zap,       color: 'bg-violet-100 text-violet-700' },
-}
 
 interface Props {
   meal: Meal
@@ -22,20 +14,20 @@ interface Props {
 
 function MealCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden border border-gray-100">
-      <div className="aspect-[4/3] bg-gray-100 animate-pulse" />
+    <div className="bg-cx-card rounded-2xl overflow-hidden border border-cx-line">
+      <div className="aspect-[4/3] bg-cx-muted animate-pulse" />
       <div className="p-4 flex flex-col gap-3">
-        <div className="h-3 w-20 bg-gray-100 rounded-full animate-pulse" />
-        <div className="h-5 w-3/4 bg-gray-100 rounded animate-pulse" />
-        <div className="h-4 w-full bg-gray-100 rounded animate-pulse" />
-        <div className="h-4 w-2/3 bg-gray-100 rounded animate-pulse" />
+        <div className="h-3 w-20 bg-cx-muted rounded-full animate-pulse" />
+        <div className="h-5 w-3/4 bg-cx-muted rounded animate-pulse" />
+        <div className="h-4 w-full bg-cx-muted rounded animate-pulse" />
+        <div className="h-4 w-2/3 bg-cx-muted rounded animate-pulse" />
         <div className="flex gap-2 mt-1">
-          <div className="h-6 w-16 bg-gray-100 rounded-full animate-pulse" />
-          <div className="h-6 w-14 bg-gray-100 rounded-full animate-pulse" />
+          <div className="h-6 w-16 bg-cx-muted rounded-full animate-pulse" />
+          <div className="h-6 w-14 bg-cx-muted rounded-full animate-pulse" />
         </div>
         <div className="flex items-center justify-between mt-2">
-          <div className="h-7 w-16 bg-gray-100 rounded animate-pulse" />
-          <div className="h-10 w-32 bg-gray-100 rounded-xl animate-pulse" />
+          <div className="h-7 w-16 bg-cx-muted rounded animate-pulse" />
+          <div className="h-10 w-32 bg-cx-muted rounded-xl animate-pulse" />
         </div>
       </div>
     </div>
@@ -54,8 +46,6 @@ export default function MealCard({ meal, allergies, categories }: Props) {
   const category = categories.find((c) => c.id === meal.categoryId)
   const mealAllergies = allergies.filter((a) => meal.allergyIds.includes(a.id))
 
-  const fmt = (n: number) =>
-    new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(n)
 
   const handleAdd = () => {
     if (!meal.available) return
@@ -72,13 +62,13 @@ export default function MealCard({ meal, allergies, categories }: Props) {
       exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.35 }}
       whileHover={meal.available ? { y: -4 } : {}}
-      className={`group bg-white rounded-2xl overflow-hidden border border-gray-100
-        shadow-[0_2px_16px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]
+      className={`group bg-cx-card rounded-2xl overflow-hidden border border-cx-line
+        shadow-[0_2px_16px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]
         transition-shadow duration-300 flex flex-col ${!meal.available ? 'opacity-70' : ''}`}
     >
       {/* Image — click navigates to detail */}
       <div
-        className="relative aspect-[4/3] overflow-hidden bg-gray-100 cursor-pointer"
+        className="relative aspect-[4/3] overflow-hidden bg-cx-muted cursor-pointer"
         onClick={() => navigate(`/commander/${meal.id}`)}
       >
         <motion.img
@@ -91,7 +81,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
             const img = e.target as HTMLImageElement
             img.style.display = 'none'
             const parent = img.parentElement
-            if (parent) parent.classList.add('flex', 'items-center', 'justify-center', 'bg-gradient-to-br', 'from-gray-100', 'to-gray-200')
+            if (parent) parent.classList.add('flex', 'items-center', 'justify-center', 'bg-gradient-to-br', 'from-cx-muted', 'to-cx-fill')
           }}
         />
 
@@ -125,14 +115,14 @@ export default function MealCard({ meal, allergies, categories }: Props) {
         >
           <Heart
             size={15}
-            className={isFav ? 'fill-[#C41E3A] text-[#C41E3A]' : 'text-gray-500'}
+            className={isFav ? 'fill-[#C41E3A] text-[#C41E3A]' : 'text-cx-soft'}
           />
         </button>
 
         {/* Unavailable ribbon */}
         {!meal.available && (
           <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex items-center justify-center">
-            <span className="bg-white text-[#0A0A0A] text-[12px] font-bold px-4 py-1.5
+            <span className="bg-cx-card text-cx-base text-[12px] font-bold px-4 py-1.5
               rounded-full shadow-lg">
               Non disponible
             </span>
@@ -157,7 +147,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
         {category && category.id && (
           <div className="flex items-center gap-1.5">
             <span className="text-[13px]">{category.emoji}</span>
-            <span className="text-[11.5px] font-semibold text-gray-400 uppercase tracking-wide">
+            <span className="text-[11.5px] font-semibold text-cx-soft uppercase tracking-wide">
               {category.label}
             </span>
           </div>
@@ -165,7 +155,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
 
         {/* Title */}
         <h3
-          className="text-[15px] font-bold text-[#0A0A0A] leading-snug line-clamp-1
+          className="text-[15px] font-bold text-cx-base leading-snug line-clamp-1
             hover:text-[#C41E3A] transition-colors cursor-pointer"
           onClick={() => navigate(`/commander/${meal.id}`)}
         >
@@ -173,7 +163,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
         </h3>
 
         {/* Description */}
-        <p className="text-[12.5px] text-gray-400 leading-relaxed line-clamp-2 flex-1">
+        <p className="text-[12.5px] text-cx-soft leading-relaxed line-clamp-2 flex-1">
           {meal.description}
         </p>
 
@@ -187,7 +177,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
                 <span
                   key={tag}
                   className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full
-                    text-[10.5px] font-semibold ${cfg.color}`}
+                    text-[10.5px] font-semibold ${cfg.cardColor}`}
                 >
                   <Icon size={9} />
                   {cfg.label}
@@ -214,12 +204,12 @@ export default function MealCard({ meal, allergies, categories }: Props) {
         )}
 
         {/* Price + CTA */}
-        <div className="flex items-center justify-between gap-3 mt-auto pt-2 border-t border-gray-50">
+        <div className="flex items-center justify-between gap-3 mt-auto pt-2 border-t border-cx-line">
           <div>
-            <span className="text-[20px] font-extrabold text-[#0A0A0A] tracking-tight">
+            <span className="text-[20px] font-extrabold text-cx-base tracking-tight">
               {fmt(meal.price)}
             </span>
-            <span className="text-[11px] text-gray-300 ml-1">/repas</span>
+            <span className="text-[11px] text-cx-body ml-1">/repas</span>
           </div>
 
           <AnimatePresence mode="wait">
@@ -237,7 +227,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
                     ? justAdded
                       ? 'bg-green-500 text-white scale-95'
                       : 'bg-[#7B2535] hover:bg-[#9B3045] text-white hover:shadow-[0_4px_16px_rgba(123,37,53,0.35)] hover:-translate-y-0.5 active:translate-y-0'
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-cx-muted text-cx-soft cursor-not-allowed'
                 }`}
               >
                 {justAdded ? (
@@ -252,7 +242,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="flex items-center gap-0 bg-[#F7F7F7] rounded-xl overflow-hidden border border-gray-200"
+                className="flex items-center gap-0 bg-cx-page rounded-xl overflow-hidden border border-cx-edge"
               >
                 <button
                   onClick={() => updateQty(meal.id, -1)}
@@ -261,7 +251,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
                 >
                   <Minus size={14} />
                 </button>
-                <span className="w-8 text-center text-[14px] font-bold text-[#0A0A0A]">
+                <span className="w-8 text-center text-[14px] font-bold text-cx-base">
                   {qty}
                 </span>
                 <button

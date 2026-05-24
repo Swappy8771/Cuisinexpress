@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import DashboardLayout from '../../layouts/DashboardLayout'
 import { useAuthStore } from '../../store/authStore'
 import { profileService } from '../../services/profileService'
+import { FieldWrapper, getFieldState, inputCls } from '../../lib/formUtils'
 import type { AxiosError } from 'axios'
 
 const schema = z.object({
@@ -26,42 +27,11 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-function Field({
-  label,
-  error,
-  icon: Icon,
-  children,
-}: {
-  label: string
-  error?: string
-  icon: React.ElementType
-  children: React.ReactNode
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-[13px] font-semibold text-[#333]">{label}</label>
-      <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-          <Icon size={15} />
-        </span>
-        {children}
-      </div>
-      {error && <p className="text-red-500 text-[12px]">{error}</p>}
-    </div>
-  )
-}
-
-const inputCls = (hasError?: boolean) =>
-  `w-full pl-10 pr-4 py-3 rounded-xl border text-[14px] bg-[#FAFAFA] outline-none
-   transition-all duration-200 placeholder:text-gray-300
-   focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
-   ${hasError ? 'border-red-400' : 'border-gray-200'}`
-
 function SkeletonField() {
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="h-4 w-32 bg-gray-100 rounded animate-pulse" />
-      <div className="h-11 bg-gray-100 rounded-xl animate-pulse" />
+      <div className="h-4 w-32 bg-cx-muted rounded animate-pulse" />
+      <div className="h-11 bg-cx-muted rounded-xl animate-pulse" />
     </div>
   )
 }
@@ -100,9 +70,10 @@ export default function ProfilePage() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, touchedFields },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    mode: 'onTouched',
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -145,8 +116,8 @@ export default function ProfilePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white rounded-2xl border border-gray-100
-          shadow-[0_2px_16px_rgba(0,0,0,0.05)] overflow-hidden"
+        className="bg-cx-card rounded-2xl border border-cx-line
+          shadow-[0_2px_16px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden"
       >
         {/* Top accent */}
         <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
@@ -155,10 +126,10 @@ export default function ProfilePage() {
           {/* Heading */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-[#0A0A0A] text-[22px] font-extrabold tracking-tight">
+              <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">
                 Votre profil
               </h2>
-              <p className="text-gray-400 text-[13px] mt-0.5">
+              <p className="text-cx-soft text-[13px] mt-0.5">
                 Gérez vos informations personnelles
               </p>
             </div>
@@ -179,56 +150,47 @@ export default function ProfilePage() {
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-                <Field label="Prénom" error={errors.firstName?.message} icon={User}>
-                  <input
-                    {...register('firstName')}
-                    placeholder="Marie"
-                    className={inputCls(!!errors.firstName)}
-                  />
-                </Field>
+                <FieldWrapper label="Prénom" icon={User}
+                  state={getFieldState(touchedFields.firstName, !!errors.firstName)}
+                  error={errors.firstName?.message}>
+                  <input {...register('firstName')} placeholder="Marie"
+                    className={inputCls(getFieldState(touchedFields.firstName, !!errors.firstName))} />
+                </FieldWrapper>
 
-                <Field label="Nom de famille" error={errors.lastName?.message} icon={User}>
-                  <input
-                    {...register('lastName')}
-                    placeholder="Tremblay"
-                    className={inputCls(!!errors.lastName)}
-                  />
-                </Field>
+                <FieldWrapper label="Nom de famille" icon={User}
+                  state={getFieldState(touchedFields.lastName, !!errors.lastName)}
+                  error={errors.lastName?.message}>
+                  <input {...register('lastName')} placeholder="Tremblay"
+                    className={inputCls(getFieldState(touchedFields.lastName, !!errors.lastName))} />
+                </FieldWrapper>
 
-                <Field label="Adresse de courriel" error={errors.email?.message} icon={Mail}>
-                  <input
-                    type="email"
-                    {...register('email')}
-                    placeholder="exemple@email.com"
-                    className={inputCls(!!errors.email)}
-                  />
-                </Field>
+                <FieldWrapper label="Adresse de courriel" icon={Mail}
+                  state={getFieldState(touchedFields.email, !!errors.email)}
+                  error={errors.email?.message}>
+                  <input type="email" {...register('email')} placeholder="exemple@email.com"
+                    className={inputCls(getFieldState(touchedFields.email, !!errors.email))} />
+                </FieldWrapper>
 
-                <Field label="Confirmer l'adresse de courriel" error={errors.emailConfirm?.message} icon={Mail}>
-                  <input
-                    type="email"
-                    {...register('emailConfirm')}
-                    placeholder="exemple@email.com"
-                    className={inputCls(!!errors.emailConfirm)}
-                  />
-                </Field>
+                <FieldWrapper label="Confirmer l'adresse de courriel" icon={Mail}
+                  state={getFieldState(touchedFields.emailConfirm, !!errors.emailConfirm)}
+                  error={errors.emailConfirm?.message}>
+                  <input type="email" {...register('emailConfirm')} placeholder="exemple@email.com"
+                    className={inputCls(getFieldState(touchedFields.emailConfirm, !!errors.emailConfirm))} />
+                </FieldWrapper>
 
-                <Field label="Téléphone" error={errors.phone?.message} icon={Phone}>
-                  <input
-                    type="tel"
-                    {...register('phone')}
-                    placeholder="581-992-9952"
-                    className={inputCls(!!errors.phone)}
-                  />
-                </Field>
+                <FieldWrapper label="Téléphone" icon={Phone}
+                  state={getFieldState(touchedFields.phone, !!errors.phone)}
+                  error={errors.phone?.message}
+                  hint="Format : 514-555-0100">
+                  <input type="tel" {...register('phone')} placeholder="514-555-0100"
+                    className={inputCls(getFieldState(touchedFields.phone, !!errors.phone))} />
+                </FieldWrapper>
 
-                <Field label="Adresse postale" icon={MapPin}>
-                  <input
-                    {...register('address')}
-                    placeholder="123 rue Exemple, Québec"
-                    className={inputCls()}
-                  />
-                </Field>
+                <FieldWrapper label="Adresse postale" icon={MapPin}
+                  state="default" error={undefined}>
+                  <input {...register('address')} placeholder="123 rue Exemple, Québec"
+                    className={inputCls('default')} />
+                </FieldWrapper>
               </div>
 
               {/* Notifications */}
@@ -236,7 +198,7 @@ export default function ProfilePage() {
                 <label className="flex items-center gap-3 cursor-pointer group w-fit">
                   <div className="relative">
                     <input type="checkbox" {...register('notifications')} className="peer sr-only" />
-                    <div className="w-5 h-5 rounded-md border-2 border-gray-300 bg-white
+                    <div className="w-5 h-5 rounded-md border-2 border-cx-edge bg-cx-card
                       peer-checked:bg-[#7B2535] peer-checked:border-[#7B2535]
                       group-hover:border-[#C41E3A] transition-all duration-200
                       flex items-center justify-center">
@@ -248,14 +210,14 @@ export default function ProfilePage() {
                     <input type="checkbox" {...register('notifications')}
                       className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
                   </div>
-                  <div className="flex items-center gap-2 text-[13.5px] text-[#444]">
-                    <Bell size={14} className="text-gray-400" />
+                  <div className="flex items-center gap-2 text-[13.5px] text-cx-sub">
+                    <Bell size={14} className="text-cx-soft" />
                     J'accepte de recevoir des e-mails de notification
                   </div>
                 </label>
               </div>
 
-              <div className="mt-8 h-px bg-gray-100" />
+              <div className="mt-8 h-px bg-cx-line" />
 
               <div className="mt-6 flex justify-end">
                 <button
@@ -263,7 +225,7 @@ export default function ProfilePage() {
                   disabled={mutation.isPending || !isDirty}
                   className="inline-flex items-center gap-2.5 px-8 py-3 rounded-xl
                     bg-[#7B2535] hover:bg-[#9B3045]
-                    disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed
+                    disabled:bg-cx-muted disabled:text-cx-soft disabled:cursor-not-allowed
                     text-white font-bold text-[13.5px] tracking-widest uppercase
                     transition-all duration-300
                     hover:shadow-[0_6px_20px_rgba(196,30,58,0.3)]

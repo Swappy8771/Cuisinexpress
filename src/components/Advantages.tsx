@@ -34,7 +34,7 @@ export default function Advantages() {
   }))
 
   return (
-    <section className="w-full bg-[#F7F7F7] py-24">
+    <section className="w-full bg-cx-page py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Heading */}
@@ -48,10 +48,10 @@ export default function Advantages() {
           <span className="inline-block text-[#C41E3A] text-sm font-semibold tracking-widest uppercase mb-3">
             {t.advantages.tag}
           </span>
-          <h2 className="text-[#0A0A0A] text-4xl sm:text-5xl font-extrabold tracking-tight">
+          <h2 className="text-cx-base text-4xl sm:text-5xl font-extrabold tracking-tight">
             {t.advantages.title}
           </h2>
-          <p className="mt-4 text-[#555] text-[16px] max-w-xl mx-auto leading-relaxed">
+          <p className="mt-4 text-cx-body text-[16px] max-w-xl mx-auto leading-relaxed">
             {t.advantages.subtitle}
           </p>
         </motion.div>
@@ -95,8 +95,8 @@ function AdvantageCard({ icon: Icon, title, description, accent, bg }: Advantage
   return (
     <motion.div
       variants={cardVariants}
-      className="group relative flex flex-col gap-5 p-7 bg-white rounded-2xl
-        border border-gray-100 hover:border-transparent
+      className="group relative flex flex-col gap-5 p-7 bg-cx-card rounded-2xl
+        border border-cx-line hover:border-transparent
         hover:shadow-[0_16px_48px_rgba(0,0,0,0.10)]
         transition-all duration-400 overflow-hidden"
     >
@@ -118,17 +118,17 @@ function AdvantageCard({ icon: Icon, title, description, accent, bg }: Advantage
 
       {/* Text */}
       <div>
-        <h3 className="text-[#0A0A0A] text-[17px] font-bold mb-2 tracking-tight">
+        <h3 className="text-cx-base text-[17px] font-bold mb-2 tracking-tight">
           {title}
         </h3>
-        <p className="text-[#666] text-[14px] leading-relaxed">
+        <p className="text-cx-body text-[14px] leading-relaxed">
           {description}
         </p>
       </div>
 
       {/* Bottom tag */}
       <div
-        className="mt-auto pt-4 border-t border-gray-100 flex items-center gap-2
+        className="mt-auto pt-4 border-t border-cx-line flex items-center gap-2
           opacity-0 group-hover:opacity-100 transition-opacity duration-300"
       >
         <span

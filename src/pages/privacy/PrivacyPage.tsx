@@ -13,7 +13,7 @@ const fadeUp = {
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
+    <div className="min-h-screen bg-cx-page transition-colors duration-300">
 
       {/* ── Hero banner ── */}
       <div className="relative w-full h-52 overflow-hidden">
@@ -59,12 +59,12 @@ export default function PrivacyPage() {
           variants={fadeUp}
           initial="hidden"
           animate="visible"
-          className="bg-white rounded-2xl border border-gray-100
-            shadow-[0_2px_16px_rgba(0,0,0,0.06)] px-8 sm:px-12 py-8 mb-8"
+          className="bg-cx-card rounded-2xl border border-cx-line
+            shadow-[0_2px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] px-8 sm:px-12 py-8 mb-8"
         >
-          <p className="text-[15px] text-gray-600 leading-[1.85] max-w-4xl">
+          <p className="text-[15px] text-cx-body leading-[1.85] max-w-4xl">
             CuisineXpress places great importance on protecting the personal information it holds in the
-            course of its operations. CuisineXpress is subject to <span className="font-semibold text-[#0A0A0A]">Law 25</span> on
+            course of its operations. CuisineXpress is subject to <span className="font-semibold text-cx-base">Law 25</span> on
             the protection of personal information, which requires it to ensure the confidentiality of the
             personal information it holds and to take the necessary security measures to do so. Consequently,
             CuisineXpress has adopted very rigorous security and control measures to ensure the protection of
@@ -77,33 +77,33 @@ export default function PrivacyPage() {
 
           {/* Section 1 */}
           <motion.div custom={1} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }}
-            className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden">
-            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-gray-100">
+            className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
+            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-cx-line">
               <span className="w-8 h-8 rounded-xl bg-[#C41E3A]/10 text-[#C41E3A] text-[13px] font-extrabold
                 flex items-center justify-center flex-shrink-0">1</span>
-              <h2 className="text-[17px] font-extrabold text-[#0A0A0A] tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-cx-base tracking-tight">
                 Information collected by CuisineXpress
               </h2>
             </div>
             <div className="px-8 sm:px-12 py-6 flex flex-col gap-5">
-              <p className="text-[14px] text-gray-500 leading-relaxed">
+              <p className="text-[14px] text-cx-soft leading-relaxed">
                 We collect your personal information in several ways and for different purposes, depending
                 on its category. The table below explains what information is collected and for what purposes.
               </p>
-              <div className="rounded-xl border border-gray-100 overflow-hidden">
-                <table className="w-full text-[13.5px]">
+              <div className="rounded-xl border border-cx-line overflow-hidden overflow-x-auto">
+                <table className="w-full min-w-[540px] text-[13.5px]">
                   <thead>
-                    <tr className="bg-[#F9F9F9]">
-                      <th className="text-left px-5 py-3.5 font-semibold text-[#0A0A0A] border-b border-gray-100 w-1/4">Category</th>
-                      <th className="text-left px-5 py-3.5 font-semibold text-[#0A0A0A] border-b border-gray-100 w-1/3">Examples</th>
-                      <th className="text-left px-5 py-3.5 font-semibold text-[#0A0A0A] border-b border-gray-100">Purposes</th>
+                    <tr className="bg-cx-fill">
+                      <th className="text-left px-5 py-3.5 font-semibold text-cx-base border-b border-cx-line w-1/4">Category</th>
+                      <th className="text-left px-5 py-3.5 font-semibold text-cx-base border-b border-cx-line w-1/3">Examples</th>
+                      <th className="text-left px-5 py-3.5 font-semibold text-cx-base border-b border-cx-line">Purposes</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50">
+                  <tbody className="divide-y divide-cx-line">
                     <tr className="align-top">
-                      <td className="px-5 py-4 font-semibold text-[#0A0A0A]">Website visitor</td>
-                      <td className="px-5 py-4 text-gray-500">Identification data; technological data; usage and performance data.</td>
-                      <td className="px-5 py-4 text-gray-500">
+                      <td className="px-5 py-4 font-semibold text-cx-base">Website visitor</td>
+                      <td className="px-5 py-4 text-cx-soft">Identification data; technological data; usage and performance data.</td>
+                      <td className="px-5 py-4 text-cx-soft">
                         <ul className="list-disc list-inside space-y-1">
                           <li>Respond to information requests</li>
                           <li>Understand browsing patterns and improve performance</li>
@@ -112,15 +112,15 @@ export default function PrivacyPage() {
                         </ul>
                       </td>
                     </tr>
-                    <tr className="align-top bg-[#FAFAFA]">
-                      <td className="px-5 py-4 font-semibold text-[#0A0A0A]">User account</td>
-                      <td className="px-5 py-4 text-gray-500">Identification data; order data; technological data; usage and performance data.</td>
-                      <td className="px-5 py-4 text-gray-500">Coordinate meal orders to the correct schools and classrooms.</td>
+                    <tr className="align-top bg-cx-fill">
+                      <td className="px-5 py-4 font-semibold text-cx-base">User account</td>
+                      <td className="px-5 py-4 text-cx-soft">Identification data; order data; technological data; usage and performance data.</td>
+                      <td className="px-5 py-4 text-cx-soft">Coordinate meal orders to the correct schools and classrooms.</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <p className="text-[13px] text-gray-400 italic">
+              <p className="text-[13px] text-cx-soft italic">
                 We may also collect and use your personal information for any other purpose permitted or required by applicable laws.
               </p>
             </div>
@@ -128,11 +128,11 @@ export default function PrivacyPage() {
 
           {/* Section 2 */}
           <motion.div custom={2} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }}
-            className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden">
-            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-gray-100">
+            className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
+            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-cx-line">
               <span className="w-8 h-8 rounded-xl bg-[#C41E3A]/10 text-[#C41E3A] text-[13px] font-extrabold
                 flex items-center justify-center flex-shrink-0">2</span>
-              <h2 className="text-[17px] font-extrabold text-[#0A0A0A] tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-cx-base tracking-tight">
                 Circumstances under which we share your personal information
               </h2>
             </div>
@@ -151,12 +151,12 @@ export default function PrivacyPage() {
                   body: 'We may receive requests from authorities to access personal information. We verify the legitimacy of each request before responding.',
                 },
               ].map(({ title, body }) => (
-                <div key={title} className="rounded-xl bg-[#F9F9F9] border border-gray-100 px-5 py-5">
+                <div key={title} className="rounded-xl bg-cx-fill border border-cx-line px-5 py-5">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#C41E3A] flex-shrink-0" />
-                    <p className="text-[14px] font-bold text-[#0A0A0A]">{title}</p>
+                    <p className="text-[14px] font-bold text-cx-base">{title}</p>
                   </div>
-                  <p className="text-[13px] text-gray-500 leading-relaxed">{body}</p>
+                  <p className="text-[13px] text-cx-soft leading-relaxed">{body}</p>
                 </div>
               ))}
             </div>
@@ -164,11 +164,11 @@ export default function PrivacyPage() {
 
           {/* Section 3 */}
           <motion.div custom={3} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }}
-            className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden">
-            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-gray-100">
+            className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
+            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-cx-line">
               <span className="w-8 h-8 rounded-xl bg-[#C41E3A]/10 text-[#C41E3A] text-[13px] font-extrabold
                 flex items-center justify-center flex-shrink-0">3</span>
-              <h2 className="text-[17px] font-extrabold text-[#0A0A0A] tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-cx-base tracking-tight">
                 Storage and security of your personal information
               </h2>
             </div>
@@ -181,7 +181,7 @@ export default function PrivacyPage() {
               ].map((text, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#C41E3A]/50 flex-shrink-0" />
-                  <p className="text-[14px] text-gray-500 leading-relaxed">{text}</p>
+                  <p className="text-[14px] text-cx-soft leading-relaxed">{text}</p>
                 </div>
               ))}
             </div>
@@ -189,16 +189,16 @@ export default function PrivacyPage() {
 
           {/* Section 4 */}
           <motion.div custom={4} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }}
-            className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden">
-            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-gray-100">
+            className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
+            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-cx-line">
               <span className="w-8 h-8 rounded-xl bg-[#C41E3A]/10 text-[#C41E3A] text-[13px] font-extrabold
                 flex items-center justify-center flex-shrink-0">4</span>
-              <h2 className="text-[17px] font-extrabold text-[#0A0A0A] tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-cx-base tracking-tight">
                 Links to other sites and limitations of liability
               </h2>
             </div>
             <div className="px-8 sm:px-12 py-6">
-              <p className="text-[14px] text-gray-500 leading-relaxed">
+              <p className="text-[14px] text-cx-soft leading-relaxed">
                 Our Site may offer relevant links to other websites operated by third parties. Please be aware that
                 when you visit a site via a hyperlink we provide, you may leave our Site. Any information exchanged
                 with another site will be subject to the terms of that other site — not these Terms of Use.
@@ -209,27 +209,27 @@ export default function PrivacyPage() {
 
           {/* Section 5 */}
           <motion.div custom={5} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }}
-            className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden">
-            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-gray-100">
+            className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
+            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-cx-line">
               <span className="w-8 h-8 rounded-xl bg-[#C41E3A]/10 text-[#C41E3A] text-[13px] font-extrabold
                 flex items-center justify-center flex-shrink-0">5</span>
-              <h2 className="text-[17px] font-extrabold text-[#0A0A0A] tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-cx-base tracking-tight">
                 Connection cookies
               </h2>
             </div>
             <div className="px-8 sm:px-12 py-6 flex flex-col gap-5">
-              <p className="text-[14px] text-gray-500 leading-relaxed">
+              <p className="text-[14px] text-cx-soft leading-relaxed">
                 We collect technical data through cookies — including strictly necessary, performance,
                 functionality, and targeted advertising cookies. You can manage your cookie preferences in
                 your browser settings. Refusing functional cookies may limit your experience on the Site.
               </p>
-              <p className="text-[14px] text-gray-500 leading-relaxed">
+              <p className="text-[14px] text-cx-soft leading-relaxed">
                 Advertising cookies allow us to offer relevant content on other websites (including Meta and
-                LinkedIn) based on browsing behavior. These cookies <span className="font-semibold text-[#0A0A0A]">do not</span> record
+                LinkedIn) based on browsing behavior. These cookies <span className="font-semibold text-cx-base">do not</span> record
                 your name, address, phone number, email, or any other personally identifiable information.
               </p>
-              <div className="rounded-xl bg-[#F9F9F9] border border-gray-100 px-6 py-5">
-                <p className="text-[13px] font-semibold text-[#0A0A0A] mb-3">
+              <div className="rounded-xl bg-cx-fill border border-cx-line px-6 py-5">
+                <p className="text-[13px] font-semibold text-cx-base mb-3">
                   Information that may be collected includes, but is not limited to:
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1.5">
@@ -249,7 +249,7 @@ export default function PrivacyPage() {
                   ].map((item) => (
                     <div key={item} className="flex items-start gap-2">
                       <span className="mt-[7px] w-1 h-1 rounded-full bg-[#C41E3A]/60 flex-shrink-0" />
-                      <span className="text-[13px] text-gray-500">{item}</span>
+                      <span className="text-[13px] text-cx-soft">{item}</span>
                     </div>
                   ))}
                 </div>
@@ -259,23 +259,23 @@ export default function PrivacyPage() {
 
           {/* Section 6 */}
           <motion.div custom={6} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }}
-            className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden">
-            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-gray-100">
+            className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
+            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-cx-line">
               <span className="w-8 h-8 rounded-xl bg-[#C41E3A]/10 text-[#C41E3A] text-[13px] font-extrabold
                 flex items-center justify-center flex-shrink-0">6</span>
-              <h2 className="text-[17px] font-extrabold text-[#0A0A0A] tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-cx-base tracking-tight">
                 Your rights regarding your personal information
               </h2>
             </div>
             <div className="px-8 sm:px-12 py-6 flex flex-col gap-5">
-              <p className="text-[14px] text-gray-500 leading-relaxed">
+              <p className="text-[14px] text-cx-soft leading-relaxed">
                 The person responsible for access to documents and the protection of personal information at
                 CuisineXpress (the "ADR") is{' '}
-                <span className="font-semibold text-[#0A0A0A]">Patrick Duchesne</span>.
+                <span className="font-semibold text-cx-base">Patrick Duchesne</span>.
                 He is responsible for ensuring compliance with these Terms of Use and all obligations under
                 the Act to modernize legislative provisions concerning the protection of personal information.
               </p>
-              <p className="text-[14px] text-gray-500 leading-relaxed">
+              <p className="text-[14px] text-cx-soft leading-relaxed">
                 Upon written request and confirmation of your identity, you have the right to obtain any personal
                 information CuisineXpress holds about you, and to request that inaccurate or ambiguous information
                 be corrected or destroyed. You also have the right to complain directly to a data protection authority.
@@ -288,16 +288,16 @@ export default function PrivacyPage() {
                   { icon: Mail,   label: 'Courriel', value: 'info@cuisinexpressrepas.ca', href: 'mailto:info@cuisinexpressrepas.ca' },
                   { icon: Phone,  label: 'Téléphone', value: '581-992-9952', href: 'tel:5819929952' },
                 ].map(({ icon: Icon, label, value, href }) => (
-                  <div key={label} className="flex items-start gap-3 rounded-xl bg-[#F9F9F9]
-                    border border-gray-100 px-5 py-4">
+                  <div key={label} className="flex items-start gap-3 rounded-xl bg-cx-fill
+                    border border-cx-line px-5 py-4">
                     <div className="w-9 h-9 rounded-lg bg-[#FFF0F2] flex items-center justify-center flex-shrink-0">
                       <Icon size={15} className="text-[#C41E3A]" />
                     </div>
                     <div>
-                      <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
+                      <p className="text-[11px] font-semibold text-cx-soft uppercase tracking-wide mb-0.5">{label}</p>
                       {href
                         ? <a href={href} className="text-[13px] font-semibold text-[#C41E3A] hover:underline underline-offset-2">{value}</a>
-                        : <p className="text-[13px] font-semibold text-[#0A0A0A] leading-snug">{value}</p>
+                        : <p className="text-[13px] font-semibold text-cx-base leading-snug">{value}</p>
                       }
                     </div>
                   </div>
@@ -308,16 +308,16 @@ export default function PrivacyPage() {
 
           {/* Section 7 */}
           <motion.div custom={7} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }}
-            className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden">
-            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-gray-100">
+            className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
+            <div className="flex items-center gap-4 px-8 sm:px-12 pt-7 pb-5 border-b border-cx-line">
               <span className="w-8 h-8 rounded-xl bg-[#C41E3A]/10 text-[#C41E3A] text-[13px] font-extrabold
                 flex items-center justify-center flex-shrink-0">7</span>
-              <h2 className="text-[17px] font-extrabold text-[#0A0A0A] tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-cx-base tracking-tight">
                 Update
               </h2>
             </div>
             <div className="px-8 sm:px-12 py-6">
-              <p className="text-[14px] text-gray-500 leading-relaxed">
+              <p className="text-[14px] text-cx-soft leading-relaxed">
                 Please check our Site regularly to stay informed of any changes to these Terms of Use,
                 as we may update them from time to time.
               </p>

@@ -24,10 +24,10 @@ const grades = ['1re année', '2e année', '3e année', '4e année', '5e année'
 function SkeletonRow() {
   return (
     <div className="flex items-center gap-4 px-6 sm:px-8 py-5">
-      <div className="w-10 h-10 rounded-xl bg-gray-100 animate-pulse flex-shrink-0" />
+      <div className="w-10 h-10 rounded-xl bg-cx-muted animate-pulse flex-shrink-0" />
       <div className="flex flex-col gap-2 flex-1">
-        <div className="h-4 w-40 bg-gray-100 rounded animate-pulse" />
-        <div className="h-3 w-56 bg-gray-100 rounded animate-pulse" />
+        <div className="h-4 w-40 bg-cx-muted rounded animate-pulse" />
+        <div className="h-3 w-56 bg-cx-muted rounded animate-pulse" />
       </div>
     </div>
   )
@@ -89,12 +89,12 @@ export default function StudentsPage() {
         className="flex flex-col gap-6"
       >
         {/* Header card */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
           <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
           <div className="p-6 sm:p-8 flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-[#0A0A0A] text-[22px] font-extrabold tracking-tight">Élèves / personnel</h2>
-              <p className="text-gray-400 text-[13px] mt-0.5">Gérez les élèves rattachés à votre compte</p>
+              <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">Élèves / personnel</h2>
+              <p className="text-cx-soft text-[13px] mt-0.5">Gérez les élèves rattachés à votre compte</p>
             </div>
             <button
               onClick={() => setShowForm(true)}
@@ -115,14 +115,14 @@ export default function StudentsPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-2xl border border-[#C41E3A]/20 shadow-[0_4px_24px_rgba(196,30,58,0.08)] overflow-hidden"
+              className="bg-cx-card rounded-2xl border border-[#C41E3A]/20 shadow-[0_4px_24px_rgba(196,30,58,0.08)] overflow-hidden"
             >
               <div className="h-1 bg-[#C41E3A]" />
               <div className="p-6 sm:p-8">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-bold text-[#0A0A0A] text-[16px]">Nouvel élève</h3>
+                  <h3 className="font-bold text-cx-base text-[16px]">Nouvel élève</h3>
                   <button onClick={() => setShowForm(false)}
-                    className="text-gray-400 hover:text-[#C41E3A] transition-colors p-1">
+                    className="text-cx-soft hover:text-[#C41E3A] transition-colors p-1">
                     <X size={18} />
                   </button>
                 </div>
@@ -134,26 +134,26 @@ export default function StudentsPage() {
                       { name: 'school' as const, label: 'École', icon: GraduationCap, placeholder: "Nom de l'école" },
                     ].map(({ name, label, icon: Icon, placeholder }) => (
                       <div key={name} className="flex flex-col gap-1.5">
-                        <label className="text-[13px] font-semibold text-[#333]">{label}</label>
+                        <label className="text-[13px] font-semibold text-cx-sub">{label}</label>
                         <div className="relative">
-                          <Icon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                          <Icon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none" />
                           <input {...register(name)} placeholder={placeholder}
-                            className={`w-full pl-9 pr-4 py-3 rounded-xl border text-[14px] bg-[#FAFAFA]
-                              outline-none transition-all duration-200 placeholder:text-gray-300
-                              focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
-                              ${errors[name] ? 'border-red-400' : 'border-gray-200'}`}
+                            className={`w-full pl-9 pr-4 py-3 rounded-xl border text-[14px] bg-cx-fill
+                              outline-none transition-all duration-200 placeholder:text-cx-faint
+                              focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
+                              ${errors[name] ? 'border-red-400' : 'border-cx-edge'}`}
                           />
                         </div>
                         {errors[name] && <p className="text-red-500 text-[12px]">{errors[name]?.message}</p>}
                       </div>
                     ))}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[13px] font-semibold text-[#333]">Année scolaire</label>
+                      <label className="text-[13px] font-semibold text-cx-sub">Année scolaire</label>
                       <select {...register('grade')}
-                        className={`w-full px-4 py-3 rounded-xl border text-[14px] bg-[#FAFAFA] outline-none
-                          transition-all duration-200 focus:bg-white focus:border-[#C41E3A]
-                          focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)] text-[#333]
-                          ${errors.grade ? 'border-red-400' : 'border-gray-200'}`}>
+                        className={`w-full px-4 py-3 rounded-xl border text-[14px] bg-cx-fill outline-none
+                          transition-all duration-200 focus:bg-cx-card focus:border-[#C41E3A]
+                          focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)] text-cx-sub
+                          ${errors.grade ? 'border-red-400' : 'border-cx-edge'}`}>
                         <option value="">Sélectionner</option>
                         {grades.map(g => <option key={g} value={g}>{g}</option>)}
                       </select>
@@ -162,14 +162,14 @@ export default function StudentsPage() {
                   </div>
                   <div className="mt-6 flex justify-end gap-3">
                     <button type="button" onClick={() => setShowForm(false)}
-                      className="px-5 py-2.5 rounded-xl border-2 border-gray-200 text-[13.5px] font-semibold
-                        text-[#555] hover:border-gray-300 transition-colors">
+                      className="px-5 py-2.5 rounded-xl border-2 border-cx-edge text-[13.5px] font-semibold
+                        text-cx-body hover:border-cx-muted transition-colors">
                       Annuler
                     </button>
                     <button type="submit" disabled={addMutation.isPending}
                       className="px-6 py-2.5 rounded-xl bg-[#7B2535] hover:bg-[#9B3045] text-white
                         font-bold text-[13.5px] uppercase tracking-widest transition-all duration-200
-                        disabled:bg-gray-200 disabled:text-gray-400">
+                        disabled:bg-cx-muted disabled:text-cx-soft">
                       {addMutation.isPending ? (
                         <span className="flex items-center gap-2">
                           <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -185,44 +185,44 @@ export default function StudentsPage() {
         </AnimatePresence>
 
         {/* Students list */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
           <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
 
           {isLoading ? (
-            <div className="divide-y divide-gray-50">
+            <div className="divide-y divide-cx-line">
               {Array.from({ length: 3 }).map((_, i) => <SkeletonRow key={i} />)}
             </div>
           ) : students.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center px-6">
-              <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
-                <Users size={28} className="text-gray-300" />
+              <div className="w-16 h-16 rounded-2xl bg-cx-fill flex items-center justify-center mb-4">
+                <Users size={28} className="text-cx-faint" />
               </div>
-              <p className="text-[#0A0A0A] font-semibold text-[15px] mb-1">Aucun élève ajouté</p>
-              <p className="text-gray-400 text-[13px]">Cliquez sur « Ajouter » pour enregistrer un élève.</p>
+              <p className="text-cx-base font-semibold text-[15px] mb-1">Aucun élève ajouté</p>
+              <p className="text-cx-soft text-[13px]">Cliquez sur « Ajouter » pour enregistrer un élève.</p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-50">
+            <div className="divide-y divide-cx-line">
               {students.map((s, i) => (
                 <motion.div key={s.id}
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.06, duration: 0.4 }}
-                  className="flex items-center justify-between gap-4 px-6 sm:px-8 py-5 group hover:bg-[#FAFAFA] transition-colors"
+                  className="flex items-center justify-between gap-4 px-6 sm:px-8 py-5 group hover:bg-cx-fill transition-colors"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-[#C41E3A]/10 flex items-center justify-center flex-shrink-0">
                       <User size={17} className="text-[#C41E3A]" />
                     </div>
                     <div>
-                      <p className="text-[#0A0A0A] font-semibold text-[14.5px]">{s.firstName} {s.lastName}</p>
-                      <p className="text-gray-400 text-[12.5px] mt-0.5">{s.school} · {s.grade}</p>
+                      <p className="text-cx-base font-semibold text-[14.5px]">{s.firstName} {s.lastName}</p>
+                      <p className="text-cx-soft text-[12.5px] mt-0.5">{s.school} · {s.grade}</p>
                     </div>
                   </div>
                   <button
                     onClick={() => removeMutation.mutate(s.id)}
                     disabled={removeMutation.isPending}
                     className="opacity-0 group-hover:opacity-100 p-2 rounded-lg hover:bg-red-50
-                      text-gray-300 hover:text-red-500 transition-all duration-200 disabled:opacity-30"
+                      text-cx-faint hover:text-red-500 transition-all duration-200 disabled:opacity-30"
                   >
                     <Trash2 size={15} />
                   </button>

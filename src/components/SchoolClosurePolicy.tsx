@@ -9,7 +9,7 @@ export default function SchoolClosurePolicy() {
   const points = t.closure.points.map((text, i) => ({ icon: POINT_ICONS[i], text }))
 
   return (
-    <section className="w-full bg-white py-24">
+    <section className="w-full bg-cx-card py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Heading */}
@@ -23,7 +23,7 @@ export default function SchoolClosurePolicy() {
           <span className="inline-block text-[#C41E3A] text-sm font-semibold tracking-widest uppercase mb-3">
             {t.closure.tag}
           </span>
-          <h2 className="text-[#0A0A0A] text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+          <h2 className="text-cx-base text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
             {t.closure.title1}
             <br className="hidden sm:block" />
             <span className="text-[#C41E3A]"> {t.closure.title2}</span>
@@ -36,7 +36,7 @@ export default function SchoolClosurePolicy() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="relative rounded-3xl bg-[#FAFAFA] border border-gray-100
+          className="relative rounded-3xl bg-cx-fill border border-cx-line
             overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.06)]"
         >
           {/* Top accent strip */}
@@ -56,12 +56,12 @@ export default function SchoolClosurePolicy() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.12, duration: 0.5 }}
                 className={`flex items-start gap-5 py-7 ${
-                  i < points.length - 1 ? 'border-b border-gray-100' : ''
+                  i < points.length - 1 ? 'border-b border-cx-line' : ''
                 }`}
               >
                 {/* Icon badge */}
                 <div className="flex-shrink-0 mt-0.5 w-10 h-10 rounded-xl
-                  bg-white border border-gray-100 shadow-sm
+                  bg-cx-card border border-cx-line shadow-sm
                   flex items-center justify-center">
                   <Icon
                     size={18}
@@ -76,14 +76,14 @@ export default function SchoolClosurePolicy() {
                 </div>
 
                 {/* Text */}
-                <p className="text-[#444] text-[15px] leading-[1.8]">{text}</p>
+                <p className="text-cx-sub text-[15px] leading-[1.8]">{text}</p>
               </motion.div>
             ))}
           </div>
 
           {/* Bottom note */}
           <div className="relative z-10 mx-8 sm:mx-12 mb-8 sm:mb-10 flex items-center gap-3
-            bg-[#FFF4F5] border border-[#C41E3A]/15 rounded-xl px-5 py-4">
+            bg-[#FFF4F5] dark:bg-[#C41E3A]/10 border border-[#C41E3A]/15 rounded-xl px-5 py-4">
             <span className="flex-shrink-0 w-1.5 h-8 rounded-full bg-[#C41E3A]" />
             <p className="text-[#7B2535] text-[13px] font-medium leading-relaxed">
               {t.closure.note}{' '}

@@ -12,7 +12,7 @@ const translations = {
     },
     // ── Hero ──────────────────────────────────────────────────────
     hero: {
-      slides: ['Repas du jour', 'Bols santé', 'Cuisine fraîche', 'Plats chauds', 'Légumes frais'],
+      slides: ['Repas du jour', 'Bols santé', 'Cuisine fraîche'],
       title1: 'Repas chauds et santé',
       title2: 'pour vos enfants',
       title3: "à l'école",
@@ -173,7 +173,7 @@ const translations = {
     },
     // ── Hero ──────────────────────────────────────────────────────
     hero: {
-      slides: ['Meal of the Day', 'Healthy Bowls', 'Fresh Cuisine', 'Hot Dishes', 'Fresh Vegetables'],
+      slides: ['Meal of the Day', 'Healthy Bowls', 'Fresh Cuisine'],
       title1: 'Hot & healthy meals',
       title2: 'for your children',
       title3: 'at school',

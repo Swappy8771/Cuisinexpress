@@ -107,8 +107,8 @@ export default function SchoolsPage() {
           >
             <Popup>
               <div className="min-w-[160px] py-1">
-                <p className="font-bold text-[13px] text-[#0A0A0A] leading-snug mb-1">{s.name}</p>
-                <p className="text-[11.5px] text-gray-400">{s.address}</p>
+                <p className="font-bold text-[13px] text-cx-base leading-snug mb-1">{s.name}</p>
+                <p className="text-[11.5px] text-cx-soft">{s.address}</p>
                 <span className={`mt-2 inline-flex items-center gap-1 text-[11px] font-semibold
                   px-2 py-0.5 rounded-full
                   ${s.status === 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
@@ -121,53 +121,53 @@ export default function SchoolsPage() {
       </MapContainer>
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 z-[999] bg-white/95 backdrop-blur-sm
-        rounded-xl px-4 py-2.5 shadow-[0_2px_16px_rgba(0,0,0,0.1)]
-        flex items-center gap-3 text-[12px] font-medium text-gray-600">
+      <div className="absolute bottom-4 left-4 z-[999] bg-cx-card/95 backdrop-blur-sm
+        rounded-xl px-4 py-2.5 shadow-[0_2px_16px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)]
+        flex items-center gap-3 text-[12px] font-medium text-cx-body">
         <span className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-[#7B2535]" /> Active
         </span>
-        <span className="w-px h-3 bg-gray-200" />
+        <span className="w-px h-3 bg-cx-edge" />
         <span className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> Bientôt
         </span>
-        <span className="w-px h-3 bg-gray-200" />
+        <span className="w-px h-3 bg-cx-edge" />
         <span>{filtered.length} école{filtered.length > 1 ? 's' : ''}</span>
       </div>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
+    <div className="min-h-screen bg-cx-page transition-colors duration-300">
 
       {/* ── Breadcrumb ── */}
-      <div className="w-full bg-white border-b border-gray-100">
+      <div className="w-full bg-cx-card border-b border-cx-line">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <ol className="flex items-center gap-1.5 text-[13px] text-gray-400">
+          <ol className="flex items-center gap-1.5 text-[13px] text-cx-soft">
             <li>
               <Link to="/" className="flex items-center gap-1 hover:text-[#C41E3A] transition-colors">
                 <Home size={13} /> Accueil
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
-            <li className="text-[#0A0A0A] font-medium">Nos écoles</li>
+            <li className="text-cx-base font-medium">Nos écoles</li>
           </ol>
         </div>
       </div>
 
       {/* ── Hero strip ── */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-cx-card border-b border-cx-line">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5">
             <div>
               <p className="text-[11.5px] font-semibold text-[#C41E3A] tracking-widest uppercase mb-2 flex items-center gap-1.5">
                 <span className="w-4 h-px bg-[#C41E3A]" /> Réseau de livraison
               </p>
-              <h1 className="text-[38px] font-extrabold text-[#0A0A0A] tracking-tight leading-tight mb-2">
+              <h1 className="text-[38px] font-extrabold text-cx-base tracking-tight leading-tight mb-2">
                 Nos écoles<br />
                 <span className="text-[#C41E3A]">partenaires</span>
               </h1>
-              <p className="text-gray-400 text-[14.5px]">
+              <p className="text-cx-soft text-[14.5px]">
                 {activeCnt} écoles actives · {upcomingCnt} à venir · Québec, Canada
               </p>
             </div>
@@ -187,18 +187,18 @@ export default function SchoolsPage() {
           {/* Search + city filter */}
           <div className="mt-7 flex flex-col sm:flex-row gap-3">
             <div className="relative flex-shrink-0 sm:w-72">
-              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none" />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Rechercher une école…"
-                className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-gray-200 text-[13.5px]
-                  bg-[#FAFAFA] outline-none placeholder:text-gray-300 transition-all duration-200
-                  focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
+                className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-cx-edge text-[13.5px]
+                  bg-cx-fill outline-none placeholder:text-cx-faint transition-all duration-200
+                  focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
               />
               {search && (
                 <button onClick={() => setSearch('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-cx-faint hover:text-cx-body">
                   <X size={14} />
                 </button>
               )}
@@ -211,7 +211,7 @@ export default function SchoolsPage() {
                     transition-all duration-200 whitespace-nowrap
                     ${city === c
                       ? 'bg-[#C41E3A] border-[#C41E3A] text-white shadow-[0_4px_12px_rgba(196,30,58,0.3)]'
-                      : 'bg-white border-gray-200 text-gray-500 hover:border-[#C41E3A]/40 hover:text-[#C41E3A]'
+                      : 'bg-cx-card border-cx-edge text-cx-soft hover:border-[#C41E3A]/40 hover:text-[#C41E3A]'
                     }`}>
                   {c}
                   {c !== 'Tous' && (
@@ -225,12 +225,12 @@ export default function SchoolsPage() {
           </div>
 
           {/* Mobile tab toggle */}
-          <div className="mt-4 flex lg:hidden bg-gray-100 rounded-xl p-1 w-fit">
+          <div className="mt-4 flex lg:hidden bg-cx-muted rounded-xl p-1 w-fit">
             {(['list', 'map'] as const).map(tab => (
               <button key={tab} onClick={() => setMobileTab(tab)}
                 className={`flex items-center gap-2 px-5 py-2 rounded-lg text-[13px] font-bold
                   transition-all duration-200
-                  ${mobileTab === tab ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-gray-400'}`}>
+                  ${mobileTab === tab ? 'bg-cx-card text-cx-base shadow-sm' : 'text-cx-soft'}`}>
                 {tab === 'list' ? <><List size={14} /> Liste</> : <><Map size={14} /> Carte</>}
               </button>
             ))}
@@ -248,11 +248,11 @@ export default function SchoolsPage() {
           <div className="w-[44%] flex-shrink-0 flex flex-col gap-3">
             {filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4">
-                  <Search size={22} className="text-gray-300" />
+                <div className="w-14 h-14 rounded-2xl bg-cx-card shadow-sm flex items-center justify-center mb-4">
+                  <Search size={22} className="text-cx-faint" />
                 </div>
-                <p className="text-[15px] font-bold text-[#0A0A0A] mb-1">Aucun résultat</p>
-                <p className="text-[13px] text-gray-400">Essayez un autre terme ou « Tous ».</p>
+                <p className="text-[15px] font-bold text-cx-base mb-1">Aucun résultat</p>
+                <p className="text-[13px] text-cx-soft">Essayez un autre terme ou « Tous ».</p>
               </div>
             ) : (
               <AnimatePresence mode="popLayout">
@@ -266,7 +266,7 @@ export default function SchoolsPage() {
                     exit={{ opacity: 0, scale: 0.97 }}
                     transition={{ delay: i * 0.03, duration: 0.3 }}
                     onClick={() => select(s)}
-                    className={`group cursor-pointer bg-white rounded-2xl p-4 border-2
+                    className={`group cursor-pointer bg-cx-card rounded-2xl p-4 border-2
                       transition-all duration-250 select-none
                       ${selectedId === s.id
                         ? 'border-[#C41E3A] shadow-[0_4px_24px_rgba(196,30,58,0.14)]'
@@ -284,17 +284,17 @@ export default function SchoolsPage() {
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2 mb-1">
-                          <h3 className="text-[14px] font-bold text-[#0A0A0A] leading-snug">
+                          <h3 className="text-[14px] font-bold text-cx-base leading-snug">
                             {s.name}
                           </h3>
                           <span className={`flex-shrink-0 text-[10px] font-black tracking-wider
                             px-2 py-0.5 rounded-full
-                            ${selectedId === s.id ? 'bg-[#C41E3A] text-white' : 'bg-gray-100 text-gray-400'}`}>
+                            ${selectedId === s.id ? 'bg-[#C41E3A] text-white' : 'bg-cx-muted text-cx-soft'}`}>
                             {String(s.id).padStart(2, '0')}
                           </span>
                         </div>
 
-                        <p className="flex items-center gap-1 text-[12px] text-gray-400 mb-2.5">
+                        <p className="flex items-center gap-1 text-[12px] text-cx-soft mb-2.5">
                           <MapPin size={10} /> {s.city}
                         </p>
 
@@ -310,7 +310,7 @@ export default function SchoolsPage() {
                           </span>
                           {s.status === 'active' && (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1
-                              rounded-full bg-gray-50 text-gray-400 text-[11px] border border-gray-100">
+                              rounded-full bg-cx-fill text-cx-soft text-[11px] border border-cx-line">
                               <Clock size={9} /> Lun – Ven
                             </span>
                           )}
@@ -343,7 +343,7 @@ export default function SchoolsPage() {
                     exit={{ opacity: 0 }}
                     transition={{ delay: i * 0.03 }}
                     onClick={() => { select(s); setMobileTab('map') }}
-                    className="cursor-pointer bg-white rounded-2xl p-4 border border-gray-100
+                    className="cursor-pointer bg-cx-card rounded-2xl p-4 border border-cx-line
                       shadow-[0_1px_10px_rgba(0,0,0,0.06)] active:scale-[0.99] transition-transform"
                   >
                     <div className="flex items-center gap-3">
@@ -351,8 +351,8 @@ export default function SchoolsPage() {
                         <GraduationCap size={18} className="text-[#C41E3A]" strokeWidth={1.75} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[14px] font-bold text-[#0A0A0A] truncate">{s.name}</p>
-                        <p className="text-[12px] text-gray-400 flex items-center gap-1 mt-0.5">
+                        <p className="text-[14px] font-bold text-cx-base truncate">{s.name}</p>
+                        <p className="text-[12px] text-cx-soft flex items-center gap-1 mt-0.5">
                           <MapPin size={10} /> {s.city}
                         </p>
                       </div>
@@ -364,14 +364,14 @@ export default function SchoolsPage() {
               </AnimatePresence>
             </div>
           ) : (
-            <div style={{ height: 'calc(100vh - 300px)' }}>
+            <div style={{ height: 'max(320px, calc(100vh - 300px))' }}>
               {MapPanel}
             </div>
           )}
         </div>
 
         {/* Footer note */}
-        <p className="text-center text-[13px] text-gray-400 pb-10">
+        <p className="text-center text-[13px] text-cx-soft pb-10">
           Votre école n'est pas listée ?{' '}
           <Link to="/contact" className="text-[#C41E3A] font-semibold hover:underline underline-offset-2">
             Contactez-nous

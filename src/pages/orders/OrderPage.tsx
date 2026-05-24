@@ -106,21 +106,21 @@ export default function OrderPage() {
   const selectedSort = SORT_OPTIONS.find((o) => o.value === filters.sort)
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7]">
+    <div className="min-h-screen bg-cx-page transition-colors duration-300">
 
       {/* ── Sticky top toolbar ────────────────────────────────────────── */}
-      <div className="sticky top-[80px] z-30 bg-white border-b border-gray-100
+      <div className="sticky top-[80px] z-30 bg-cx-card border-b border-cx-line
         shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 h-14">
 
             {/* Left: title + meta */}
             <div className="hidden lg:flex flex-col justify-center min-w-0 mr-2">
-              <span className="text-[14px] font-extrabold text-[#0A0A0A] leading-none">
+              <span className="text-[14px] font-extrabold text-cx-base leading-none">
                 Commander
               </span>
               {selectedSchool && selectedWeek && (
-                <span className="text-[11.5px] text-gray-400 mt-0.5 truncate">
+                <span className="text-[11.5px] text-cx-soft mt-0.5 truncate">
                   {selectedSchool.name} · {fmtWeekRange(selectedWeek)}
                 </span>
               )}
@@ -128,21 +128,21 @@ export default function OrderPage() {
 
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none" />
               <input
                 type="search"
                 placeholder="Rechercher un repas…"
                 value={filters.search}
                 onChange={(e) => patchFilters({ search: e.target.value })}
-                className="w-full pl-8 pr-4 py-2 text-[13.5px] bg-gray-50 border border-gray-200
+                className="w-full pl-8 pr-4 py-2 text-[13.5px] bg-cx-fill border border-cx-edge
                   rounded-xl outline-none transition-all
-                  focus:border-[#C41E3A] focus:bg-white focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
-                  placeholder:text-gray-300"
+                  focus:border-[#C41E3A] focus:bg-cx-card focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
+                  placeholder:text-cx-faint"
               />
               {filters.search && (
                 <button
                   onClick={() => patchFilters({ search: '' })}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-cx-soft
                     hover:text-[#C41E3A] transition-colors"
                 >
                   <X size={13} />
@@ -152,7 +152,7 @@ export default function OrderPage() {
 
             {/* Result count */}
             {!isLoading && (
-              <span className="hidden sm:block text-[12.5px] text-gray-400 whitespace-nowrap">
+              <span className="hidden sm:block text-[12.5px] text-cx-soft whitespace-nowrap">
                 {meals.length} résultat{meals.length !== 1 ? 's' : ''}
               </span>
             )}
@@ -161,15 +161,15 @@ export default function OrderPage() {
             <div className="relative">
               <button
                 onClick={() => setSortOpen(!sortOpen)}
-                className="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200
-                  rounded-xl text-[13px] font-medium text-[#333] hover:border-gray-300
+                className="flex items-center gap-2 px-3 py-2 bg-cx-fill border border-cx-edge
+                  rounded-xl text-[13px] font-medium text-cx-sub hover:border-cx-muted
                   transition-colors whitespace-nowrap"
               >
                 <span className="hidden sm:inline">{selectedSort?.label}</span>
                 <span className="sm:hidden">Trier</span>
                 <ChevronDown
                   size={13}
-                  className={`text-gray-400 transition-transform duration-200 ${sortOpen ? 'rotate-180' : ''}`}
+                  className={`text-cx-soft transition-transform duration-200 ${sortOpen ? 'rotate-180' : ''}`}
                 />
               </button>
               <AnimatePresence>
@@ -179,8 +179,8 @@ export default function OrderPage() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -8, scale: 0.97 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-1.5 w-44 bg-white rounded-xl
-                      border border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.1)] overflow-hidden z-50"
+                    className="absolute right-0 top-full mt-1.5 w-44 bg-cx-card rounded-xl
+                      border border-cx-line shadow-[0_8px_24px_rgba(0,0,0,0.1)] overflow-hidden z-50"
                   >
                     {SORT_OPTIONS.map((opt) => (
                       <button
@@ -189,7 +189,7 @@ export default function OrderPage() {
                         className={`w-full text-left px-4 py-2.5 text-[13px] transition-colors ${
                           filters.sort === opt.value
                             ? 'bg-[#FFF0F2] text-[#C41E3A] font-semibold'
-                            : 'text-[#333] hover:bg-gray-50'
+                            : 'text-cx-sub hover:bg-cx-fill'
                         }`}
                       >
                         {opt.label}
@@ -203,8 +203,8 @@ export default function OrderPage() {
             {/* Mobile: filter button */}
             <button
               onClick={() => setMobileFiltersOpen(true)}
-              className="lg:hidden relative flex items-center gap-2 px-3 py-2 bg-gray-50
-                border border-gray-200 rounded-xl text-[13px] font-medium text-[#333]
+              className="lg:hidden relative flex items-center gap-2 px-3 py-2 bg-cx-fill
+                border border-cx-edge rounded-xl text-[13px] font-medium text-cx-sub
                 hover:border-[#C41E3A] hover:text-[#C41E3A] transition-colors"
             >
               <SlidersHorizontal size={14} />
@@ -225,7 +225,7 @@ export default function OrderPage() {
 
         {/* Context bar (mobile) */}
         {selectedSchool && selectedWeek && (
-          <div className="lg:hidden flex items-center gap-4 mb-4 text-[13px] text-gray-500">
+          <div className="lg:hidden flex items-center gap-4 mb-4 text-[13px] text-cx-soft">
             <span className="flex items-center gap-1.5">
               <School size={13} className="text-[#C41E3A]" />
               {selectedSchool.name}
@@ -308,10 +308,10 @@ export default function OrderPage() {
                 <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mb-4">
                   <AlertCircle size={28} className="text-red-400" />
                 </div>
-                <p className="text-[#0A0A0A] font-semibold text-[16px] mb-1">
+                <p className="text-cx-base font-semibold text-[16px] mb-1">
                   Erreur de chargement
                 </p>
-                <p className="text-gray-400 text-[13.5px] mb-5">
+                <p className="text-cx-soft text-[13.5px] mb-5">
                   Impossible de charger les repas. Vérifiez votre connexion.
                 </p>
                 <button
@@ -331,19 +331,19 @@ export default function OrderPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col items-center justify-center py-24 text-center"
               >
-                <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
-                  <Inbox size={28} className="text-gray-300" />
+                <div className="w-16 h-16 rounded-2xl bg-cx-fill flex items-center justify-center mb-4">
+                  <Inbox size={28} className="text-cx-faint" />
                 </div>
-                <p className="text-[#0A0A0A] font-semibold text-[16px] mb-1">
+                <p className="text-cx-base font-semibold text-[16px] mb-1">
                   Aucun repas trouvé
                 </p>
-                <p className="text-gray-400 text-[13.5px] mb-5">
+                <p className="text-cx-soft text-[13.5px] mb-5">
                   Essayez de modifier vos filtres ou de changer de semaine.
                 </p>
                 <button
                   onClick={clearFilters}
-                  className="px-5 py-2.5 bg-gray-100 text-[#333] text-[13.5px] font-semibold
-                    rounded-xl hover:bg-gray-200 transition-colors"
+                  className="px-5 py-2.5 bg-cx-muted text-cx-sub text-[13.5px] font-semibold
+                    rounded-xl hover:bg-cx-fill transition-colors"
                 >
                   Effacer les filtres
                 </button>
@@ -389,7 +389,7 @@ export default function OrderPage() {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
               className="fixed top-0 left-0 h-full w-80 max-w-[90vw] z-50 overflow-y-auto
-                bg-[#F7F7F7] lg:hidden"
+                bg-cx-page lg:hidden"
             >
               <div className="p-4">
                 <FilterSidebar

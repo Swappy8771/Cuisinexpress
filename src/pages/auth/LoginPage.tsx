@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, ChevronRight, Home, Mail, Lock, ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
+import { getFieldState, inputCls, FieldError, StatusIcon } from '../../lib/formUtils'
 import type { AxiosError } from 'axios'
 
 const schema = z.object({
@@ -27,8 +28,8 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({ resolver: zodResolver(schema) })
+    formState: { errors, isSubmitting, touchedFields },
+  } = useForm<FormData>({ resolver: zodResolver(schema), mode: 'onTouched' })
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -43,12 +44,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#F7F7F7] flex flex-col">
+    <div className="min-h-[calc(100vh-80px)] bg-cx-page flex flex-col transition-colors duration-300">
 
       {/* Breadcrumb */}
-      <div className="w-full bg-white border-b border-gray-100">
+      <div className="w-full bg-cx-card border-b border-cx-line">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-3">
-          <ol className="flex items-center gap-1.5 text-[13px] text-gray-400">
+          <ol className="flex items-center gap-1.5 text-[13px] text-cx-soft">
             <li>
               <Link to="/" className="flex items-center gap-1 hover:text-[#C41E3A] transition-colors">
                 <Home size={13} />
@@ -62,7 +63,7 @@ export default function LoginPage() {
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
-            <li className="text-[#0A0A0A] font-medium">Connexion</li>
+            <li className="text-cx-base font-medium">Connexion</li>
           </ol>
         </div>
       </div>
@@ -76,7 +77,7 @@ export default function LoginPage() {
           className="w-full max-w-md"
         >
           {/* Card */}
-          <div className="bg-white rounded-3xl shadow-[0_8px_48px_rgba(0,0,0,0.08)] overflow-hidden">
+          <div className="bg-cx-card rounded-3xl shadow-[0_8px_48px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_48px_rgba(0,0,0,0.5)] overflow-hidden">
 
             {/* Card top accent */}
             <div className="h-1.5 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
@@ -88,10 +89,10 @@ export default function LoginPage() {
                 <Link to="/">
                   <img src="/logo.jpg" alt="CuisineXpress" className="h-12 w-auto mx-auto mb-3 rounded-sm" />
                 </Link>
-                <h1 className="text-[#0A0A0A] text-[26px] font-extrabold tracking-tight">
+                <h1 className="text-cx-base text-[26px] font-extrabold tracking-tight">
                   Connexion
                 </h1>
-                <p className="text-gray-400 text-[13.5px] mt-0.5">
+                <p className="text-cx-soft text-[13.5px] mt-0.5">
                   Accédez à votre espace CuisineXpress
                 </p>
               </div>
@@ -114,67 +115,47 @@ export default function LoginPage() {
 
                 {/* Email */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#333]">
-                    Adresse de courriel
-                  </label>
+                  <label className="text-[13px] font-semibold text-cx-sub">Adresse de courriel</label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Mail size={16} />
                     </span>
-                    <input
-                      type="email"
-                      placeholder="exemple@email.com"
-                      {...register('email')}
-                      className={`w-full pl-10 pr-4 py-3.5 rounded-xl border text-[14.5px]
-                        bg-[#FAFAFA] outline-none transition-all duration-200
-                        placeholder:text-gray-300
-                        focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.1)]
-                        ${errors.email ? 'border-red-400' : 'border-gray-200'}`}
+                    <input type="email" placeholder="exemple@email.com" {...register('email')}
+                      className={inputCls(getFieldState(touchedFields.email, !!errors.email), { pl: 'pl-10', pr: 'pr-10', py: 'py-3.5' })}
                     />
+                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <StatusIcon state={getFieldState(touchedFields.email, !!errors.email)} />
+                    </span>
                   </div>
-                  {errors.email && (
-                    <p className="text-red-500 text-[12px]">{errors.email.message}</p>
-                  )}
+                  <FieldError message={errors.email?.message} />
                 </div>
 
                 {/* Password */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#333]">
-                    Mot de passe
-                  </label>
+                  <label className="text-[13px] font-semibold text-cx-sub">Mot de passe</label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Lock size={16} />
                     </span>
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="••••••••"
-                      {...register('password')}
-                      className={`w-full pl-10 pr-11 py-3.5 rounded-xl border text-[14.5px]
-                        bg-[#FAFAFA] outline-none transition-all duration-200
-                        placeholder:text-gray-300
-                        focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.1)]
-                        ${errors.password ? 'border-red-400' : 'border-gray-200'}`}
+                    <input type={showPassword ? 'text' : 'password'} placeholder="••••••••" {...register('password')}
+                      className={inputCls(getFieldState(touchedFields.password, !!errors.password), { pl: 'pl-10', pr: 'pr-20', py: 'py-3.5' })}
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400
-                        hover:text-[#C41E3A] transition-colors"
-                    >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                      <StatusIcon state={getFieldState(touchedFields.password, !!errors.password)} />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)}
+                        className="text-cx-soft hover:text-[#C41E3A] transition-colors">
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                   </div>
-                  {errors.password && (
-                    <p className="text-red-500 text-[12px]">{errors.password.message}</p>
-                  )}
+                  <FieldError message={errors.password?.message} />
                 </div>
 
                 {/* Forgot password */}
                 <div className="flex justify-end -mt-1">
                   <Link
                     to="/forgot-password"
-                    className="text-[13px] text-gray-400 hover:text-[#C41E3A] transition-colors"
+                    className="text-[13px] text-cx-soft hover:text-[#C41E3A] transition-colors"
                   >
                     Mot de passe oublié ?
                   </Link>
@@ -185,7 +166,7 @@ export default function LoginPage() {
                   type="submit"
                   disabled={isSubmitting}
                   className="mt-1 w-full flex items-center justify-center gap-2
-                    bg-[#7B2535] hover:bg-[#9B3045] disabled:bg-gray-300
+                    bg-[#7B2535] hover:bg-[#9B3045] disabled:bg-cx-muted
                     text-white font-bold text-[14px] tracking-widest uppercase
                     py-3.5 rounded-xl transition-all duration-300
                     hover:shadow-[0_8px_24px_rgba(196,30,58,0.35)]
@@ -208,13 +189,13 @@ export default function LoginPage() {
 
               {/* Divider */}
               <div className="flex items-center gap-3 my-4">
-                <div className="flex-1 h-px bg-gray-100" />
-                <span className="text-gray-300 text-[12px]">ou</span>
-                <div className="flex-1 h-px bg-gray-100" />
+                <div className="flex-1 h-px bg-cx-line" />
+                <span className="text-cx-faint text-[12px]">ou</span>
+                <div className="flex-1 h-px bg-cx-line" />
               </div>
 
               {/* Register */}
-              <p className="text-center text-[13px] text-gray-400">
+              <p className="text-center text-[13px] text-cx-soft">
                 Vous n'avez pas de compte ?{' '}
                 <Link
                   to="/register"

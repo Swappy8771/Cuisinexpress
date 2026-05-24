@@ -25,7 +25,7 @@ export default function HowItWorks() {
   }))
 
   return (
-    <section className="w-full bg-white py-24">
+    <section className="w-full bg-cx-card py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Heading */}
@@ -39,10 +39,10 @@ export default function HowItWorks() {
           <span className="inline-block text-[#C41E3A] text-sm font-semibold tracking-widest uppercase mb-3">
             {t.how.tag}
           </span>
-          <h2 className="text-[#0A0A0A] text-4xl sm:text-5xl font-extrabold tracking-tight">
+          <h2 className="text-cx-base text-4xl sm:text-5xl font-extrabold tracking-tight">
             {t.how.title}
           </h2>
-          <p className="mt-4 text-[#555] text-[16px] max-w-xl mx-auto leading-relaxed">
+          <p className="mt-4 text-cx-body text-[16px] max-w-xl mx-auto leading-relaxed">
             {t.how.subtitle}
           </p>
         </motion.div>
@@ -53,9 +53,9 @@ export default function HowItWorks() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="relative grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"
         >
-          {/* Connector line (desktop only) */}
+          {/* Connector line (md+ only where all 3 are in one row) */}
           <div className="hidden md:block absolute top-[52px] left-[calc(16.66%+24px)] right-[calc(16.66%+24px)] h-px">
             <div className="w-full h-full border-t-2 border-dashed border-[#C41E3A]/25" />
           </div>
@@ -64,19 +64,19 @@ export default function HowItWorks() {
             <motion.div
               key={step}
               variants={cardVariants}
-              className="group relative flex flex-col items-start p-8 rounded-2xl bg-[#FAFAFA]
-                border border-gray-100 hover:border-[#C41E3A]/20
+              className="group relative flex flex-col items-start p-8 rounded-2xl bg-cx-fill
+                border border-cx-line hover:border-[#C41E3A]/20
                 hover:shadow-[0_12px_40px_rgba(196,30,58,0.08)]
                 transition-all duration-400"
             >
               {/* Step number */}
-              <span className="absolute top-6 right-7 text-[42px] font-black text-gray-100
+              <span className="absolute top-6 right-7 text-[42px] font-black text-cx-line
                 group-hover:text-[#C41E3A]/10 transition-colors duration-300 leading-none select-none">
                 {step}
               </span>
 
               {/* Icon */}
-              <div className="relative z-10 mb-6 p-4 rounded-xl bg-[#FFF4E5]
+              <div className="relative z-10 mb-6 p-4 rounded-xl bg-[#FFF4E5] dark:bg-[#C41E3A]/10
                 group-hover:bg-[#C41E3A] transition-colors duration-300">
                 <Icon
                   size={28}
@@ -86,10 +86,10 @@ export default function HowItWorks() {
               </div>
 
               {/* Text */}
-              <h3 className="text-[#0A0A0A] text-[18px] font-bold mb-3 tracking-tight">
+              <h3 className="text-cx-base text-[18px] font-bold mb-3 tracking-tight">
                 {title}
               </h3>
-              <p className="text-[#666] text-[14.5px] leading-relaxed">
+              <p className="text-cx-body text-[14.5px] leading-relaxed">
                 {description}
               </p>
 

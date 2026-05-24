@@ -31,7 +31,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
+    <div className="min-h-screen bg-cx-page transition-colors duration-300">
 
       {/* Hero banner */}
       <div className="relative w-full h-52 overflow-hidden">
@@ -74,7 +74,7 @@ export default function ContactPage() {
             transition={{ duration: 0.5 }}
             className="flex flex-col gap-4"
           >
-            <h2 className="text-[16px] font-extrabold text-[#0A0A0A]">
+            <h2 className="text-[16px] font-extrabold text-cx-base">
               Pour toute question ou demande d'information
             </h2>
 
@@ -86,7 +86,7 @@ export default function ContactPage() {
               <a
                 key={label}
                 href={href}
-                className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-gray-100
+                className="flex items-start gap-4 p-4 bg-cx-card rounded-2xl border border-cx-line
                   shadow-[0_2px_12px_rgba(0,0,0,0.05)] hover:border-[#C41E3A]/20
                   hover:shadow-[0_4px_20px_rgba(196,30,58,0.08)] transition-all group"
               >
@@ -95,8 +95,8 @@ export default function ContactPage() {
                   <Icon size={17} className="text-[#C41E3A] group-hover:text-white transition-colors" />
                 </div>
                 <div>
-                  <p className="text-[11.5px] text-gray-400 font-semibold uppercase tracking-wide">{label}</p>
-                  <p className="text-[14px] font-semibold text-[#0A0A0A] mt-0.5">{value}</p>
+                  <p className="text-[11.5px] text-cx-soft font-semibold uppercase tracking-wide">{label}</p>
+                  <p className="text-[14px] font-semibold text-cx-base mt-0.5">{value}</p>
                 </div>
               </a>
             ))}
@@ -109,13 +109,13 @@ export default function ContactPage() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="lg:col-span-2"
           >
-            <div className="bg-white rounded-2xl border border-gray-100
+            <div className="bg-cx-card rounded-2xl border border-cx-line
               shadow-[0_4px_24px_rgba(0,0,0,0.07)] overflow-hidden">
 
               <div className="h-1 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
 
               <div className="px-7 py-7">
-                <h2 className="text-[16px] font-extrabold text-[#0A0A0A] mb-5 flex items-center gap-2">
+                <h2 className="text-[16px] font-extrabold text-cx-base mb-5 flex items-center gap-2">
                   <Mail size={16} className="text-[#C41E3A]" />
                   Par message
                 </h2>
@@ -130,8 +130,8 @@ export default function ContactPage() {
                       <CheckCircle2 size={32} className="text-green-500" strokeWidth={1.5} />
                     </div>
                     <div>
-                      <h3 className="text-[18px] font-extrabold text-[#0A0A0A] mb-1">Message envoyé !</h3>
-                      <p className="text-gray-400 text-[13.5px]">
+                      <h3 className="text-[18px] font-extrabold text-cx-base mb-1">Message envoyé !</h3>
+                      <p className="text-cx-soft text-[13.5px]">
                         Nous vous répondrons dans les plus brefs délais.
                       </p>
                     </div>
@@ -147,60 +147,60 @@ export default function ContactPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[12.5px] font-semibold text-[#333]">Nom complet</label>
+                        <label className="text-[12.5px] font-semibold text-cx-sub">Nom complet</label>
                         <input
                           required
                           value={form.name}
                           onChange={set('name')}
                           placeholder="Marie Tremblay"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px]
-                            bg-[#FAFAFA] outline-none transition-all
-                            placeholder:text-gray-300
-                            focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
+                          className="w-full px-4 py-3 rounded-xl border border-cx-edge text-[14px]
+                            bg-cx-fill outline-none transition-all
+                            placeholder:text-cx-faint
+                            focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
                         />
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[12.5px] font-semibold text-[#333]">Adresse e-mail</label>
+                        <label className="text-[12.5px] font-semibold text-cx-sub">Adresse e-mail</label>
                         <input
                           type="email"
                           required
                           value={form.email}
                           onChange={set('email')}
                           placeholder="marie@email.com"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px]
-                            bg-[#FAFAFA] outline-none transition-all
-                            placeholder:text-gray-300
-                            focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
+                          className="w-full px-4 py-3 rounded-xl border border-cx-edge text-[14px]
+                            bg-cx-fill outline-none transition-all
+                            placeholder:text-cx-faint
+                            focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
                         />
                       </div>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[12.5px] font-semibold text-[#333]">Sujet</label>
+                      <label className="text-[12.5px] font-semibold text-cx-sub">Sujet</label>
                       <input
                         required
                         value={form.subject}
                         onChange={set('subject')}
                         placeholder="Objet de votre message"
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px]
-                          bg-[#FAFAFA] outline-none transition-all
-                          placeholder:text-gray-300
-                          focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
+                        className="w-full px-4 py-3 rounded-xl border border-cx-edge text-[14px]
+                          bg-cx-fill outline-none transition-all
+                          placeholder:text-cx-faint
+                          focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[12.5px] font-semibold text-[#333]">Message</label>
+                      <label className="text-[12.5px] font-semibold text-cx-sub">Message</label>
                       <textarea
                         required
                         rows={5}
                         value={form.message}
                         onChange={set('message')}
                         placeholder="Votre message…"
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px]
-                          bg-[#FAFAFA] outline-none transition-all resize-none
-                          placeholder:text-gray-300
-                          focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
+                        className="w-full px-4 py-3 rounded-xl border border-cx-edge text-[14px]
+                          bg-cx-fill outline-none transition-all resize-none
+                          placeholder:text-cx-faint
+                          focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
                       />
                     </div>
 
@@ -208,7 +208,7 @@ export default function ContactPage() {
                       type="submit"
                       disabled={loading}
                       className="mt-1 self-end flex items-center gap-2 bg-[#C41E3A] hover:bg-[#a01830]
-                        disabled:bg-gray-300 text-white font-bold text-[13.5px] tracking-wide
+                        disabled:bg-cx-muted text-white font-bold text-[13.5px] tracking-wide
                         px-8 py-3 rounded-xl transition-all duration-200
                         hover:shadow-[0_4px_20px_rgba(196,30,58,0.35)] hover:-translate-y-0.5
                         active:translate-y-0"

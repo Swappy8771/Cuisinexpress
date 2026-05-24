@@ -7,8 +7,6 @@ const SLIDE_IMAGES = [
   'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1600&q=80',
   'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1600&q=80',
   'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600&q=80',
-  'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=1600&q=80',
-  'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1600&q=80',
 ]
 
 const INTERVAL = 4500

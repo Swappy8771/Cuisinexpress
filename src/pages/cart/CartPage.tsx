@@ -21,22 +21,22 @@ export default function CartPage() {
   const grandTotal = subtotal + taxes
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
+    <div className="min-h-screen bg-cx-page transition-colors duration-300">
       {/* Page header */}
-      <div className="bg-white border-b border-gray-100 shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+      <div className="bg-cx-card border-b border-cx-line shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-[13.5px] text-gray-400 hover:text-[#C41E3A]
+            className="flex items-center gap-2 text-[13.5px] text-cx-soft hover:text-[#C41E3A]
               transition-colors font-medium"
           >
             <ArrowLeft size={16} />
             Retour
           </button>
-          <div className="h-5 w-px bg-gray-200" />
+          <div className="h-5 w-px bg-cx-edge" />
           <div className="flex items-center gap-2">
             <ShoppingCart size={18} className="text-[#C41E3A]" />
-            <h1 className="text-[17px] font-extrabold text-[#0A0A0A]">Mon panier</h1>
+            <h1 className="text-[17px] font-extrabold text-cx-base">Mon panier</h1>
             {count > 0 && (
               <span className="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5
                 rounded-full bg-[#C41E3A] text-white text-[11px] font-bold">
@@ -59,8 +59,8 @@ export default function CartPage() {
             <div className="w-20 h-20 rounded-full bg-[#FFF0F2] flex items-center justify-center mb-6">
               <ShoppingBag size={32} className="text-[#C41E3A]" strokeWidth={1.5} />
             </div>
-            <h2 className="text-[20px] font-bold text-[#0A0A0A] mb-2">Votre panier est vide</h2>
-            <p className="text-gray-400 text-[14px] mb-8 max-w-xs">
+            <h2 className="text-[20px] font-bold text-cx-base mb-2">Votre panier est vide</h2>
+            <p className="text-cx-soft text-[14px] mb-8 max-w-xs">
               Parcourez notre menu et ajoutez des repas pour vos enfants.
             </p>
             <Link
@@ -83,12 +83,12 @@ export default function CartPage() {
 
               {/* List header */}
               <div className="flex items-center justify-between mb-1">
-                <p className="text-[13px] text-gray-400 font-medium">
+                <p className="text-[13px] text-cx-soft font-medium">
                   {count} repas sélectionné{count > 1 ? 's' : ''}
                 </p>
                 <button
                   onClick={clearCart}
-                  className="flex items-center gap-1.5 text-[12.5px] text-gray-400
+                  className="flex items-center gap-1.5 text-[12.5px] text-cx-soft
                     hover:text-[#C41E3A] transition-colors"
                 >
                   <Trash2 size={13} />
@@ -105,13 +105,13 @@ export default function CartPage() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 16, height: 0, marginBottom: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="bg-white rounded-2xl border border-gray-100
+                    className="bg-cx-card rounded-2xl border border-cx-line
                       shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden"
                   >
-                    <div className="flex items-center gap-4 p-4">
+                    <div className="flex items-start sm:items-center gap-3 sm:gap-4 p-4">
 
                       {/* Image */}
-                      <div className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gray-100">
+                      <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-cx-muted">
                         <img
                           src={item.meal.image}
                           alt={item.meal.name}
@@ -121,10 +121,10 @@ export default function CartPage() {
 
                       {/* Info */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-[14.5px] font-bold text-[#0A0A0A] truncate">
+                        <p className="text-[14.5px] font-bold text-cx-base truncate">
                           {item.meal.name}
                         </p>
-                        <p className="text-[12.5px] text-gray-400 mt-0.5 line-clamp-1">
+                        <p className="text-[12.5px] text-cx-soft mt-0.5 line-clamp-1">
                           {item.meal.description}
                         </p>
                         <p className="text-[13px] font-semibold text-[#C41E3A] mt-1.5">
@@ -136,28 +136,28 @@ export default function CartPage() {
                       <div className="flex flex-col items-end gap-3 flex-shrink-0">
 
                         {/* Subtotal */}
-                        <p className="text-[15px] font-extrabold text-[#0A0A0A]">
+                        <p className="text-[15px] font-extrabold text-cx-base">
                           {fmt(item.meal.price * item.quantity)}
                         </p>
 
                         {/* Qty controls */}
-                        <div className="flex items-center gap-1 bg-gray-50 rounded-xl p-1">
+                        <div className="flex items-center gap-1 bg-cx-fill rounded-xl p-1">
                           <button
                             onClick={() => updateQty(item.meal.id, -1)}
                             className="w-7 h-7 flex items-center justify-center rounded-lg
-                              text-gray-500 hover:bg-[#FFF0F2] hover:text-[#C41E3A]
+                              text-cx-soft hover:bg-[#FFF0F2] hover:text-[#C41E3A]
                               transition-colors duration-150"
                             aria-label="Diminuer"
                           >
                             <Minus size={13} />
                           </button>
-                          <span className="w-7 text-center text-[13.5px] font-bold text-[#0A0A0A]">
+                          <span className="w-7 text-center text-[13.5px] font-bold text-cx-base">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQty(item.meal.id, +1)}
                             className="w-7 h-7 flex items-center justify-center rounded-lg
-                              text-gray-500 hover:bg-[#FFF0F2] hover:text-[#C41E3A]
+                              text-cx-soft hover:bg-[#FFF0F2] hover:text-[#C41E3A]
                               transition-colors duration-150"
                             aria-label="Augmenter"
                           >
@@ -168,7 +168,7 @@ export default function CartPage() {
                         {/* Remove */}
                         <button
                           onClick={() => removeItem(item.meal.id)}
-                          className="text-gray-300 hover:text-[#C41E3A] transition-colors"
+                          className="text-cx-faint hover:text-[#C41E3A] transition-colors"
                           aria-label="Supprimer"
                         >
                           <Trash2 size={14} />
@@ -191,24 +191,24 @@ export default function CartPage() {
             </div>
 
             {/* ── Order summary ────────────────────────────────────── */}
-            <div className="w-full lg:w-80 flex-shrink-0">
-              <div className="bg-white rounded-2xl border border-gray-100
+            <div className="w-full sm:w-full lg:w-80 flex-shrink-0">
+              <div className="bg-cx-card rounded-2xl border border-cx-line
                 shadow-[0_4px_24px_rgba(0,0,0,0.07)] overflow-hidden sticky top-[96px]">
 
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-gray-100">
-                  <h2 className="text-[15px] font-extrabold text-[#0A0A0A]">Récapitulatif</h2>
+                <div className="px-6 py-4 border-b border-cx-line">
+                  <h2 className="text-[15px] font-extrabold text-cx-base">Récapitulatif</h2>
                 </div>
 
                 {/* Line items */}
                 <div className="px-6 py-4 flex flex-col gap-3">
                   {items.map((item) => (
                     <div key={item.meal.id} className="flex items-center justify-between gap-3">
-                      <p className="text-[13px] text-gray-500 truncate flex-1">
-                        <span className="font-semibold text-[#0A0A0A]">{item.quantity}×</span>{' '}
+                      <p className="text-[13px] text-cx-soft truncate flex-1">
+                        <span className="font-semibold text-cx-base">{item.quantity}×</span>{' '}
                         {item.meal.name}
                       </p>
-                      <p className="text-[13px] font-semibold text-[#0A0A0A] flex-shrink-0">
+                      <p className="text-[13px] font-semibold text-cx-base flex-shrink-0">
                         {fmt(item.meal.price * item.quantity)}
                       </p>
                     </div>
@@ -216,20 +216,20 @@ export default function CartPage() {
                 </div>
 
                 {/* Totals */}
-                <div className="px-6 py-4 border-t border-gray-100 flex flex-col gap-2.5">
+                <div className="px-6 py-4 border-t border-cx-line flex flex-col gap-2.5">
                   <div className="flex justify-between text-[13px]">
-                    <span className="text-gray-400">Sous-total</span>
-                    <span className="font-semibold text-[#0A0A0A]">{fmt(subtotal)}</span>
+                    <span className="text-cx-soft">Sous-total</span>
+                    <span className="font-semibold text-cx-base">{fmt(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-[13px]">
-                    <span className="text-gray-400 flex items-center gap-1">
+                    <span className="text-cx-soft flex items-center gap-1">
                       <Tag size={11} />
                       TPS + TVQ (14,975 %)
                     </span>
-                    <span className="font-semibold text-[#0A0A0A]">{fmt(taxes)}</span>
+                    <span className="font-semibold text-cx-base">{fmt(taxes)}</span>
                   </div>
-                  <div className="mt-2 pt-3 border-t border-gray-100 flex justify-between">
-                    <span className="text-[15px] font-extrabold text-[#0A0A0A]">Total</span>
+                  <div className="mt-2 pt-3 border-t border-cx-line flex justify-between">
+                    <span className="text-[15px] font-extrabold text-cx-base">Total</span>
                     <span className="text-[15px] font-extrabold text-[#C41E3A]">{fmt(grandTotal)}</span>
                   </div>
                 </div>
@@ -244,7 +244,7 @@ export default function CartPage() {
                   >
                     Passer la commande
                   </button>
-                  <p className="mt-3 text-center text-[11.5px] text-gray-400">
+                  <p className="mt-3 text-center text-[11.5px] text-cx-soft">
                     Paiement sécurisé · Visa / Mastercard / Interac
                   </p>
                 </div>

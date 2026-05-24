@@ -8,6 +8,7 @@ import { Eye, EyeOff, ChevronRight, Home, Mail, Lock, User, Phone, ArrowRight, S
 import { toast } from 'sonner'
 import { authService } from '../../services/authService'
 import { useAuthStore } from '../../store/authStore'
+import { getFieldState, inputCls, FieldError, StatusIcon } from '../../lib/formUtils'
 import type { AxiosError } from 'axios'
 
 const schema = z.object({
@@ -44,7 +45,7 @@ function StrengthBar({ password }: { password: string }) {
           <div
             key={i}
             className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-              i <= score ? colors[score - 1] : 'bg-gray-100'
+              i <= score ? colors[score - 1] : 'bg-cx-muted'
             }`}
           />
         ))}
@@ -65,8 +66,8 @@ export default function RegisterPage() {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({ resolver: zodResolver(schema) })
+    formState: { errors, isSubmitting, touchedFields },
+  } = useForm<FormData>({ resolver: zodResolver(schema), mode: 'onTouched' })
 
   const passwordValue = useWatch({ control, name: 'password', defaultValue: '' })
 
@@ -89,12 +90,12 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#F7F7F7] flex flex-col">
+    <div className="min-h-[calc(100vh-80px)] bg-cx-page flex flex-col transition-colors duration-300">
 
       {/* Breadcrumb */}
-      <div className="w-full bg-white border-b border-gray-100">
+      <div className="w-full bg-cx-card border-b border-cx-line">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-3">
-          <ol className="flex items-center gap-1.5 text-[13px] text-gray-400">
+          <ol className="flex items-center gap-1.5 text-[13px] text-cx-soft">
             <li>
               <Link to="/" className="flex items-center gap-1 hover:text-[#C41E3A] transition-colors">
                 <Home size={13} />
@@ -108,7 +109,7 @@ export default function RegisterPage() {
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
-            <li className="text-[#0A0A0A] font-medium">Créer votre compte</li>
+            <li className="text-cx-base font-medium">Créer votre compte</li>
           </ol>
         </div>
       </div>
@@ -121,7 +122,7 @@ export default function RegisterPage() {
           transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="w-full max-w-md"
         >
-          <div className="bg-white rounded-3xl shadow-[0_8px_48px_rgba(0,0,0,0.08)] overflow-hidden">
+          <div className="bg-cx-card rounded-3xl shadow-[0_8px_48px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_48px_rgba(0,0,0,0.5)] overflow-hidden">
 
             {/* Top accent */}
             <div className="h-1.5 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
@@ -133,10 +134,10 @@ export default function RegisterPage() {
                 <Link to="/">
                   <img src="/logo.jpg" alt="CuisineXpress" className="h-12 w-auto mx-auto mb-3 rounded-sm" />
                 </Link>
-                <h1 className="text-[#0A0A0A] text-[26px] font-extrabold tracking-tight">
+                <h1 className="text-cx-base text-[26px] font-extrabold tracking-tight">
                   Créer votre compte
                 </h1>
-                <p className="text-gray-400 text-[13.5px] mt-0.5">
+                <p className="text-cx-soft text-[13.5px] mt-0.5">
                   Rejoignez CuisineXpress dès aujourd'hui
                 </p>
               </div>
@@ -145,129 +146,93 @@ export default function RegisterPage() {
               <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3" noValidate>
 
                 {/* First + Last name */}
-                <div className="grid grid-cols-2 gap-3">
-                  {[
+                <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-3">
+                  {([
                     { name: 'firstName' as const, label: 'Prénom', placeholder: 'Marie' },
                     { name: 'lastName' as const, label: 'Nom', placeholder: 'Tremblay' },
-                  ].map(({ name, label, placeholder }) => (
-                    <div key={name} className="flex flex-col gap-1.5">
-                      <label className="text-[13px] font-semibold text-[#333]">{label}</label>
-                      <div className="relative">
-                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
-                          <User size={14} />
-                        </span>
-                        <input
-                          placeholder={placeholder}
-                          {...register(name)}
-                          className={`w-full pl-9 pr-3 py-3.5 rounded-xl border text-[14px]
-                            bg-[#FAFAFA] outline-none transition-all duration-200
-                            placeholder:text-gray-300
-                            focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.1)]
-                            ${errors[name] ? 'border-red-400' : 'border-gray-200'}`}
-                        />
+                  ] as const).map(({ name, label, placeholder }) => {
+                    const fs = getFieldState(touchedFields[name], !!errors[name])
+                    return (
+                      <div key={name} className="flex flex-col gap-1.5">
+                        <label className="text-[13px] font-semibold text-cx-sub">{label}</label>
+                        <div className="relative">
+                          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
+                            <User size={14} />
+                          </span>
+                          <input placeholder={placeholder} {...register(name)}
+                            className={inputCls(fs, { pl: 'pl-9', pr: 'pr-9', py: 'py-3.5' })} />
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <StatusIcon state={fs} />
+                          </span>
+                        </div>
+                        <FieldError message={errors[name]?.message} />
                       </div>
-                      {errors[name] && (
-                        <p className="text-red-500 text-[12px]">{errors[name]?.message}</p>
-                      )}
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
 
                 {/* Email */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#333]">
-                    Adresse de courriel
-                  </label>
+                  <label className="text-[13px] font-semibold text-cx-sub">Adresse de courriel</label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Mail size={16} />
                     </span>
-                    <input
-                      type="email"
-                      placeholder="exemple@email.com"
-                      {...register('email')}
-                      className={`w-full pl-10 pr-4 py-3.5 rounded-xl border text-[14.5px]
-                        bg-[#FAFAFA] outline-none transition-all duration-200
-                        placeholder:text-gray-300
-                        focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.1)]
-                        ${errors.email ? 'border-red-400' : 'border-gray-200'}`}
-                    />
+                    <input type="email" placeholder="exemple@email.com" {...register('email')}
+                      className={inputCls(getFieldState(touchedFields.email, !!errors.email), { pl: 'pl-10', pr: 'pr-10', py: 'py-3.5' })} />
+                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <StatusIcon state={getFieldState(touchedFields.email, !!errors.email)} />
+                    </span>
                   </div>
-                  {errors.email && (
-                    <p className="text-red-500 text-[12px]">{errors.email.message}</p>
-                  )}
+                  <FieldError message={errors.email?.message} />
                 </div>
 
                 {/* Phone (optional) */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#333]">
-                    Téléphone <span className="text-gray-300 font-normal">(optionnel)</span>
+                  <label className="text-[13px] font-semibold text-cx-sub">
+                    Téléphone <span className="text-cx-faint font-normal">(optionnel)</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Phone size={16} />
                     </span>
-                    <input
-                      type="tel"
-                      placeholder="581-992-9952"
-                      {...register('phone')}
-                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 text-[14.5px]
-                        bg-[#FAFAFA] outline-none transition-all duration-200 placeholder:text-gray-300
-                        focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.1)]"
-                    />
+                    <input type="tel" placeholder="514-555-0100" {...register('phone')}
+                      className={inputCls('default', { pl: 'pl-10', pr: 'pr-4', py: 'py-3.5' })} />
                   </div>
                 </div>
 
                 {/* Password */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#333]">
-                    Mot de passe
-                  </label>
+                  <label className="text-[13px] font-semibold text-cx-sub">Mot de passe</label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Lock size={16} />
                     </span>
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="••••••••"
-                      {...register('password')}
-                      className={`w-full pl-10 pr-11 py-3.5 rounded-xl border text-[14.5px]
-                        bg-[#FAFAFA] outline-none transition-all duration-200
-                        placeholder:text-gray-300
-                        focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.1)]
-                        ${errors.password ? 'border-red-400' : 'border-gray-200'}`}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400
-                        hover:text-[#C41E3A] transition-colors"
-                    >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
+                    <input type={showPassword ? 'text' : 'password'} placeholder="••••••••" {...register('password')}
+                      className={inputCls(getFieldState(touchedFields.password, !!errors.password), { pl: 'pl-10', pr: 'pr-20', py: 'py-3.5' })} />
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                      <StatusIcon state={getFieldState(touchedFields.password, !!errors.password)} />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)}
+                        className="text-cx-soft hover:text-[#C41E3A] transition-colors">
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                   </div>
                   <StrengthBar password={passwordValue} />
-                  {errors.password && (
-                    <p className="text-red-500 text-[12px]">{errors.password.message}</p>
-                  )}
+                  <FieldError message={errors.password?.message} />
                 </div>
 
                 {/* Terms checkbox */}
                 <div className="flex flex-col gap-1.5 mt-1">
                   <label className="flex items-start gap-3 cursor-pointer group">
                     <div className="relative flex-shrink-0 mt-0.5">
-                      <input
-                        type="checkbox"
-                        {...register('terms')}
-                        className="peer sr-only"
-                      />
+                      <input type="checkbox" {...register('terms')} className="peer sr-only" />
                       <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center
                         transition-all duration-200
                         peer-checked:bg-[#7B2535] peer-checked:border-[#7B2535]
-                        ${errors.terms ? 'border-red-400 bg-red-50' : 'border-gray-300 bg-white'}
+                        ${errors.terms ? 'border-red-400 bg-red-50/40' : 'border-cx-edge bg-cx-card'}
                         group-hover:border-[#C41E3A]`}>
-                        <svg className="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 hidden peer-checked:block"
-                          viewBox="0 0 12 10" fill="none">
+                        <svg className="w-3 h-3 text-white hidden peer-checked:block" viewBox="0 0 12 10" fill="none">
                           <path d="M1 5l3.5 3.5L11 1" stroke="currentColor" strokeWidth="2"
                             strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
@@ -275,22 +240,20 @@ export default function RegisterPage() {
                       <input type="checkbox" {...register('terms')}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                     </div>
-                    <span className="text-[13.5px] text-[#444] leading-snug pt-0.5">
+                    <span className="text-[13.5px] text-cx-sub leading-snug pt-0.5">
                       J'accepte les{' '}
                       <Link to="/terms" className="text-[#C41E3A] hover:underline underline-offset-2 font-medium">
                         conditions d'utilisation
                       </Link>
                     </span>
                   </label>
-                  {errors.terms && (
-                    <p className="text-red-500 text-[12px] pl-8">{errors.terms.message}</p>
-                  )}
+                  <FieldError message={errors.terms?.message} />
                 </div>
 
                 {/* Privacy policy note */}
-                <div className="flex items-start gap-2.5 bg-[#F7F7F7] rounded-xl px-4 py-3 mt-0">
+                <div className="flex items-start gap-2.5 bg-cx-page rounded-xl px-4 py-3 mt-0">
                   <ShieldCheck size={15} className="text-[#C41E3A] flex-shrink-0 mt-0.5" />
-                  <p className="text-[12.5px] text-gray-400 leading-relaxed">
+                  <p className="text-[12.5px] text-cx-soft leading-relaxed">
                     Lien pour consulter{' '}
                     <Link to="/politique" className="text-[#C41E3A] hover:underline underline-offset-2 font-medium">
                       notre politique en matière de gestion des données
@@ -303,7 +266,7 @@ export default function RegisterPage() {
                   type="submit"
                   disabled={isSubmitting}
                   className="mt-1 w-full flex items-center justify-center gap-2
-                    bg-[#7B2535] hover:bg-[#9B3045] disabled:bg-gray-300
+                    bg-[#7B2535] hover:bg-[#9B3045] disabled:bg-cx-muted
                     text-white font-bold text-[14px] tracking-widest uppercase
                     py-3.5 rounded-xl transition-all duration-300
                     hover:shadow-[0_8px_24px_rgba(196,30,58,0.35)]
@@ -326,13 +289,13 @@ export default function RegisterPage() {
 
               {/* Divider */}
               <div className="flex items-center gap-3 my-4">
-                <div className="flex-1 h-px bg-gray-100" />
-                <span className="text-gray-300 text-[12px]">ou</span>
-                <div className="flex-1 h-px bg-gray-100" />
+                <div className="flex-1 h-px bg-cx-line" />
+                <span className="text-cx-faint text-[12px]">ou</span>
+                <div className="flex-1 h-px bg-cx-line" />
               </div>
 
               {/* Login link */}
-              <p className="text-center text-[13px] text-gray-400">
+              <p className="text-center text-[13px] text-cx-soft">
                 Vous avez déjà un compte ?{' '}
                 <Link
                   to="/login"

@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Menu, X, ShoppingCart, UserCircle2, ChevronDown, LogOut, User } from 'lucide-react'
+import { Menu, X, ShoppingCart, UserCircle2, ChevronDown, LogOut, User, Sun, Moon } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuthStore } from '../store/authStore'
 import { useCartStore, selectCartCount } from '../store/cartStore'
 import { useLang } from '../contexts/LangContext'
+import { useThemeStore } from '../store/themeStore'
 import LanguageSwitcher from './LanguageSwitcher'
 
 export default function Header() {
@@ -14,6 +15,7 @@ export default function Header() {
   const cartCount = useCartStore(selectCartCount)
   const navigate = useNavigate()
   const { t } = useLang()
+  const { theme, toggle } = useThemeStore()
 
   const navLinks = [
     { label: t.nav.schools, href: '/nos-ecoles' },
@@ -27,7 +29,7 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full bg-white sticky top-0 z-50 shadow-[0_2px_16px_rgba(0,0,0,0.08)]">
+    <header className="w-full bg-cx-card sticky top-0 z-50 shadow-[0_2px_16px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.4)] transition-colors duration-300 border-b border-cx-line">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
 
@@ -47,7 +49,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 to={link.href}
-                className="relative text-[#1a1a1a] text-[15px] font-medium tracking-wide
+                className="relative text-cx-base text-[15px] font-semibold tracking-wide
                   after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0
                   after:bg-[#C41E3A] after:transition-all after:duration-300
                   hover:text-[#C41E3A] hover:after:w-full transition-colors duration-200"
@@ -58,18 +60,31 @@ export default function Header() {
           </nav>
 
           {/* Right side */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1 sm:gap-2">
 
-            {/* ── Language toggle (Google Translate) ── */}
+            {/* Language toggle */}
             <LanguageSwitcher className="hidden md:flex" />
+
+            {/* Theme toggle — desktop only; mobile has its own inside the drawer */}
+            <button
+              onClick={toggle}
+              className="hidden md:flex items-center justify-center w-9 h-9 rounded-xl
+                hover:bg-cx-muted text-cx-soft hover:text-cx-base transition-all duration-200"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark'
+                ? <Sun size={17} className="text-amber-400" />
+                : <Moon size={17} />
+              }
+            </button>
 
             {isAuthenticated ? (
               <>
                 {/* Cart */}
                 <Link
                   to="/panier"
-                  className="relative p-2.5 rounded-xl hover:bg-gray-100
-                    text-[#1a1a1a] transition-colors duration-200"
+                  className="relative p-2.5 rounded-xl hover:bg-cx-muted
+                    text-cx-base transition-colors duration-200"
                 >
                   <ShoppingCart size={20} />
                   {cartCount > 0 ? (
@@ -88,18 +103,18 @@ export default function Header() {
                   <button
                     onClick={() => setDropOpen(!dropOpen)}
                     className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl
-                      hover:bg-gray-100 transition-colors duration-200 group"
+                      hover:bg-cx-muted transition-colors duration-200 group"
                   >
                     <div className="w-8 h-8 rounded-full bg-[#C41E3A]/10 flex items-center
                       justify-center">
                       <UserCircle2 size={18} className="text-[#C41E3A]" />
                     </div>
-                    <span className="text-[13.5px] font-semibold text-[#1a1a1a] max-w-[100px] truncate">
+                    <span className="text-[13.5px] font-semibold text-cx-base max-w-[100px] truncate">
                       {user?.firstName}
                     </span>
                     <ChevronDown
                       size={14}
-                      className={`text-gray-400 transition-transform duration-200 ${dropOpen ? 'rotate-180' : ''}`}
+                      className={`text-cx-soft transition-transform duration-200 ${dropOpen ? 'rotate-180' : ''}`}
                     />
                   </button>
 
@@ -111,22 +126,23 @@ export default function Header() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -6, scale: 0.97 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl
-                          border border-gray-100 shadow-[0_8px_32px_rgba(0,0,0,0.12)]
+                        className="absolute right-0 top-full mt-2 w-52 bg-cx-card rounded-2xl
+                          border border-cx-line shadow-[0_8px_32px_rgba(0,0,0,0.15)]
+                          dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]
                           overflow-hidden z-50"
                       >
-                        <div className="px-4 py-3 border-b border-gray-100">
-                          <p className="text-[13px] font-semibold text-[#0A0A0A] truncate">
+                        <div className="px-4 py-3 border-b border-cx-line">
+                          <p className="text-[13px] font-semibold text-cx-base truncate">
                             {user?.firstName} {user?.lastName}
                           </p>
-                          <p className="text-[12px] text-gray-400 truncate">{user?.email}</p>
+                          <p className="text-[12px] text-cx-soft truncate">{user?.email}</p>
                         </div>
                         <div className="py-1.5">
                           <Link
                             to="/user/profile"
                             onClick={() => setDropOpen(false)}
                             className="flex items-center gap-3 px-4 py-2.5 text-[13.5px]
-                              text-[#444] hover:bg-gray-50 hover:text-[#C41E3A] transition-colors"
+                              text-cx-sub hover:bg-cx-fill hover:text-[#C41E3A] transition-colors"
                           >
                             <User size={14} />
                             {t.nav.profile}
@@ -134,7 +150,7 @@ export default function Header() {
                           <button
                             onClick={handleLogout}
                             className="w-full flex items-center gap-3 px-4 py-2.5 text-[13.5px]
-                              text-[#444] hover:bg-red-50 hover:text-[#C41E3A] transition-colors"
+                              text-cx-sub hover:bg-[#C41E3A]/10 hover:text-[#C41E3A] transition-colors"
                           >
                             <LogOut size={14} />
                             {t.nav.logout}
@@ -160,7 +176,7 @@ export default function Header() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden text-[#1a1a1a] p-2 rounded-md hover:bg-gray-100 transition-colors"
+              className="md:hidden text-cx-base p-2 rounded-md hover:bg-cx-muted transition-colors"
               aria-label="Toggle menu"
             >
               {menuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -179,29 +195,41 @@ export default function Header() {
             transition={{ duration: 0.25 }}
             className="md:hidden overflow-hidden"
           >
-            <div className="bg-white border-t border-gray-100 px-4 py-4 flex flex-col gap-4">
+            <div className="bg-cx-card border-t border-cx-line px-4 py-4 flex flex-col gap-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="text-[#1a1a1a] hover:text-[#C41E3A] text-[15px] font-medium py-2
-                    border-b border-gray-100 transition-colors duration-200"
+                  className="text-cx-base hover:text-[#C41E3A] text-[15px] font-medium py-2
+                    border-b border-cx-line transition-colors duration-200"
                 >
                   {link.label}
                 </Link>
               ))}
 
-              {/* Mobile language toggle */}
-              <div className="flex items-center gap-3 py-2 border-b border-gray-100">
-                <span className="text-[12px] text-gray-400 font-medium">Language / Langue :</span>
-                <LanguageSwitcher />
+              {/* Mobile language + theme row */}
+              <div className="flex items-center justify-between py-2 border-b border-cx-line">
+                <div className="flex items-center gap-3">
+                  <span className="text-[12px] text-cx-soft font-medium">Language / Langue :</span>
+                  <LanguageSwitcher />
+                </div>
+                <button
+                  onClick={toggle}
+                  className="flex items-center gap-1.5 text-[13px] text-cx-soft font-medium
+                    hover:text-cx-base transition-colors"
+                >
+                  {theme === 'dark'
+                    ? <><Sun size={15} className="text-amber-400" /> Clair</>
+                    : <><Moon size={15} /> Sombre</>
+                  }
+                </button>
               </div>
 
               {isAuthenticated ? (
                 <>
                   <Link to="/user/profile" onClick={() => setMenuOpen(false)}
-                    className="text-[#1a1a1a] hover:text-[#C41E3A] text-[15px] font-medium py-2 border-b border-gray-100">
+                    className="text-cx-base hover:text-[#C41E3A] text-[15px] font-medium py-2 border-b border-cx-line">
                     {t.nav.profile}
                   </Link>
                   <button onClick={() => { handleLogout(); setMenuOpen(false) }}

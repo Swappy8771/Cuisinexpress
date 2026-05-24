@@ -1,5 +1,53 @@
 @import "tailwindcss";
 
+/* ── Class-based dark mode ─────────────── */
+@variant dark (&:is(.dark, .dark *));
+
+/* ── Light theme (default) ─────────────── */
+:root {
+  --cx-page:  #F5F5F5;
+  --cx-card:  #FFFFFF;
+  --cx-fill:  #FAFAFA;
+  --cx-muted: #F0F0F2;
+  --cx-base:  #0A0A0A;
+  --cx-sub:   #383838;
+  --cx-body:  #5A5A5A;
+  --cx-soft:  #9CA3AF;
+  --cx-faint: #D1D5DB;
+  --cx-edge:  #E5E7EB;
+  --cx-line:  #F0F0F2;
+}
+
+/* ── Dark theme ────────────────────────── */
+.dark {
+  --cx-page:  #0D0D12;
+  --cx-card:  #17171C;
+  --cx-fill:  #1E1E25;
+  --cx-muted: #252530;
+  --cx-base:  #EFEFEF;
+  --cx-sub:   #C0C0CC;
+  --cx-body:  #8A8A9C;
+  --cx-soft:  #6A6A82;
+  --cx-faint: #3C3C52;
+  --cx-edge:  #2E2E3A;
+  --cx-line:  #22222E;
+}
+
+/* ── Tailwind v4 semantic color tokens ─── */
+@theme inline {
+  --color-cx-page:  var(--cx-page);
+  --color-cx-card:  var(--cx-card);
+  --color-cx-fill:  var(--cx-fill);
+  --color-cx-muted: var(--cx-muted);
+  --color-cx-base:  var(--cx-base);
+  --color-cx-sub:   var(--cx-sub);
+  --color-cx-body:  var(--cx-body);
+  --color-cx-soft:  var(--cx-soft);
+  --color-cx-faint: var(--cx-faint);
+  --color-cx-edge:  var(--cx-edge);
+  --color-cx-line:  var(--cx-line);
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -10,6 +58,7 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: var(--cx-base);
 }
 
 a {
