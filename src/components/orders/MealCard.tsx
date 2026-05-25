@@ -5,6 +5,7 @@ import { Heart, Plus, Minus, ShoppingCart, Flame, Star, CheckCircle2 } from 'luc
 import type { Meal, Allergy, MenuCategory } from '../../types'
 import { fmt, TAG_CONFIG } from '../../lib/menuConfig'
 import { useCartStore } from '../../store/cartStore'
+import { useLang } from '../../contexts/LangContext'
 
 interface Props {
   meal: Meal
@@ -14,6 +15,7 @@ interface Props {
 
 export default function MealCard({ meal, allergies, categories }: Props) {
   const navigate = useNavigate()
+  const { t } = useLang()
   const [isFav, setIsFav] = useState(false)
   const [justAdded, setJustAdded] = useState(false)
   const { addItem, updateQty, getQty } = useCartStore()
@@ -69,14 +71,14 @@ export default function MealCard({ meal, allergies, categories }: Props) {
           {meal.isNew && (
             <span className="px-2.5 py-1 bg-[#C41E3A] text-white text-[10px] font-bold
               tracking-wider uppercase rounded-full shadow-lg">
-              Nouveau
+              {t.mealCard.new}
             </span>
           )}
           {meal.popular && (
             <span className="px-2.5 py-1 bg-[#F59E0B] text-white text-[10px] font-bold
               tracking-wider uppercase rounded-full shadow-lg flex items-center gap-1">
               <Star size={9} className="fill-white" />
-              Populaire
+              {t.mealCard.popular}
             </span>
           )}
         </div>
@@ -100,7 +102,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
           <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex items-center justify-center">
             <span className="bg-cx-card text-cx-base text-[12px] font-bold px-4 py-1.5
               rounded-full shadow-lg">
-              Non disponible
+              {t.mealCard.unavailable}
             </span>
           </div>
         )}
@@ -185,7 +187,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
             <span className="text-[20px] font-extrabold text-cx-base tracking-tight">
               {fmt(meal.price)}
             </span>
-            <span className="text-[11px] text-cx-body ml-1">/repas</span>
+            <span className="text-[11px] text-cx-body ml-1">{t.mealCard.perMeal}</span>
           </div>
 
           <AnimatePresence mode="wait">
@@ -207,9 +209,9 @@ export default function MealCard({ meal, allergies, categories }: Props) {
                 }`}
               >
                 {justAdded ? (
-                  <><CheckCircle2 size={14} /> Ajouté</>
+                  <><CheckCircle2 size={14} /> <span>{t.mealCard.added}</span></>
                 ) : (
-                  <><ShoppingCart size={13} /> Ajouter</>
+                  <><ShoppingCart size={13} /> <span>{t.mealCard.add}</span></>
                 )}
               </motion.button>
             ) : (

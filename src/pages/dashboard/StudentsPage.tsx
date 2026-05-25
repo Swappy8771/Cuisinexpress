@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import { Users, Plus, Trash2, User, GraduationCap, X } from 'lucide-react'
 import DashboardLayout from '../../layouts/DashboardLayout'
 import { studentsService } from '../../services/studentsService'
+import { useLang } from '../../contexts/LangContext'
 import type { Student } from '../../types'
 import type { AxiosError } from 'axios'
 
@@ -18,8 +19,6 @@ const schema = z.object({
   grade: z.string().min(1, 'Requis'),
 })
 type FormData = z.infer<typeof schema>
-
-const grades = ['1re année', '2e année', '3e année', '4e année', '5e année', '6e année', 'Secondaire 1', 'Secondaire 2', 'Secondaire 3', 'Secondaire 4', 'Secondaire 5']
 
 function SkeletonRow() {
   return (
@@ -34,6 +33,7 @@ function SkeletonRow() {
 }
 
 export default function StudentsPage() {
+  const { t } = useLang()
   const [showForm, setShowForm] = useState(false)
   const queryClient = useQueryClient()
 
@@ -93,8 +93,8 @@ export default function StudentsPage() {
           <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
           <div className="p-6 sm:p-8 flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">Élèves / personnel</h2>
-              <p className="text-cx-soft text-[13px] mt-0.5">Gérez les élèves rattachés à votre compte</p>
+              <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">{t.studentsPage.title}</h2>
+              <p className="text-cx-soft text-[13px] mt-0.5">{t.studentsPage.subtitle}</p>
             </div>
             <button
               onClick={() => setShowForm(true)}
@@ -102,7 +102,7 @@ export default function StudentsPage() {
                 font-semibold text-[13.5px] px-5 py-2.5 rounded-xl transition-all duration-200
                 hover:shadow-[0_4px_16px_rgba(196,30,58,0.3)] hover:-translate-y-0.5"
             >
-              <Plus size={15} /> Ajouter
+              <Plus size={15} /> <span>{t.studentsPage.add}</span>
             </button>
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function StudentsPage() {
               <div className="h-1 bg-[#C41E3A]" />
               <div className="p-6 sm:p-8">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-bold text-cx-base text-[16px]">Nouvel élève</h3>
+                  <h3 className="font-bold text-cx-base text-[16px]">{t.studentsPage.newStudent}</h3>
                   <button onClick={() => setShowForm(false)}
                     className="text-cx-soft hover:text-[#C41E3A] transition-colors p-1">
                     <X size={18} />
@@ -129,9 +129,9 @@ export default function StudentsPage() {
                 <form onSubmit={handleSubmit(onSubmit)} noValidate>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {[
-                      { name: 'firstName' as const, label: 'Prénom', icon: User, placeholder: 'Emma' },
-                      { name: 'lastName' as const, label: 'Nom', icon: User, placeholder: 'Tremblay' },
-                      { name: 'school' as const, label: 'École', icon: GraduationCap, placeholder: "Nom de l'école" },
+                      { name: 'firstName' as const, label: t.studentsPage.firstName, icon: User, placeholder: 'Emma' },
+                      { name: 'lastName' as const, label: t.studentsPage.lastName, icon: User, placeholder: 'Tremblay' },
+                      { name: 'school' as const, label: t.studentsPage.school, icon: GraduationCap, placeholder: t.studentsPage.schoolPlaceholder },
                     ].map(({ name, label, icon: Icon, placeholder }) => (
                       <div key={name} className="flex flex-col gap-1.5">
                         <label className="text-[13px] font-semibold text-cx-sub">{label}</label>
@@ -148,14 +148,14 @@ export default function StudentsPage() {
                       </div>
                     ))}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[13px] font-semibold text-cx-sub">Année scolaire</label>
+                      <label className="text-[13px] font-semibold text-cx-sub">{t.studentsPage.grade}</label>
                       <select {...register('grade')}
                         className={`w-full px-4 py-3 rounded-xl border text-[14px] bg-cx-fill outline-none
                           transition-all duration-200 focus:bg-cx-card focus:border-[#C41E3A]
                           focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)] text-cx-sub
                           ${errors.grade ? 'border-red-400' : 'border-cx-edge'}`}>
-                        <option value="">Sélectionner</option>
-                        {grades.map(g => <option key={g} value={g}>{g}</option>)}
+                        <option value="">{t.studentsPage.selectGrade}</option>
+                        {t.studentsPage.grades.map((g: string) => <option key={g} value={g}>{g}</option>)}
                       </select>
                       {errors.grade && <p className="text-red-500 text-[12px]">{errors.grade.message}</p>}
                     </div>
@@ -164,7 +164,7 @@ export default function StudentsPage() {
                     <button type="button" onClick={() => setShowForm(false)}
                       className="px-5 py-2.5 rounded-xl border-2 border-cx-edge text-[13.5px] font-semibold
                         text-cx-body hover:border-cx-muted transition-colors">
-                      Annuler
+                      {t.common.cancel}
                     </button>
                     <button type="submit" disabled={addMutation.isPending}
                       className="px-6 py-2.5 rounded-xl bg-[#7B2535] hover:bg-[#9B3045] text-white
@@ -173,9 +173,9 @@ export default function StudentsPage() {
                       {addMutation.isPending ? (
                         <span className="flex items-center gap-2">
                           <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                          Ajout…
+                          <span>{t.common.saving}</span>
                         </span>
-                      ) : 'Confirmer'}
+                      ) : t.common.confirm}
                     </button>
                   </div>
                 </form>
@@ -197,8 +197,8 @@ export default function StudentsPage() {
               <div className="w-16 h-16 rounded-2xl bg-cx-fill flex items-center justify-center mb-4">
                 <Users size={28} className="text-cx-faint" />
               </div>
-              <p className="text-cx-base font-semibold text-[15px] mb-1">Aucun élève ajouté</p>
-              <p className="text-cx-soft text-[13px]">Cliquez sur « Ajouter » pour enregistrer un élève.</p>
+              <p className="text-cx-base font-semibold text-[15px] mb-1">{t.studentsPage.empty}</p>
+              <p className="text-cx-soft text-[13px]">{t.studentsPage.emptyHint}</p>
             </div>
           ) : (
             <div className="divide-y divide-cx-line">

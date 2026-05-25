@@ -4,12 +4,13 @@ import { useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import DashboardLayout from '../../layouts/DashboardLayout'
 import { invoicesService } from '../../services/invoicesService'
+import { useLang } from '../../contexts/LangContext'
 import type { InvoiceStatus } from '../../types'
 
-const statusConfig: Record<InvoiceStatus, { label: string; icon: React.ElementType; bg: string; text: string; dot: string }> = {
-  paid:      { label: 'Payée',      icon: CheckCircle2, bg: 'bg-green-500/10 dark:bg-green-500/15',  text: 'text-green-700 dark:text-green-400',  dot: 'bg-green-500' },
-  pending:   { label: 'En attente', icon: Clock,        bg: 'bg-amber-500/10 dark:bg-amber-500/15',  text: 'text-amber-700 dark:text-amber-400',  dot: 'bg-amber-500' },
-  cancelled: { label: 'Annulée',    icon: XCircle,      bg: 'bg-cx-muted',  text: 'text-cx-soft',   dot: 'bg-gray-400' },
+const STATUS_STYLE: Record<InvoiceStatus, { icon: React.ElementType; bg: string; text: string; dot: string }> = {
+  paid:      { icon: CheckCircle2, bg: 'bg-green-500/10', text: 'text-green-700', dot: 'bg-green-500' },
+  pending:   { icon: Clock,        bg: 'bg-amber-500/10', text: 'text-amber-700', dot: 'bg-amber-500' },
+  cancelled: { icon: XCircle,      bg: 'bg-cx-muted',     text: 'text-cx-soft',  dot: 'bg-gray-400' },
 }
 
 const fmt = (n: number) =>
@@ -65,6 +66,12 @@ async function handleDownload(id: string) {
 }
 
 export default function InvoicesPage() {
+  const { t } = useLang()
+  const statusConfig: Record<InvoiceStatus, { label: string; icon: React.ElementType; bg: string; text: string; dot: string }> = {
+    paid:      { label: t.invoicesPage.paid,      ...STATUS_STYLE.paid },
+    pending:   { label: t.invoicesPage.pending,   ...STATUS_STYLE.pending },
+    cancelled: { label: t.invoicesPage.cancelled, ...STATUS_STYLE.cancelled },
+  }
   const { data: invoices = [], isLoading, isError } = useQuery({
     queryKey: ['invoices'],
     queryFn: invoicesService.list,
@@ -83,16 +90,16 @@ export default function InvoicesPage() {
           <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
           <div className="p-6 sm:p-8 flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">Factures</h2>
+              <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">{t.invoicesPage.title}</h2>
               <p className="text-cx-soft text-[13px] mt-0.5">
-                Consultez et téléchargez vos factures mensuelles
+                {t.invoicesPage.subtitle}
               </p>
             </div>
             {!isLoading && (
               <div className="flex items-center gap-2 text-[13px] text-cx-soft bg-cx-fill
                 rounded-xl px-4 py-2 border border-cx-line">
                 <Receipt size={14} />
-                {invoices.length} facture{invoices.length > 1 ? 's' : ''}
+                {invoices.length} {invoices.length > 1 ? t.invoicesPage.invoicePlural : t.invoicesPage.invoice}
               </div>
             )}
           </div>
@@ -100,8 +107,8 @@ export default function InvoicesPage() {
 
         {isError && (
           <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3
-            text-red-600 dark:text-red-400 text-[13.5px]">
-            Impossible de charger vos factures. Veuillez réessayer.
+            text-red-600 text-[13.5px]">
+            {t.invoicesPage.loadError}
           </div>
         )}
 
@@ -129,7 +136,7 @@ export default function InvoicesPage() {
 
           <div className="hidden sm:grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 px-8 py-3.5
             border-b border-cx-line bg-cx-fill">
-            {['Numéro', 'Période', 'Date', 'Montant', 'Actions'].map(h => (
+            {[t.invoicesPage.colNumber, t.invoicesPage.colPeriod, t.invoicesPage.colDate, t.invoicesPage.colAmount, t.invoicesPage.colActions].map(h => (
               <span key={h} className="text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest">
                 {h}
               </span>
@@ -145,8 +152,8 @@ export default function InvoicesPage() {
               <div className="w-16 h-16 rounded-2xl bg-cx-fill flex items-center justify-center mb-4">
                 <Receipt size={28} className="text-cx-faint" />
               </div>
-              <p className="text-cx-base font-semibold text-[15px] mb-1">Aucune facture</p>
-              <p className="text-cx-soft text-[13px]">Vos factures apparaîtront ici.</p>
+              <p className="text-cx-base font-semibold text-[15px] mb-1">{t.invoicesPage.noInvoices}</p>
+              <p className="text-cx-soft text-[13px]">{t.invoicesPage.noInvoicesHint}</p>
             </div>
           ) : (
             <div className="divide-y divide-cx-line">

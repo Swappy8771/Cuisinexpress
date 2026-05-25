@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { authService } from '../../services/authService'
 import { getFieldState, inputCls } from '../../lib/formHelpers'
 import { FieldError, StatusIcon } from '../../lib/formUtils'
+import { useLang } from '../../contexts/LangContext'
 import type { AxiosError } from 'axios'
 
 const schema = z.object({
@@ -20,6 +21,7 @@ type FormData = z.infer<typeof schema>
 export default function ForgotPasswordPage() {
   const [sent, setSent] = useState(false)
   const [submittedEmail, setSubmittedEmail] = useState('')
+  const { t } = useLang()
 
   const {
     register,
@@ -48,17 +50,17 @@ export default function ForgotPasswordPage() {
             <li>
               <Link to="/" className="flex items-center gap-1 hover:text-[#C41E3A] transition-colors">
                 <Home size={13} />
-                Accueil
+                <span>{t.common.home}</span>
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
             <li>
               <Link to="/account" className="hover:text-[#C41E3A] transition-colors">
-                Votre compte
+                <span>{t.common.yourAccount}</span>
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
-            <li className="text-cx-base font-medium">Mot de passe oublié ?</li>
+            <li className="text-cx-base font-medium">{t.auth.forgotTitle}</li>
           </ol>
         </div>
       </div>
@@ -73,7 +75,6 @@ export default function ForgotPasswordPage() {
         >
           <div className="bg-cx-card rounded-3xl shadow-[0_8px_48px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_48px_rgba(0,0,0,0.5)] overflow-hidden">
 
-            {/* Top accent */}
             <div className="h-1.5 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
 
             <div className="px-8 sm:px-10 py-7">
@@ -89,38 +90,29 @@ export default function ForgotPasswordPage() {
                     exit={{ opacity: 0, y: -12 }}
                     transition={{ duration: 0.3 }}
                   >
-                    {/* Logo + heading */}
                     <div className="mb-5 text-center">
                       <Link to="/">
-                        <img
-                          src="/logo.jpg"
-                          alt="CuisineXpress"
-                          className="h-12 w-auto mx-auto mb-3 rounded-sm"
-                        />
+                        <img src="/logo.jpg" alt="CuisineXpress" className="h-12 w-auto mx-auto mb-3 rounded-sm" />
                       </Link>
-                      <div className="w-12 h-12 rounded-2xl bg-[#C41E3A]/10 flex items-center
-                        justify-center mx-auto mb-3">
+                      <div className="w-12 h-12 rounded-2xl bg-[#C41E3A]/10 flex items-center justify-center mx-auto mb-3">
                         <Mail size={22} className="text-[#C41E3A]" strokeWidth={1.75} />
                       </div>
                       <h1 className="text-cx-base text-[24px] font-extrabold tracking-tight">
-                        Mot de passe oublié ?
+                        {t.auth.forgotTitle}
                       </h1>
                       <p className="text-cx-soft text-[13.5px] mt-1.5 leading-relaxed">
-                        Entrez votre adresse e-mail et nous vous enverrons
-                        un lien pour réinitialiser votre mot de passe.
+                        {t.auth.forgotSubtitle}
                       </p>
                     </div>
 
-                    {/* Form */}
                     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-3">
-
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[13px] font-semibold text-cx-sub">Adresse de courriel</label>
+                        <label className="text-[13px] font-semibold text-cx-sub">{t.auth.emailLabel}</label>
                         <div className="relative">
                           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                             <Mail size={16} />
                           </span>
-                          <input type="email" placeholder="exemple@email.com" {...register('email')}
+                          <input type="email" placeholder={t.auth.emailPlaceholder} {...register('email')}
                             className={inputCls(getFieldState(touchedFields.email, !!errors.email), { pl: 'pl-10', pr: 'pr-10', py: 'py-3.5' })}
                           />
                           <span className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -142,32 +134,27 @@ export default function ForgotPasswordPage() {
                       >
                         {isSubmitting ? (
                           <span className="flex items-center gap-2">
-                            <span className="w-4 h-4 border-2 border-white/40 border-t-white
-                              rounded-full animate-spin" />
-                            Envoi…
+                            <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                            <span>{t.auth.sending}</span>
                           </span>
                         ) : (
                           <>
-                            Envoyer la demande
+                            <span>{t.auth.sendRequest}</span>
                             <ArrowRight size={15} />
                           </>
                         )}
                       </button>
                     </form>
 
-                    {/* Back to login */}
                     <div className="flex items-center gap-3 my-4">
                       <div className="flex-1 h-px bg-cx-line" />
-                      <span className="text-cx-faint text-[12px]">ou</span>
+                      <span className="text-cx-faint text-[12px]">{t.common.or}</span>
                       <div className="flex-1 h-px bg-cx-line" />
                     </div>
                     <p className="text-center text-[13px] text-cx-soft">
-                      Vous souhaitez réessayer la connexion ?{' '}
-                      <Link
-                        to="/login"
-                        className="text-[#C41E3A] font-semibold hover:underline underline-offset-2"
-                      >
-                        Se connecter
+                      <span>{t.auth.loginRetry}</span>{' '}
+                      <Link to="/login" className="text-[#C41E3A] font-semibold hover:underline underline-offset-2">
+                        {t.auth.signIn}
                       </Link>
                     </p>
                   </motion.div>
@@ -182,7 +169,6 @@ export default function ForgotPasswordPage() {
                     transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
                     className="py-2 flex flex-col items-center text-center gap-4"
                   >
-                    {/* Animated checkmark */}
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
@@ -194,23 +180,24 @@ export default function ForgotPasswordPage() {
 
                     <div>
                       <h2 className="text-cx-base text-[20px] font-extrabold tracking-tight mb-1.5">
-                        E-mail envoyé !
+                        {t.auth.emailSent}
                       </h2>
                       <p className="text-cx-soft text-[13.5px] leading-relaxed max-w-xs mx-auto">
-                        Un lien de réinitialisation a été envoyé à{' '}
-                        <span className="text-cx-base font-semibold">{submittedEmail}</span>.
-                        Vérifiez votre boîte de réception.
+                        <span>{t.auth.resetSentTo}</span>{' '}
+                        <span className="text-cx-base font-semibold">{submittedEmail}</span>.{' '}
+                        <span>{t.auth.checkInbox}</span>
                       </p>
                     </div>
 
                     <div className="w-full bg-[#C41E3A]/10 border border-[#C41E3A]/15 rounded-xl
                       px-4 py-3 text-[13px] text-[#7B2535] leading-relaxed text-left">
-                      Vous n'avez pas reçu l'e-mail ? Vérifiez votre dossier spam ou{' '}
+                      <span>{t.auth.noEmailReceived}</span>{' '}
                       <button
+                        type="button"
                         onClick={() => setSent(false)}
                         className="font-semibold underline underline-offset-2 hover:text-[#C41E3A]"
                       >
-                        réessayez
+                        {t.auth.retryLink}
                       </button>.
                     </div>
 
@@ -223,7 +210,7 @@ export default function ForgotPasswordPage() {
                         hover:shadow-[0_8px_24px_rgba(196,30,58,0.35)]"
                     >
                       <ArrowLeft size={15} />
-                      Retour à la connexion
+                      <span>{t.auth.backToLogin}</span>
                     </Link>
                   </motion.div>
                 )}

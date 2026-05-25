@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import DashboardLayout from '../../layouts/DashboardLayout'
 import { useAuthStore } from '../../store/authStore'
+import { useLang } from '../../contexts/LangContext'
 import { profileService } from '../../services/profileService'
 import { getFieldState, inputCls } from '../../lib/formHelpers'
 import { FieldWrapper } from '../../lib/formUtils'
@@ -38,6 +39,7 @@ function SkeletonField() {
 }
 
 export default function ProfilePage() {
+  const { t } = useLang()
   const { updateUser } = useAuthStore()
   const queryClient = useQueryClient()
 
@@ -128,10 +130,10 @@ export default function ProfilePage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">
-                Votre profil
+                {t.profilePage.title}
               </h2>
               <p className="text-cx-soft text-[13px] mt-0.5">
-                Gérez vos informations personnelles
+                {t.profilePage.subtitle}
               </p>
             </div>
           </div>
@@ -139,7 +141,7 @@ export default function ProfilePage() {
           {isError && (
             <div className="mb-6 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3
               text-red-600 dark:text-red-400 text-[13.5px]">
-              Impossible de charger votre profil. Veuillez réessayer.
+              {t.profilePage.loadError}
             </div>
           )}
 
@@ -151,35 +153,35 @@ export default function ProfilePage() {
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-                <FieldWrapper label="Prénom" icon={User}
+                <FieldWrapper label={t.profilePage.firstName} icon={User}
                   state={getFieldState(touchedFields.firstName, !!errors.firstName)}
                   error={errors.firstName?.message}>
                   <input {...register('firstName')} placeholder="Marie"
                     className={inputCls(getFieldState(touchedFields.firstName, !!errors.firstName))} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Nom de famille" icon={User}
+                <FieldWrapper label={t.profilePage.lastName} icon={User}
                   state={getFieldState(touchedFields.lastName, !!errors.lastName)}
                   error={errors.lastName?.message}>
                   <input {...register('lastName')} placeholder="Tremblay"
                     className={inputCls(getFieldState(touchedFields.lastName, !!errors.lastName))} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Adresse de courriel" icon={Mail}
+                <FieldWrapper label={t.profilePage.email} icon={Mail}
                   state={getFieldState(touchedFields.email, !!errors.email)}
                   error={errors.email?.message}>
                   <input type="email" {...register('email')} placeholder="exemple@email.com"
                     className={inputCls(getFieldState(touchedFields.email, !!errors.email))} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Confirmer l'adresse de courriel" icon={Mail}
+                <FieldWrapper label={t.profilePage.confirmEmail} icon={Mail}
                   state={getFieldState(touchedFields.emailConfirm, !!errors.emailConfirm)}
                   error={errors.emailConfirm?.message}>
                   <input type="email" {...register('emailConfirm')} placeholder="exemple@email.com"
                     className={inputCls(getFieldState(touchedFields.emailConfirm, !!errors.emailConfirm))} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Téléphone" icon={Phone}
+                <FieldWrapper label={t.profilePage.phone} icon={Phone}
                   state={getFieldState(touchedFields.phone, !!errors.phone)}
                   error={errors.phone?.message}
                   hint="Format : 514-555-0100">
@@ -187,7 +189,7 @@ export default function ProfilePage() {
                     className={inputCls(getFieldState(touchedFields.phone, !!errors.phone))} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Adresse postale" icon={MapPin}
+                <FieldWrapper label={t.profilePage.address} icon={MapPin}
                   state="default" error={undefined}>
                   <input {...register('address')} placeholder="123 rue Exemple, Québec"
                     className={inputCls('default')} />
@@ -213,7 +215,7 @@ export default function ProfilePage() {
                   </div>
                   <div className="flex items-center gap-2 text-[13.5px] text-cx-sub">
                     <Bell size={14} className="text-cx-soft" />
-                    J'accepte de recevoir des e-mails de notification
+                    {t.profilePage.notifications}
                   </div>
                 </label>
               </div>
@@ -235,12 +237,12 @@ export default function ProfilePage() {
                   {mutation.isPending ? (
                     <>
                       <Loader2 size={14} className="animate-spin" />
-                      Enregistrement…
+                      <span>{t.common.saving}</span>
                     </>
                   ) : (
                     <>
                       <Save size={14} />
-                      Sauvegarder
+                      <span>{t.common.save}</span>
                     </>
                   )}
                 </button>

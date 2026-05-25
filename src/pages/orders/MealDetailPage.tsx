@@ -13,7 +13,10 @@ import { studentsService } from '../../services/studentsService'
 import { useCartStore } from '../../store/cartStore'
 import { useAuthStore } from '../../store/authStore'
 import CategoryCarousel from '../../components/orders/CategoryCarousel'
+import { useLang } from '../../contexts/LangContext'
+
 export default function MealDetailPage() {
+  const { t } = useLang()
   const { mealId } = useParams<{ mealId: string }>()
   const navigate   = useNavigate()
   const meal       = meals.find((m) => m.id === mealId)
@@ -36,9 +39,9 @@ export default function MealDetailPage() {
   if (!meal) {
     return (
       <div className="min-h-screen bg-cx-page flex flex-col items-center justify-center gap-4">
-        <p className="text-[18px] font-bold text-cx-base">Repas introuvable.</p>
+        <p className="text-[18px] font-bold text-cx-base">{t.mealDetail.notFound}</p>
         <Link to="/commander" className="text-[#C41E3A] font-semibold hover:underline underline-offset-2">
-          ← Retour au menu
+          {t.mealDetail.backToMenuLink}
         </Link>
       </div>
     )
@@ -83,12 +86,12 @@ export default function MealDetailPage() {
           <ol className="flex items-center gap-1.5 text-[13px] text-cx-soft">
             <li>
               <Link to="/" className="flex items-center gap-1 hover:text-[#C41E3A] transition-colors">
-                <Home size={13} /> Accueil
+                <Home size={13} /> <span>{t.common.home}</span>
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
             <li>
-              <Link to="/commander" className="hover:text-[#C41E3A] transition-colors">Commander</Link>
+              <Link to="/commander" className="hover:text-[#C41E3A] transition-colors"><span>{t.mealDetail.breadcrumb}</span></Link>
             </li>
             <li><ChevronRight size={12} /></li>
             <li className="text-cx-base font-medium truncate max-w-[160px]">{meal.name}</li>
@@ -106,7 +109,7 @@ export default function MealDetailPage() {
             hover:text-[#C41E3A] font-semibold transition-colors group w-fit"
         >
           <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
-          Retour au menu
+          <span>{t.mealDetail.back}</span>
         </button>
 
         {/* ── Main meal card (compact) ── */}
@@ -165,7 +168,7 @@ export default function MealDetailPage() {
                   <span className="text-[22px] font-extrabold text-[#C41E3A] tracking-tight">
                     {fmt(meal.price)}
                   </span>
-                  <span className="text-[11px] text-cx-body">/repas</span>
+                  <span className="text-[11px] text-cx-body">{t.mealDetail.perMeal}</span>
                 </div>
               </div>
             </div>
@@ -183,7 +186,7 @@ export default function MealDetailPage() {
         >
           <div className="px-6 py-4 border-b border-cx-line">
             <h2 className="text-[16px] font-bold text-cx-base">
-              Sélectionner l'élève et la journée
+              {t.mealDetail.selectStudentDay}
             </h2>
           </div>
 
@@ -192,16 +195,16 @@ export default function MealDetailPage() {
             {/* Student chips */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
               <span className="text-[12.5px] font-semibold text-cx-soft sm:w-16 sm:flex-shrink-0 sm:pt-1.5">
-                Élève
+                {t.mealDetail.studentLabel}
               </span>
               {students.length === 0 ? (
                 <div className="flex items-center gap-2 text-[13px] text-cx-soft">
                   <User size={14} />
                   <Link to="/user/students"
                     className="text-[#C41E3A] font-semibold hover:underline underline-offset-2">
-                    Ajouter un élève
+                    {t.mealDetail.addStudent}
                   </Link>
-                  pour continuer
+                  <span> {t.mealDetail.toContinue}</span>
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
@@ -230,7 +233,7 @@ export default function MealDetailPage() {
             {/* Week + Day */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
               <span className="text-[12.5px] font-semibold text-cx-soft sm:w-16 sm:flex-shrink-0 sm:pt-1.5">
-                Journée
+                {t.mealDetail.dayLabel}
               </span>
               <div className="flex flex-col gap-3 flex-1">
                 {/* Week selector */}
@@ -312,7 +315,7 @@ export default function MealDetailPage() {
             shadow-[0_2px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_24px_rgba(0,0,0,0.4)]"
         >
           <div className="px-6 py-4 border-b border-cx-line">
-            <h2 className="text-[16px] font-bold text-cx-base">Résumé de votre sélection</h2>
+            <h2 className="text-[16px] font-bold text-cx-base">{t.mealDetail.summary}</h2>
           </div>
 
           <div className="px-6 py-5 flex flex-col gap-0 divide-y divide-cx-line">
@@ -336,7 +339,7 @@ export default function MealDetailPage() {
                 </button>
               </div>
               <span className="flex-1 text-[14px] font-semibold text-cx-base">{meal.name}</span>
-              <span className="text-[13px] text-cx-soft font-medium flex-shrink-0">{fmt(meal.price)} /ch.</span>
+              <span className="text-[13px] text-cx-soft font-medium flex-shrink-0">{fmt(meal.price)} {t.mealDetail.each}</span>
             </div>
 
             {/* Selected add-ons */}
@@ -390,7 +393,7 @@ export default function MealDetailPage() {
                 type="text"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Ajouter une note ou instruction…"
+                placeholder={t.mealDetail.notePlaceholder}
                 className="flex-1 bg-transparent text-[13.5px] text-cx-base placeholder:text-cx-faint outline-none"
               />
             </div>
@@ -404,7 +407,7 @@ export default function MealDetailPage() {
                   className="pt-4 flex flex-col gap-0 divide-y divide-cx-line"
                 >
                   <p className="text-[11px] font-bold text-cx-soft uppercase tracking-widest pb-3">
-                    Panier actuel
+                    {t.mealDetail.currentCart}
                   </p>
                   {cartItems.map((item) => (
                     <div key={item.meal.id} className="flex items-center gap-3 py-3">
@@ -449,7 +452,7 @@ export default function MealDetailPage() {
             {/* Total */}
             <div className="flex items-center justify-between gap-3 pt-4 pb-1">
               <span className="text-[13px] text-cx-soft">
-                {cartItems.length > 0 ? 'Total (sélection + panier)' : 'Total'}
+                {cartItems.length > 0 ? t.mealDetail.totalWithCart : t.mealDetail.total}
               </span>
               <span className="text-[22px] font-extrabold text-cx-base tracking-tight">
                 {fmt(grandTotal)}
@@ -469,7 +472,7 @@ export default function MealDetailPage() {
                 hover:shadow-[0_8px_28px_rgba(196,30,58,0.4)] hover:-translate-y-0.5 active:translate-y-0"
             >
               <ShoppingCart size={17} />
-              Ajouter à votre panier
+              <span>{t.mealDetail.addToCart}</span>
             </button>
           </div>
         </motion.div>

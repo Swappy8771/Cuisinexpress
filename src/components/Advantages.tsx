@@ -29,6 +29,7 @@ export default function Advantages() {
   const { t } = useLang()
   const advantages = t.advantages.items.map((item, i) => ({
     ...(ADVANTAGE_META[i] ?? ADVANTAGE_META[0]),
+    index: i,
     title: item.title,
     description: item.description,
   }))
@@ -67,14 +68,14 @@ export default function Advantages() {
           {/* Row 1 — 3 cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {advantages.slice(0, 3).map((item) => (
-              <AdvantageCard key={item.title} {...item} />
+              <AdvantageCard key={item.index} {...item} />
             ))}
           </div>
 
           {/* Row 2 — 2 cards centered */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:w-2/3 lg:mx-auto">
             {advantages.slice(3).map((item) => (
-              <AdvantageCard key={item.title} {...item} />
+              <AdvantageCard key={item.index} {...item} />
             ))}
           </div>
         </motion.div>

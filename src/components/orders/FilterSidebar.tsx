@@ -1,4 +1,5 @@
 import { X, RotateCcw, Search } from 'lucide-react'
+import { useLang } from '../../contexts/LangContext'
 import type { MealFilters, MealTag, OrderingSchool, MealWeek, MenuCategory } from '../../types'
 
 interface Props {
@@ -12,28 +13,25 @@ interface Props {
   onClose?: () => void
 }
 
-const TAG_CONFIG: Record<MealTag, { label: string; emoji: string; active: string; inactive: string }> = {
-  vegetarian:   { label: 'Végétarien',  emoji: '🌿', active: 'bg-green-100   text-green-700   ring-1 ring-green-300',  inactive: 'bg-cx-fill text-cx-soft hover:bg-green-500/10  hover:text-green-700' },
-  vegan:        { label: 'Vegan',       emoji: '🌱', active: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300', inactive: 'bg-cx-fill text-cx-soft hover:bg-emerald-500/10 hover:text-emerald-700' },
-  hot:          { label: 'Chaud',       emoji: '🔥', active: 'bg-red-100     text-red-700     ring-1 ring-red-300',     inactive: 'bg-cx-fill text-cx-soft hover:bg-red-500/10    hover:text-red-700' },
-  cold:         { label: 'Froid',       emoji: '❄️', active: 'bg-blue-100    text-blue-700    ring-1 ring-blue-300',    inactive: 'bg-cx-fill text-cx-soft hover:bg-blue-500/10   hover:text-blue-700' },
-  halal:        { label: 'Halal',       emoji: '☪️', active: 'bg-amber-100   text-amber-700   ring-1 ring-amber-300',   inactive: 'bg-cx-fill text-cx-soft hover:bg-amber-500/10  hover:text-amber-700' },
-  'gluten-free':{ label: 'Sans gluten', emoji: '✅', active: 'bg-violet-100  text-violet-700  ring-1 ring-violet-300',  inactive: 'bg-cx-fill text-cx-soft hover:bg-violet-500/10 hover:text-violet-700' },
+const TAG_META: Record<MealTag, { emoji: string; active: string; inactive: string }> = {
+  vegetarian:   { emoji: '🌿', active: 'bg-green-100   text-green-700   ring-1 ring-green-300',  inactive: 'bg-cx-fill text-cx-soft hover:bg-green-500/10  hover:text-green-700' },
+  vegan:        { emoji: '🌱', active: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300', inactive: 'bg-cx-fill text-cx-soft hover:bg-emerald-500/10 hover:text-emerald-700' },
+  hot:          { emoji: '🔥', active: 'bg-red-100     text-red-700     ring-1 ring-red-300',     inactive: 'bg-cx-fill text-cx-soft hover:bg-red-500/10    hover:text-red-700' },
+  cold:         { emoji: '❄️', active: 'bg-blue-100    text-blue-700    ring-1 ring-blue-300',    inactive: 'bg-cx-fill text-cx-soft hover:bg-blue-500/10   hover:text-blue-700' },
+  halal:        { emoji: '☪️', active: 'bg-amber-100   text-amber-700   ring-1 ring-amber-300',   inactive: 'bg-cx-fill text-cx-soft hover:bg-amber-500/10  hover:text-amber-700' },
+  'gluten-free':{ emoji: '✅', active: 'bg-violet-100  text-violet-700  ring-1 ring-violet-300',  inactive: 'bg-cx-fill text-cx-soft hover:bg-violet-500/10 hover:text-violet-700' },
 }
 
-const ALL_TAGS = Object.keys(TAG_CONFIG) as MealTag[]
+const ALL_TAGS = Object.keys(TAG_META) as MealTag[]
 
 function fmtWeekRange(startDate: string, endDate: string): string {
   const fmt = (d: string) =>
     new Date(d + 'T12:00:00').toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' })
   const s = fmt(startDate)
   const e = fmt(endDate)
-  // If same month, show "25–29 mai" else "29 mai – 2 juin"
   const sMonth = s.split(' ')[1]
   const eMonth = e.split(' ')[1]
-  return sMonth === eMonth
-    ? `${s.split(' ')[0]}–${e}`
-    : `${s} – ${e}`
+  return sMonth === eMonth ? `${s.split(' ')[0]}–${e}` : `${s} – ${e}`
 }
 
 const sectionTitle = "text-[11px] font-bold tracking-[0.08em] uppercase text-cx-soft mb-2.5"
@@ -48,9 +46,20 @@ export default function FilterSidebar({
   onClear,
   onClose,
 }: Props) {
+  const { t } = useLang()
+
+  const tagLabels: Record<MealTag, string> = {
+    vegetarian:   t.filter.tags.vegetarian,
+    vegan:        t.filter.tags.vegan,
+    hot:          t.filter.tags.hot,
+    cold:         t.filter.tags.cold,
+    halal:        t.filter.tags.halal,
+    'gluten-free': t.filter.tags.glutenFree,
+  }
+
   const toggleTag = (tag: MealTag) => {
     const next = filters.tags.includes(tag)
-      ? filters.tags.filter((t) => t !== tag)
+      ? filters.tags.filter((tg) => tg !== tag)
       : [...filters.tags, tag]
     onFiltersChange({ tags: next })
   }
@@ -60,7 +69,7 @@ export default function FilterSidebar({
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-cx-line">
         <div className="flex items-center gap-2">
-          <span className="text-[15px] font-bold text-cx-base">Filtres</span>
+          <span className="text-[15px] font-bold text-cx-base">{t.filter.title}</span>
           {activeCount > 0 && (
             <span className="flex h-5 w-5 items-center justify-center rounded-full
               bg-[#C41E3A] text-white text-[10px] font-bold">
@@ -71,16 +80,18 @@ export default function FilterSidebar({
         <div className="flex items-center gap-1">
           {activeCount > 0 && (
             <button
+              type="button"
               onClick={onClear}
               className="flex items-center gap-1 text-[12px] text-cx-soft hover:text-[#C41E3A]
                 transition-colors px-2 py-1 rounded-lg hover:bg-red-500/10"
             >
               <RotateCcw size={11} />
-              Effacer
+              <span>{t.filter.clear}</span>
             </button>
           )}
           {onClose && (
             <button
+              type="button"
               onClick={onClose}
               className="p-1.5 rounded-lg text-cx-soft hover:text-cx-base
                 hover:bg-cx-muted transition-colors lg:hidden"
@@ -95,12 +106,12 @@ export default function FilterSidebar({
 
         {/* Search */}
         <div>
-          <p className={sectionTitle}>Recherche</p>
+          <p className={sectionTitle}>{t.filter.searchLabel}</p>
           <div className="relative">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none" />
             <input
               type="search"
-              placeholder="Nom du repas…"
+              placeholder={t.filter.searchPlaceholder}
               value={filters.search}
               onChange={(e) => onFiltersChange({ search: e.target.value })}
               className="w-full pl-8 pr-3 py-2.5 text-[13.5px] bg-cx-fill border border-cx-edge
@@ -113,7 +124,7 @@ export default function FilterSidebar({
 
         {/* School */}
         <div>
-          <p className={sectionTitle}>École</p>
+          <p className={sectionTitle}>{t.filter.schoolLabel}</p>
           <select
             value={filters.schoolId}
             onChange={(e) => onFiltersChange({ schoolId: e.target.value })}
@@ -123,21 +134,20 @@ export default function FilterSidebar({
               cursor-pointer"
           >
             {schools.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
+              <option key={s.id} value={s.id}>{s.name}</option>
             ))}
           </select>
         </div>
 
         {/* Week */}
         <div>
-          <p className={sectionTitle}>Semaine</p>
+          <p className={sectionTitle}>{t.filter.weekLabel}</p>
           <div className="grid grid-cols-2 gap-1.5">
             {weeks.map((w) => {
               const active = filters.weekId === w.id
               return (
                 <button
+                  type="button"
                   key={w.id}
                   onClick={() => onFiltersChange({ weekId: w.id })}
                   className={`flex flex-col items-center py-2.5 px-2 rounded-xl transition-all duration-200 ${
@@ -160,10 +170,11 @@ export default function FilterSidebar({
 
         {/* Category */}
         <div>
-          <p className={sectionTitle}>Catégorie</p>
+          <p className={sectionTitle}>{t.filter.categoryLabel}</p>
           <div className="flex flex-col gap-1">
             {categories.map((cat) => (
               <button
+                type="button"
                 key={cat.id}
                 onClick={() => onFiltersChange({ categoryId: cat.id })}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13.5px]
@@ -174,7 +185,7 @@ export default function FilterSidebar({
                 }`}
               >
                 <span className="text-[16px] leading-none">{cat.emoji}</span>
-                {cat.label}
+                <span>{cat.label}</span>
                 {filters.categoryId === cat.id && (
                   <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C41E3A]" />
                 )}
@@ -185,22 +196,23 @@ export default function FilterSidebar({
 
         {/* Tags */}
         <div>
-          <p className={sectionTitle}>Régimes & Température</p>
+          <p className={sectionTitle}>{t.filter.tagsLabel}</p>
           <div className="flex flex-wrap gap-2">
             {ALL_TAGS.map((tag) => {
-              const cfg = TAG_CONFIG[tag]
+              const meta = TAG_META[tag]
               const active = filters.tags.includes(tag)
               return (
                 <button
+                  type="button"
                   key={tag}
                   onClick={() => toggleTag(tag)}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full
                     text-[12px] font-semibold transition-all duration-200 ${
-                    active ? cfg.active : cfg.inactive
+                    active ? meta.active : meta.inactive
                   }`}
                 >
-                  <span>{cfg.emoji}</span>
-                  {cfg.label}
+                  <span>{meta.emoji}</span>
+                  <span>{tagLabels[tag]}</span>
                 </button>
               )
             })}

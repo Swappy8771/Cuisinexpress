@@ -3,6 +3,7 @@ import { TrendingDown, TrendingUp, Wallet, ArrowDownLeft, ArrowUpRight } from 'l
 import { useQuery } from '@tanstack/react-query'
 import DashboardLayout from '../../layouts/DashboardLayout'
 import { statementService } from '../../services/statementService'
+import { useLang } from '../../contexts/LangContext'
 
 const fmt = (n: number) =>
   new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(n)
@@ -34,6 +35,7 @@ function SkeletonRow() {
 }
 
 export default function StatementPage() {
+  const { t } = useLang()
   const { data, isLoading, isError } = useQuery({
     queryKey: ['statement'],
     queryFn: statementService.get,
@@ -41,9 +43,9 @@ export default function StatementPage() {
 
   const stats = data
     ? [
-        { label: 'Solde actuel',   value: fmt(data.balance),            icon: Wallet,      color: 'text-cx-base', bg: 'bg-cx-fill' },
-        { label: 'Total crédités', value: fmt(data.totalCredits),       icon: TrendingUp,  color: 'text-green-600 dark:text-green-400',  bg: 'bg-green-500/10' },
-        { label: 'Total débités',  value: fmt(Math.abs(data.totalDebits)), icon: TrendingDown, color: 'text-[#C41E3A]', bg: 'bg-[#C41E3A]/10' },
+        { label: t.statementPage.currentBalance, value: fmt(data.balance),              icon: Wallet,      color: 'text-cx-base',    bg: 'bg-cx-fill' },
+        { label: t.statementPage.totalCredits,   value: fmt(data.totalCredits),         icon: TrendingUp,  color: 'text-green-600',  bg: 'bg-green-500/10' },
+        { label: t.statementPage.totalDebits,    value: fmt(Math.abs(data.totalDebits)),icon: TrendingDown,color: 'text-[#C41E3A]',  bg: 'bg-[#C41E3A]/10' },
       ]
     : []
 
@@ -59,15 +61,15 @@ export default function StatementPage() {
         <div className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
           <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
           <div className="p-6 sm:p-8">
-            <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">Relevé de compte</h2>
-            <p className="text-cx-soft text-[13px] mt-0.5">Historique de vos transactions et solde disponible</p>
+            <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">{t.statementPage.title}</h2>
+            <p className="text-cx-soft text-[13px] mt-0.5">{t.statementPage.subtitle}</p>
           </div>
         </div>
 
         {isError && (
           <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3
-            text-red-600 dark:text-red-400 text-[13.5px]">
-            Impossible de charger votre relevé. Veuillez réessayer.
+            text-red-600 text-[13.5px]">
+            {t.statementPage.loadError}
           </div>
         )}
 
@@ -98,9 +100,9 @@ export default function StatementPage() {
 
           <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] gap-4 px-6 sm:px-8 py-3.5
             border-b border-cx-line bg-cx-fill">
-            <span className="hidden sm:block text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest">Date</span>
-            <span className="text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest">Description</span>
-            <span className="text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest text-right">Montant</span>
+            <span className="hidden sm:block text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest">{t.statementPage.colDate}</span>
+            <span className="text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest">{t.statementPage.colDescription}</span>
+            <span className="text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest text-right">{t.statementPage.colAmount}</span>
           </div>
 
           {isLoading ? (
@@ -141,7 +143,7 @@ export default function StatementPage() {
 
               <div className="flex items-center justify-between px-6 sm:px-8 py-4
                 border-t-2 border-cx-line bg-cx-fill">
-                <span className="text-[13px] font-semibold text-cx-soft">Solde actuel</span>
+                <span className="text-[13px] font-semibold text-cx-soft">{t.statementPage.currentBalance}</span>
                 <span className={`text-[16px] font-extrabold ${(data?.balance ?? 0) >= 0 ? 'text-cx-base' : 'text-[#C41E3A]'}`}>
                   {fmt(data?.balance ?? 0)}
                 </span>

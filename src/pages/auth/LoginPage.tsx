@@ -10,6 +10,7 @@ import { Eye, EyeOff, ChevronRight, Home, Mail, Lock, ArrowRight } from 'lucide-
 import { toast } from 'sonner'
 import { getFieldState, inputCls } from '../../lib/formHelpers'
 import { FieldError, StatusIcon } from '../../lib/formUtils'
+import { useLang } from '../../contexts/LangContext'
 import type { AxiosError } from 'axios'
 
 const schema = z.object({
@@ -22,6 +23,7 @@ type FormData = z.infer<typeof schema>
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const { setAuth } = useAuthStore()
+  const { t } = useLang()
   const navigate = useNavigate()
   const location = useLocation()
   const from = (location.state as { from?: Location })?.from?.pathname ?? '/user/profile'
@@ -54,17 +56,17 @@ export default function LoginPage() {
             <li>
               <Link to="/" className="flex items-center gap-1 hover:text-[#C41E3A] transition-colors">
                 <Home size={13} />
-                Accueil
+                <span>{t.common.home}</span>
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
             <li>
               <Link to="/account" className="hover:text-[#C41E3A] transition-colors">
-                Votre compte
+                <span>{t.common.yourAccount}</span>
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
-            <li className="text-cx-base font-medium">Connexion</li>
+            <li className="text-cx-base font-medium">{t.auth.breadcrumbLogin}</li>
           </ol>
         </div>
       </div>
@@ -77,10 +79,8 @@ export default function LoginPage() {
           transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="w-full max-w-md"
         >
-          {/* Card */}
           <div className="bg-cx-card rounded-3xl shadow-[0_8px_48px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_48px_rgba(0,0,0,0.5)] overflow-hidden">
 
-            {/* Card top accent */}
             <div className="h-1.5 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
 
             <div className="px-8 sm:px-10 py-7">
@@ -91,10 +91,10 @@ export default function LoginPage() {
                   <img src="/logo.jpg" alt="CuisineXpress" className="h-12 w-auto mx-auto mb-3 rounded-sm" />
                 </Link>
                 <h1 className="text-cx-base text-[26px] font-extrabold tracking-tight">
-                  Connexion
+                  {t.auth.loginTitle}
                 </h1>
                 <p className="text-cx-soft text-[13.5px] mt-0.5">
-                  Accédez à votre espace CuisineXpress
+                  {t.auth.loginSubtitle}
                 </p>
               </div>
 
@@ -102,11 +102,11 @@ export default function LoginPage() {
               {import.meta.env.VITE_USE_MOCK !== 'false' && (
                 <div className="mb-4 rounded-xl bg-amber-500/10 border border-amber-500/25 px-4 py-2.5">
                   <p className="text-[11px] font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wide mb-1">
-                    Compte de démonstration
+                    {t.auth.demoAccount}
                   </p>
                   <div className="flex flex-col gap-0.5 text-[12px] text-amber-800 dark:text-amber-300 font-mono">
-                    <span><span className="text-amber-500 font-semibold">Email :</span> demo@cuisinexpress.ca</span>
-                    <span><span className="text-amber-500 font-semibold">Mot de passe :</span> demo1234</span>
+                    <span><span className="text-amber-500 font-semibold">{t.auth.demoEmailLabel}</span> demo@cuisinexpress.ca</span>
+                    <span><span className="text-amber-500 font-semibold">{t.auth.demoPasswordLabel}</span> demo1234</span>
                   </div>
                 </div>
               )}
@@ -116,12 +116,12 @@ export default function LoginPage() {
 
                 {/* Email */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-cx-sub">Adresse de courriel</label>
+                  <label className="text-[13px] font-semibold text-cx-sub">{t.auth.emailLabel}</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Mail size={16} />
                     </span>
-                    <input type="email" placeholder="exemple@email.com" {...register('email')}
+                    <input type="email" placeholder={t.auth.emailPlaceholder} {...register('email')}
                       className={inputCls(getFieldState(touchedFields.email, !!errors.email), { pl: 'pl-10', pr: 'pr-10', py: 'py-3.5' })}
                     />
                     <span className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -133,7 +133,7 @@ export default function LoginPage() {
 
                 {/* Password */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-cx-sub">Mot de passe</label>
+                  <label className="text-[13px] font-semibold text-cx-sub">{t.auth.passwordLabel}</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Lock size={16} />
@@ -154,11 +154,8 @@ export default function LoginPage() {
 
                 {/* Forgot password */}
                 <div className="flex justify-end -mt-1">
-                  <Link
-                    to="/forgot-password"
-                    className="text-[13px] text-cx-soft hover:text-[#C41E3A] transition-colors"
-                  >
-                    Mot de passe oublié ?
+                  <Link to="/forgot-password" className="text-[13px] text-cx-soft hover:text-[#C41E3A] transition-colors">
+                    {t.auth.forgotPassword}
                   </Link>
                 </div>
 
@@ -175,13 +172,12 @@ export default function LoginPage() {
                 >
                   {isSubmitting ? (
                     <span className="flex items-center gap-2">
-                      <span className="w-4 h-4 border-2 border-white/40 border-t-white
-                        rounded-full animate-spin" />
-                      Connexion…
+                      <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                      <span>{t.auth.signingIn}</span>
                     </span>
                   ) : (
                     <>
-                      Connexion
+                      <span>{t.auth.loginButton}</span>
                       <ArrowRight size={15} />
                     </>
                   )}
@@ -191,18 +187,15 @@ export default function LoginPage() {
               {/* Divider */}
               <div className="flex items-center gap-3 my-4">
                 <div className="flex-1 h-px bg-cx-line" />
-                <span className="text-cx-faint text-[12px]">ou</span>
+                <span className="text-cx-faint text-[12px]">{t.common.or}</span>
                 <div className="flex-1 h-px bg-cx-line" />
               </div>
 
               {/* Register */}
               <p className="text-center text-[13px] text-cx-soft">
-                Vous n'avez pas de compte ?{' '}
-                <Link
-                  to="/register"
-                  className="text-[#C41E3A] font-semibold hover:underline underline-offset-2"
-                >
-                  Créer votre compte
+                <span>{t.auth.noAccount}</span>{' '}
+                <Link to="/register" className="text-[#C41E3A] font-semibold hover:underline underline-offset-2">
+                  {t.auth.createAccount}
                 </Link>
               </p>
             </div>

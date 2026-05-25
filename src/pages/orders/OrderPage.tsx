@@ -10,6 +10,7 @@ import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cart
 import FilterSidebar from '../../components/orders/FilterSidebar'
 import MealCard from '../../components/orders/MealCard'
 import MealCardSkeleton from '../../components/orders/MealCardSkeleton'
+import { useLang } from '../../contexts/LangContext'
 import type { MealFilters, SortOption } from '../../types'
 
 const DEFAULT_FILTERS: MealFilters = {
@@ -21,18 +22,19 @@ const DEFAULT_FILTERS: MealFilters = {
   sort: 'popular',
 }
 
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: 'popular',    label: 'Populaires' },
-  { value: 'name',       label: 'Nom A → Z' },
-  { value: 'price_asc',  label: 'Prix croissant' },
-  { value: 'price_desc', label: 'Prix décroissant' },
-]
-
 const fmt = (n: number) =>
   new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(n)
 
 export default function OrderPage() {
+  const { t } = useLang()
   const [filters, setFilters] = useState<MealFilters>(DEFAULT_FILTERS)
+
+  const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+    { value: 'popular',    label: t.order.sortOptions.popular },
+    { value: 'name',       label: t.order.sortOptions.name },
+    { value: 'price_asc',  label: t.order.sortOptions.price_asc },
+    { value: 'price_desc', label: t.order.sortOptions.price_desc },
+  ]
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [sortOpen, setSortOpen] = useState(false)
 
@@ -118,7 +120,7 @@ export default function OrderPage() {
             {/* Left: title + meta */}
             <div className="hidden lg:flex flex-col justify-center min-w-0 mr-2">
               <span className="text-[14px] font-extrabold text-cx-base leading-none">
-                Commander
+                {t.order.title}
               </span>
               {selectedSchool && selectedWeek && (
                 <span className="text-[11.5px] text-cx-soft mt-0.5 truncate">
@@ -132,7 +134,7 @@ export default function OrderPage() {
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none" />
               <input
                 type="search"
-                placeholder="Rechercher un repas…"
+                placeholder={t.order.searchPlaceholder}
                 value={filters.search}
                 onChange={(e) => patchFilters({ search: e.target.value })}
                 className="w-full pl-8 pr-4 py-2 text-[13.5px] bg-cx-fill border border-cx-edge
@@ -154,7 +156,7 @@ export default function OrderPage() {
             {/* Result count */}
             {!isLoading && (
               <span className="hidden sm:block text-[12.5px] text-cx-soft whitespace-nowrap">
-                {meals.length} résultat{meals.length !== 1 ? 's' : ''}
+                {meals.length} {meals.length !== 1 ? t.order.results_plural : t.order.results}
               </span>
             )}
 
@@ -167,7 +169,7 @@ export default function OrderPage() {
                   transition-colors whitespace-nowrap"
               >
                 <span className="hidden sm:inline">{selectedSort?.label}</span>
-                <span className="sm:hidden">Trier</span>
+                <span className="sm:hidden">{t.order.sort}</span>
                 <ChevronDown
                   size={13}
                   className={`text-cx-soft transition-transform duration-200 ${sortOpen ? 'rotate-180' : ''}`}
@@ -209,7 +211,7 @@ export default function OrderPage() {
                 hover:border-[#C41E3A] hover:text-[#C41E3A] transition-colors"
             >
               <SlidersHorizontal size={14} />
-              <span className="hidden sm:inline">Filtres</span>
+              <span className="hidden sm:inline">{t.order.filters}</span>
               {activeFilterCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 flex items-center
                   justify-center bg-[#C41E3A] text-white text-[9px] font-bold rounded-full">
@@ -310,17 +312,18 @@ export default function OrderPage() {
                   <AlertCircle size={28} className="text-red-400" />
                 </div>
                 <p className="text-cx-base font-semibold text-[16px] mb-1">
-                  Erreur de chargement
+                  {t.order.errorTitle}
                 </p>
                 <p className="text-cx-soft text-[13.5px] mb-5">
-                  Impossible de charger les repas. Vérifiez votre connexion.
+                  {t.order.errorHint}
                 </p>
                 <button
+                  type="button"
                   onClick={() => refetch()}
                   className="px-5 py-2.5 bg-[#7B2535] text-white text-[13.5px] font-semibold
                     rounded-xl hover:bg-[#9B3045] transition-colors"
                 >
-                  Réessayer
+                  {t.order.retry}
                 </button>
               </motion.div>
             )}
@@ -336,17 +339,18 @@ export default function OrderPage() {
                   <Inbox size={28} className="text-cx-faint" />
                 </div>
                 <p className="text-cx-base font-semibold text-[16px] mb-1">
-                  Aucun repas trouvé
+                  {t.order.noResults}
                 </p>
                 <p className="text-cx-soft text-[13.5px] mb-5">
-                  Essayez de modifier vos filtres ou de changer de semaine.
+                  {t.order.noResultsHint}
                 </p>
                 <button
+                  type="button"
                   onClick={clearFilters}
                   className="px-5 py-2.5 bg-cx-muted text-cx-sub text-[13.5px] font-semibold
                     rounded-xl hover:bg-cx-fill transition-colors"
                 >
-                  Effacer les filtres
+                  {t.order.clearFilters}
                 </button>
               </motion.div>
             )}
@@ -430,7 +434,7 @@ export default function OrderPage() {
                   </span>
                 </div>
                 <span className="text-[13px] font-semibold">
-                  {cartCount} repas sélectionné{cartCount > 1 ? 's' : ''}
+                  {cartCount} {cartCount > 1 ? t.order.cartLabel_plural : t.order.cartLabel}
                 </span>
               </div>
               <span className="text-[16px] font-extrabold text-[#F59E0B]">

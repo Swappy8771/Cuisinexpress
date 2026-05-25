@@ -47,8 +47,8 @@ function NavColumn({
       </div>
       <h3 className="text-white font-bold text-[18px] tracking-tight">{title}</h3>
       <ul className="flex flex-col gap-2.5 mt-1">
-        {links.map((link) => (
-          <li key={link.label}>
+        {links.map((link, idx) => (
+          <li key={idx}>
             <Link
               to={link.href}
               className="group/nav flex items-start gap-2 text-white/50
@@ -67,7 +67,7 @@ function NavColumn({
 
 export default function Footer() {
   const { t } = useLang()
-  const infoLinks = t.footer.links.map((label, i) => ({ label, href: INFO_HREFS[i] ?? '#' }))
+  const infoLinks = t.footer.links.map((label, i) => ({ label, href: INFO_HREFS[i] ?? '#', i }))
 
   return (
     <footer className="w-full bg-[#0A0A0A] text-white">

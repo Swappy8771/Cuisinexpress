@@ -10,6 +10,7 @@ import { authService } from '../../services/authService'
 import { useAuthStore } from '../../store/authStore'
 import { getFieldState, inputCls } from '../../lib/formHelpers'
 import { FieldError, StatusIcon } from '../../lib/formUtils'
+import { useLang } from '../../contexts/LangContext'
 import type { AxiosError } from 'axios'
 
 const schema = z.object({
@@ -29,38 +30,10 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-function StrengthBar({ password }: { password: string }) {
-  const score = [/.{8,}/, /[A-Z]/, /[0-9]/, /[^A-Za-z0-9]/].filter((r) =>
-    r.test(password)
-  ).length
-
-  const colors = ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-green-500']
-  const labels = ['Faible', 'Moyen', 'Bien', 'Fort']
-
-  if (!password) return null
-
-  return (
-    <div className="flex items-center gap-2 mt-1.5">
-      <div className="flex gap-1 flex-1">
-        {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-              i <= score ? colors[score - 1] : 'bg-cx-muted'
-            }`}
-          />
-        ))}
-      </div>
-      <span className={`text-[11px] font-semibold ${colors[score - 1]?.replace('bg-', 'text-')}`}>
-        {labels[score - 1] ?? ''}
-      </span>
-    </div>
-  )
-}
-
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const { setAuth } = useAuthStore()
+  const { t } = useLang()
   const navigate = useNavigate()
 
   const {
@@ -71,6 +44,13 @@ export default function RegisterPage() {
   } = useForm<FormData>({ resolver: zodResolver(schema), mode: 'onTouched' })
 
   const passwordValue = useWatch({ control, name: 'password', defaultValue: '' })
+
+  const strengthLabels = [t.auth.strengthWeak, t.auth.strengthFair, t.auth.strengthGood, t.auth.strengthStrong]
+  const strengthColors = ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-green-500']
+
+  const passwordScore = [/.{8,}/, /[A-Z]/, /[0-9]/, /[^A-Za-z0-9]/].filter((r) =>
+    r.test(passwordValue)
+  ).length
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -100,17 +80,17 @@ export default function RegisterPage() {
             <li>
               <Link to="/" className="flex items-center gap-1 hover:text-[#C41E3A] transition-colors">
                 <Home size={13} />
-                Accueil
+                <span>{t.common.home}</span>
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
             <li>
               <Link to="/account" className="hover:text-[#C41E3A] transition-colors">
-                Votre compte
+                <span>{t.common.yourAccount}</span>
               </Link>
             </li>
             <li><ChevronRight size={12} /></li>
-            <li className="text-cx-base font-medium">Créer votre compte</li>
+            <li className="text-cx-base font-medium">{t.auth.breadcrumbRegister}</li>
           </ol>
         </div>
       </div>
@@ -125,7 +105,6 @@ export default function RegisterPage() {
         >
           <div className="bg-cx-card rounded-3xl shadow-[0_8px_48px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_48px_rgba(0,0,0,0.5)] overflow-hidden">
 
-            {/* Top accent */}
             <div className="h-1.5 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
 
             <div className="px-8 sm:px-10 py-7">
@@ -136,10 +115,10 @@ export default function RegisterPage() {
                   <img src="/logo.jpg" alt="CuisineXpress" className="h-12 w-auto mx-auto mb-3 rounded-sm" />
                 </Link>
                 <h1 className="text-cx-base text-[26px] font-extrabold tracking-tight">
-                  Créer votre compte
+                  {t.auth.registerTitle}
                 </h1>
                 <p className="text-cx-soft text-[13.5px] mt-0.5">
-                  Rejoignez CuisineXpress dès aujourd'hui
+                  {t.auth.registerSubtitle}
                 </p>
               </div>
 
@@ -149,8 +128,8 @@ export default function RegisterPage() {
                 {/* First + Last name */}
                 <div className="grid grid-cols-2 gap-3">
                   {([
-                    { name: 'firstName' as const, label: 'Prénom', placeholder: 'Marie' },
-                    { name: 'lastName' as const, label: 'Nom', placeholder: 'Tremblay' },
+                    { name: 'firstName' as const, label: t.auth.firstName, placeholder: 'Marie' },
+                    { name: 'lastName' as const,  label: t.auth.lastName,  placeholder: 'Tremblay' },
                   ] as const).map(({ name, label, placeholder }) => {
                     const fs = getFieldState(touchedFields[name], !!errors[name])
                     return (
@@ -174,12 +153,12 @@ export default function RegisterPage() {
 
                 {/* Email */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-cx-sub">Adresse de courriel</label>
+                  <label className="text-[13px] font-semibold text-cx-sub">{t.auth.emailLabel}</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Mail size={16} />
                     </span>
-                    <input type="email" placeholder="exemple@email.com" {...register('email')}
+                    <input type="email" placeholder={t.auth.emailPlaceholder} {...register('email')}
                       className={inputCls(getFieldState(touchedFields.email, !!errors.email), { pl: 'pl-10', pr: 'pr-10', py: 'py-3.5' })} />
                     <span className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
                       <StatusIcon state={getFieldState(touchedFields.email, !!errors.email)} />
@@ -188,10 +167,11 @@ export default function RegisterPage() {
                   <FieldError message={errors.email?.message} />
                 </div>
 
-                {/* Phone (optional) */}
+                {/* Phone */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[13px] font-semibold text-cx-sub">
-                    Téléphone <span className="text-cx-faint font-normal">(optionnel)</span>
+                    <span>{t.auth.phoneLabel}</span>{' '}
+                    <span className="text-cx-faint font-normal">{t.auth.phoneOptional}</span>
                   </label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
@@ -204,7 +184,7 @@ export default function RegisterPage() {
 
                 {/* Password */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-cx-sub">Mot de passe</label>
+                  <label className="text-[13px] font-semibold text-cx-sub">{t.auth.passwordLabel}</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Lock size={16} />
@@ -219,7 +199,24 @@ export default function RegisterPage() {
                       </button>
                     </div>
                   </div>
-                  <StrengthBar password={passwordValue} />
+                  {/* Strength bar — inline so it can use t from parent scope */}
+                  {passwordValue && (
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <div className="flex gap-1 flex-1">
+                        {[1, 2, 3, 4].map((i) => (
+                          <div
+                            key={i}
+                            className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                              i <= passwordScore ? strengthColors[passwordScore - 1] : 'bg-cx-muted'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className={`text-[11px] font-semibold ${strengthColors[passwordScore - 1]?.replace('bg-', 'text-')}`}>
+                        {strengthLabels[passwordScore - 1] ?? ''}
+                      </span>
+                    </div>
+                  )}
                   <FieldError message={errors.password?.message} />
                 </div>
 
@@ -242,9 +239,9 @@ export default function RegisterPage() {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                     </div>
                     <span className="text-[13.5px] text-cx-sub leading-snug pt-0.5">
-                      J'accepte les{' '}
+                      <span>{t.auth.terms}</span>{' '}
                       <Link to="/terms" className="text-[#C41E3A] hover:underline underline-offset-2 font-medium">
-                        conditions d'utilisation
+                        {t.auth.termsLink}
                       </Link>
                     </span>
                   </label>
@@ -252,12 +249,12 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Privacy policy note */}
-                <div className="flex items-start gap-2.5 bg-cx-page rounded-xl px-4 py-3 mt-0">
+                <div className="flex items-start gap-2.5 bg-cx-page rounded-xl px-4 py-3">
                   <ShieldCheck size={15} className="text-[#C41E3A] flex-shrink-0 mt-0.5" />
                   <p className="text-[12.5px] text-cx-soft leading-relaxed">
-                    Lien pour consulter{' '}
+                    <span>{t.auth.dataPolicyView}</span>{' '}
                     <Link to="/politique" className="text-[#C41E3A] hover:underline underline-offset-2 font-medium">
-                      notre politique en matière de gestion des données
+                      {t.auth.dataPolicy}
                     </Link>.
                   </p>
                 </div>
@@ -275,13 +272,12 @@ export default function RegisterPage() {
                 >
                   {isSubmitting ? (
                     <span className="flex items-center gap-2">
-                      <span className="w-4 h-4 border-2 border-white/40 border-t-white
-                        rounded-full animate-spin" />
-                      Création…
+                      <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                      <span>{t.auth.creating}</span>
                     </span>
                   ) : (
                     <>
-                      Confirmer
+                      <span>{t.auth.confirmButton}</span>
                       <ArrowRight size={15} />
                     </>
                   )}
@@ -291,18 +287,15 @@ export default function RegisterPage() {
               {/* Divider */}
               <div className="flex items-center gap-3 my-4">
                 <div className="flex-1 h-px bg-cx-line" />
-                <span className="text-cx-faint text-[12px]">ou</span>
+                <span className="text-cx-faint text-[12px]">{t.common.or}</span>
                 <div className="flex-1 h-px bg-cx-line" />
               </div>
 
               {/* Login link */}
               <p className="text-center text-[13px] text-cx-soft">
-                Vous avez déjà un compte ?{' '}
-                <Link
-                  to="/login"
-                  className="text-[#C41E3A] font-semibold hover:underline underline-offset-2"
-                >
-                  Connexion
+                <span>{t.auth.alreadyAccount}</span>{' '}
+                <Link to="/login" className="text-[#C41E3A] font-semibold hover:underline underline-offset-2">
+                  {t.auth.signIn}
                 </Link>
               </p>
             </div>
