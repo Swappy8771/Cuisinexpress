@@ -4,36 +4,11 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./src//assets/logo.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate" />
     <title>CuisineXpress</title>
-
-    <!-- Hide the Google Translate toolbar and prevent colour overrides -->
-    <style>
-      body { top: 0 !important; }
-      .skiptranslate { display: none !important; }
-      #goog-gt-tt, .goog-te-banner-frame { display: none !important; }
-      .goog-te-combo { display: none !important; }
-      /* Stop GT <font> wrappers from overriding explicit text colours */
-      header a font, header button font { color: inherit !important; }
-    </style>
   </head>
   <body>
-    <!-- Hidden Google Translate element — triggered programmatically -->
-    <div id="google_translate_element" style="display:none;visibility:hidden;"></div>
-
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-
-    <!-- Google Translate widget init -->
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement(
-          { pageLanguage: 'fr', autoDisplay: false },
-          'google_translate_element'
-        );
-      }
-    </script>
-    <script type="text/javascript"
-      src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-    </script>
   </body>
 </html>

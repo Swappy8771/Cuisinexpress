@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, Plus, Minus, ShoppingCart, Flame, Star, CheckCircle2 } from 'lucide-react'
-import type { Meal, Allergy, MenuCategory } from '../../types'
+import type { Meal, Allergy, MenuCategory, MealTag } from '../../types'
 import { fmt, TAG_CONFIG } from '../../lib/menuConfig'
 import { useCartStore } from '../../store/cartStore'
 import { useLang } from '../../contexts/LangContext'
@@ -16,6 +16,11 @@ interface Props {
 export default function MealCard({ meal, allergies, categories }: Props) {
   const navigate = useNavigate()
   const { t } = useLang()
+  const tagLabels: Record<MealTag, string> = {
+    hot: t.menu.tagLabels.hot, cold: t.menu.tagLabels.cold,
+    vegetarian: t.menu.tagLabels.vegetarian, vegan: t.menu.tagLabels.vegan,
+    halal: t.menu.tagLabels.halal, 'gluten-free': t.menu.tagLabels['gluten-free'],
+  }
   const [isFav, setIsFav] = useState(false)
   const [justAdded, setJustAdded] = useState(false)
   const { addItem, updateQty, getQty } = useCartStore()
@@ -158,7 +163,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
                     text-[10.5px] font-semibold ${cfg.cardColor}`}
                 >
                   <Icon size={9} />
-                  {cfg.label}
+                  {tagLabels[tag]}
                 </span>
               )
             })}

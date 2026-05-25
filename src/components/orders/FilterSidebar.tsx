@@ -24,14 +24,16 @@ const TAG_META: Record<MealTag, { emoji: string; active: string; inactive: strin
 
 const ALL_TAGS = Object.keys(TAG_META) as MealTag[]
 
-function fmtWeekRange(startDate: string, endDate: string): string {
+function fmtWeekRange(startDate: string, endDate: string, lang: string): string {
+  const locale = lang === 'en' ? 'en-CA' : 'fr-CA'
   const fmt = (d: string) =>
-    new Date(d + 'T12:00:00').toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' })
+    new Date(d + 'T12:00:00').toLocaleDateString(locale, { day: 'numeric', month: 'short' })
   const s = fmt(startDate)
   const e = fmt(endDate)
-  const sMonth = s.split(' ')[1]
-  const eMonth = e.split(' ')[1]
-  return sMonth === eMonth ? `${s.split(' ')[0]}–${e}` : `${s} – ${e}`
+  const parts = (str: string) => str.split(/\s+/)
+  const sMonth = parts(s)[1]
+  const eMonth = parts(e)[1]
+  return sMonth === eMonth ? `${parts(s)[0]}–${e}` : `${s} – ${e}`
 }
 
 const sectionTitle = "text-[11px] font-bold tracking-[0.08em] uppercase text-cx-soft mb-2.5"
@@ -46,7 +48,7 @@ export default function FilterSidebar({
   onClear,
   onClose,
 }: Props) {
-  const { t } = useLang()
+  const { t, lang } = useLang()
 
   const tagLabels: Record<MealTag, string> = {
     vegetarian:   t.filter.tags.vegetarian,
@@ -160,7 +162,7 @@ export default function FilterSidebar({
                     {w.label}
                   </span>
                   <span className={`text-[12px] font-semibold mt-0.5 leading-tight text-center ${active ? 'text-white' : 'text-cx-body'}`}>
-                    {fmtWeekRange(w.startDate, w.endDate)}
+                    {fmtWeekRange(w.startDate, w.endDate, lang)}
                   </span>
                 </button>
               )

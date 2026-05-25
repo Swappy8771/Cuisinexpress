@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query'
 import { meals, categories, weeks } from '../../lib/mockData'
 import { fmt, TAG_CONFIG, DAYS, fmtWeekRange, fmtDeliveryDate } from '../../lib/menuConfig'
 import type { DayName } from '../../lib/menuConfig'
+import type { MealTag } from '../../types'
 import { studentsService } from '../../services/studentsService'
 import { useCartStore } from '../../store/cartStore'
 import { useAuthStore } from '../../store/authStore'
@@ -16,7 +17,12 @@ import CategoryCarousel from '../../components/orders/CategoryCarousel'
 import { useLang } from '../../contexts/LangContext'
 
 export default function MealDetailPage() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
+  const tagLabels: Record<MealTag, string> = {
+    hot: t.menu.tagLabels.hot, cold: t.menu.tagLabels.cold,
+    vegetarian: t.menu.tagLabels.vegetarian, vegan: t.menu.tagLabels.vegan,
+    halal: t.menu.tagLabels.halal, 'gluten-free': t.menu.tagLabels['gluten-free'],
+  }
   const { mealId } = useParams<{ mealId: string }>()
   const navigate   = useNavigate()
   const meal       = meals.find((m) => m.id === mealId)
@@ -158,7 +164,7 @@ export default function MealDetailPage() {
                       <span key={tag}
                         className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full
                           text-[10.5px] font-semibold bg-cx-fill border border-cx-edge ${cfg.color}`}>
-                        <Icon size={9} /> {cfg.label}
+                        <Icon size={9} /> {tagLabels[tag]}
                       </span>
                     )
                   })}
@@ -256,7 +262,7 @@ export default function MealDetailPage() {
                 {/* Week range label */}
                 {selectedWeek && (
                   <p className="text-[12px] text-cx-soft font-medium">
-                    {fmtWeekRange(selectedWeek.startDate, selectedWeek.endDate)}
+                    {fmtWeekRange(selectedWeek.startDate, selectedWeek.endDate, lang)}
                   </p>
                 )}
 
@@ -264,6 +270,7 @@ export default function MealDetailPage() {
                 <div className="flex flex-wrap gap-2">
                   {DAYS.map((day) => {
                     const active = selectedDay === day
+                    const label = t.menu.dayLabels[day]
                     return (
                       <button type="button"
                         key={day}
@@ -276,7 +283,7 @@ export default function MealDetailPage() {
                           }`}
                       >
                         {active && <Check size={12} strokeWidth={3} />}
-                        <span>{day}</span>
+                        <span>{label}</span>
                       </button>
                     )
                   })}
@@ -374,12 +381,14 @@ export default function MealDetailPage() {
                 <Truck size={14} className="text-cx-soft" />
               </div>
               <p className="text-[13.5px] text-cx-body">
-                Sera servi{' '}
+                {t.mealDetail.willBeServed}{' '}
                 <span className="font-bold text-cx-base">
-                  {selectedWeek ? fmtDeliveryDate(selectedWeek.startDate, selectedDay) : selectedDay.toLowerCase()}
+                  {selectedWeek
+                    ? fmtDeliveryDate(selectedWeek.startDate, selectedDay, t.menu.dayLabels[selectedDay], lang)
+                    : t.menu.dayLabels[selectedDay].toLowerCase()}
                 </span>
                 {student && (
-                  <> pour <span className="font-bold text-cx-base">{student.firstName} {student.lastName}</span></>
+                  <> {t.mealDetail.forStudent} <span className="font-bold text-cx-base">{student.firstName} {student.lastName}</span></>
                 )}
               </p>
             </div>

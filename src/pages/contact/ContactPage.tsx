@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Home, ChevronRight, Phone, Mail, MapPin, Send, CheckCircle2 } from 'lucide-react'
+import { useLang } from '../../contexts/LangContext'
 
 interface FormState {
   name: string
@@ -13,6 +14,7 @@ interface FormState {
 const EMPTY: FormState = { name: '', email: '', subject: '', message: '' }
 
 export default function ContactPage() {
+  const { t } = useLang()
   const [form, setForm]   = useState<FormState>(EMPTY)
   const [sent, setSent]   = useState(false)
   const [loading, setLoading] = useState(false)
@@ -30,6 +32,12 @@ export default function ContactPage() {
     setForm(EMPTY)
   }
 
+  const contactItems = [
+    { icon: Phone,  label: t.contact.phoneLabel,   value: '(581) 992-9952',        href: 'tel:5819929952' },
+    { icon: Mail,   label: t.contact.emailLabel,   value: 'info@cuisinexpress.ca', href: 'mailto:info@cuisinexpress.ca' },
+    { icon: MapPin, label: t.contact.addressLabel, value: 'Québec, Canada',        href: '#' },
+  ]
+
   return (
     <div className="min-h-screen bg-cx-page transition-colors duration-300">
 
@@ -43,23 +51,22 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/40 to-black/20" />
         <div className="absolute inset-0 flex flex-col justify-center">
           <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb */}
-          <ol className="flex items-center gap-1.5 text-[13px] text-white/60 mb-3">
-            <li>
-              <Link to="/" className="flex items-center gap-1 hover:text-white transition-colors">
-                <Home size={13} />
-                Accueil
-              </Link>
-            </li>
-            <li><ChevronRight size={12} /></li>
-            <li className="text-white font-medium">Contactez-nous</li>
-          </ol>
-          <h1 className="text-white text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Contactez-nous
-          </h1>
-          <p className="text-white/70 text-[15px] mt-2">
-            Notre équipe sera heureuse de répondre à vos questions ou commentaires.
-          </p>
+            <ol className="flex items-center gap-1.5 text-[13px] text-white/60 mb-3">
+              <li>
+                <Link to="/" className="flex items-center gap-1 hover:text-white transition-colors">
+                  <Home size={13} />
+                  <span>{t.common.home}</span>
+                </Link>
+              </li>
+              <li><ChevronRight size={12} /></li>
+              <li className="text-white font-medium">{t.contact.breadcrumb}</li>
+            </ol>
+            <h1 className="text-white text-3xl sm:text-4xl font-extrabold tracking-tight">
+              {t.contact.title}
+            </h1>
+            <p className="text-white/70 text-[15px] mt-2">
+              {t.contact.subtitle}
+            </p>
           </div>
         </div>
       </div>
@@ -75,14 +82,10 @@ export default function ContactPage() {
             className="flex flex-col gap-4"
           >
             <h2 className="text-[16px] font-extrabold text-cx-base">
-              Pour toute question ou demande d'information
+              {t.contact.infoTitle}
             </h2>
 
-            {[
-              { icon: Phone, label: 'Téléphone', value: '(581) 992-9952', href: 'tel:5819929952' },
-              { icon: Mail,  label: 'Courriel',  value: 'info@cuisinexpress.ca', href: 'mailto:info@cuisinexpress.ca' },
-              { icon: MapPin, label: 'Adresse',  value: 'Québec, Canada', href: '#' },
-            ].map(({ icon: Icon, label, value, href }) => (
+            {contactItems.map(({ icon: Icon, label, value, href }) => (
               <a
                 key={label}
                 href={href}
@@ -117,7 +120,7 @@ export default function ContactPage() {
               <div className="px-7 py-7">
                 <h2 className="text-[16px] font-extrabold text-cx-base mb-5 flex items-center gap-2">
                   <Mail size={16} className="text-[#C41E3A]" />
-                  Par message
+                  {t.contact.formTitle}
                 </h2>
 
                 {sent ? (
@@ -130,16 +133,14 @@ export default function ContactPage() {
                       <CheckCircle2 size={32} className="text-green-500" strokeWidth={1.5} />
                     </div>
                     <div>
-                      <h3 className="text-[18px] font-extrabold text-cx-base mb-1">Message envoyé !</h3>
-                      <p className="text-cx-soft text-[13.5px]">
-                        Nous vous répondrons dans les plus brefs délais.
-                      </p>
+                      <h3 className="text-[18px] font-extrabold text-cx-base mb-1">{t.contact.successTitle}</h3>
+                      <p className="text-cx-soft text-[13.5px]">{t.contact.successBody}</p>
                     </div>
                     <button
                       onClick={() => setSent(false)}
                       className="mt-2 text-[13px] text-[#C41E3A] font-semibold hover:underline underline-offset-2"
                     >
-                      Envoyer un autre message
+                      {t.contact.sendAnother}
                     </button>
                   </motion.div>
                 ) : (
@@ -147,20 +148,19 @@ export default function ContactPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[12.5px] font-semibold text-cx-sub">Nom complet</label>
+                        <label className="text-[12.5px] font-semibold text-cx-sub">{t.contact.nameLabel}</label>
                         <input
                           required
                           value={form.name}
                           onChange={set('name')}
-                          placeholder="Marie Tremblay"
+                          placeholder={t.contact.namePlaceholder}
                           className="w-full px-4 py-3 rounded-xl border border-cx-edge text-[14px]
-                            bg-cx-fill outline-none transition-all
-                            placeholder:text-cx-faint
+                            bg-cx-fill outline-none transition-all placeholder:text-cx-faint
                             focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
                         />
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[12.5px] font-semibold text-cx-sub">Adresse e-mail</label>
+                        <label className="text-[12.5px] font-semibold text-cx-sub">{t.contact.emailFormLabel}</label>
                         <input
                           type="email"
                           required
@@ -168,38 +168,35 @@ export default function ContactPage() {
                           onChange={set('email')}
                           placeholder="marie@email.com"
                           className="w-full px-4 py-3 rounded-xl border border-cx-edge text-[14px]
-                            bg-cx-fill outline-none transition-all
-                            placeholder:text-cx-faint
+                            bg-cx-fill outline-none transition-all placeholder:text-cx-faint
                             focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
                         />
                       </div>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[12.5px] font-semibold text-cx-sub">Sujet</label>
+                      <label className="text-[12.5px] font-semibold text-cx-sub">{t.contact.subjectLabel}</label>
                       <input
                         required
                         value={form.subject}
                         onChange={set('subject')}
-                        placeholder="Objet de votre message"
+                        placeholder={t.contact.subjectPlaceholder}
                         className="w-full px-4 py-3 rounded-xl border border-cx-edge text-[14px]
-                          bg-cx-fill outline-none transition-all
-                          placeholder:text-cx-faint
+                          bg-cx-fill outline-none transition-all placeholder:text-cx-faint
                           focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[12.5px] font-semibold text-cx-sub">Message</label>
+                      <label className="text-[12.5px] font-semibold text-cx-sub">{t.contact.messageLabel}</label>
                       <textarea
                         required
                         rows={5}
                         value={form.message}
                         onChange={set('message')}
-                        placeholder="Votre message…"
+                        placeholder={t.contact.messagePlaceholder}
                         className="w-full px-4 py-3 rounded-xl border border-cx-edge text-[14px]
-                          bg-cx-fill outline-none transition-all resize-none
-                          placeholder:text-cx-faint
+                          bg-cx-fill outline-none transition-all resize-none placeholder:text-cx-faint
                           focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
                       />
                     </div>
@@ -216,12 +213,12 @@ export default function ContactPage() {
                       {loading ? (
                         <span className="flex items-center gap-2">
                           <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                          Envoi…
+                          <span>{t.contact.sending}</span>
                         </span>
                       ) : (
                         <>
                           <Send size={14} />
-                          Envoyer
+                          <span>{t.contact.send}</span>
                         </>
                       )}
                     </button>
