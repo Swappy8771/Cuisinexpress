@@ -73,8 +73,8 @@ export default function Footer() {
     <footer className="w-full bg-[#0A0A0A] text-white">
 
       {/* Main footer body */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10 sm:pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-16">
 
           {/* Column 1 — Brand */}
           <motion.div
@@ -83,7 +83,7 @@ export default function Footer() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="flex flex-col gap-6 sm:col-span-2 lg:col-span-1"
+            className="flex flex-col gap-5 sm:col-span-2 lg:col-span-1"
           >
             {/* Logo */}
             <Link to="/" className="inline-block w-fit group">
@@ -166,8 +166,8 @@ export default function Footer() {
       </div>
 
       {/* Copyright bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
           <p className="text-white/35 text-[12.5px]">
             Copyright ©2026{' '}
             <a

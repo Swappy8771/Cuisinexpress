@@ -8,7 +8,8 @@ import { Eye, EyeOff, ChevronRight, Home, Mail, Lock, User, Phone, ArrowRight, S
 import { toast } from 'sonner'
 import { authService } from '../../services/authService'
 import { useAuthStore } from '../../store/authStore'
-import { getFieldState, inputCls, FieldError, StatusIcon } from '../../lib/formUtils'
+import { getFieldState, inputCls } from '../../lib/formHelpers'
+import { FieldError, StatusIcon } from '../../lib/formUtils'
 import type { AxiosError } from 'axios'
 
 const schema = z.object({
@@ -146,7 +147,7 @@ export default function RegisterPage() {
               <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3" noValidate>
 
                 {/* First + Last name */}
-                <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {([
                     { name: 'firstName' as const, label: 'Prénom', placeholder: 'Marie' },
                     { name: 'lastName' as const, label: 'Nom', placeholder: 'Tremblay' },
@@ -230,7 +231,7 @@ export default function RegisterPage() {
                       <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center
                         transition-all duration-200
                         peer-checked:bg-[#7B2535] peer-checked:border-[#7B2535]
-                        ${errors.terms ? 'border-red-400 bg-red-50/40' : 'border-cx-edge bg-cx-card'}
+                        ${errors.terms ? 'border-red-400 bg-red-500/10' : 'border-cx-edge bg-cx-card'}
                         group-hover:border-[#C41E3A]`}>
                         <svg className="w-3 h-3 text-white hidden peer-checked:block" viewBox="0 0 12 10" fill="none">
                           <path d="M1 5l3.5 3.5L11 1" stroke="currentColor" strokeWidth="2"

@@ -50,7 +50,7 @@ export default function Hero() {
   }
 
   return (
-    <section className="relative w-full h-[88vh] min-h-[540px] overflow-hidden bg-[#0A0A0A]">
+    <section className="relative w-full h-[70vh] sm:h-[88vh] min-h-[480px] overflow-hidden bg-[#0A0A0A]">
 
       {/* Slides */}
       <AnimatePresence custom={direction} initial={false}>
@@ -100,7 +100,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="text-white font-extrabold leading-[1.1] tracking-tight
-            text-4xl sm:text-5xl lg:text-6xl max-w-2xl"
+            text-3xl sm:text-5xl lg:text-6xl max-w-2xl"
         >
           {t.hero.title1}
           <br />
@@ -115,7 +115,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35, duration: 0.6 }}
-          className="mt-5 text-white/70 text-[16px] max-w-md leading-relaxed"
+          className="mt-4 text-white/70 text-[14px] sm:text-[16px] max-w-md leading-relaxed"
         >
           {t.hero.subtitle}
         </motion.p>
@@ -125,12 +125,12 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="mt-8 flex items-center gap-4"
+          className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3 sm:gap-4"
         >
           <a
             href="/commander"
             className="group inline-flex items-center gap-3 bg-[#C41E3A] hover:bg-[#a01830]
-              text-white font-bold text-[15px] px-7 py-3.5 rounded-full
+              text-white font-bold text-[14px] sm:text-[15px] px-5 sm:px-7 py-3 sm:py-3.5 rounded-full
               transition-all duration-300
               shadow-[0_4px_20px_rgba(196,30,58,0.45)]
               hover:shadow-[0_8px_32px_rgba(196,30,58,0.6)]
@@ -146,7 +146,7 @@ export default function Hero() {
           <a
             href="/nos-ecoles"
             className="group inline-flex items-center gap-3 bg-[#7B2535] hover:bg-[#9B3045]
-              text-white font-bold text-[15px] px-7 py-3.5 rounded-full
+              text-white font-bold text-[14px] sm:text-[15px] px-5 sm:px-7 py-3 sm:py-3.5 rounded-full
               transition-all duration-300
               shadow-[0_4px_20px_rgba(123,37,53,0.45)]
               hover:shadow-[0_8px_32px_rgba(123,37,53,0.6)]
@@ -162,7 +162,7 @@ export default function Hero() {
       </div>
 
       {/* Progress dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+      <div className="absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
         {SLIDE_IMAGES.map((_, i) => (
           <button
             key={i}
@@ -186,7 +186,7 @@ export default function Hero() {
       </div>
 
       {/* Slide counter */}
-      <div className="absolute bottom-8 right-8 z-20 text-white/40 text-xs font-mono tracking-widest">
+      <div className="absolute bottom-5 sm:bottom-8 right-4 sm:right-8 z-20 text-white/40 text-xs font-mono tracking-widest">
         {String(current + 1).padStart(2, '0')} / {String(SLIDE_IMAGES.length).padStart(2, '0')}
       </div>
     </section>

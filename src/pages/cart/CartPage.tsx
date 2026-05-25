@@ -47,7 +47,7 @@ export default function CartPage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-28 lg:pb-8">
 
         {/* Empty state */}
         {items.length === 0 && (
@@ -56,7 +56,7 @@ export default function CartPage() {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center py-24 text-center"
           >
-            <div className="w-20 h-20 rounded-full bg-[#FFF0F2] flex items-center justify-center mb-6">
+            <div className="w-20 h-20 rounded-full bg-[#C41E3A]/10 flex items-center justify-center mb-6">
               <ShoppingBag size={32} className="text-[#C41E3A]" strokeWidth={1.5} />
             </div>
             <h2 className="text-[20px] font-bold text-cx-base mb-2">Votre panier est vide</h2>
@@ -145,7 +145,7 @@ export default function CartPage() {
                           <button
                             onClick={() => updateQty(item.meal.id, -1)}
                             className="w-7 h-7 flex items-center justify-center rounded-lg
-                              text-cx-soft hover:bg-[#FFF0F2] hover:text-[#C41E3A]
+                              text-cx-soft hover:bg-[#C41E3A]/10 hover:text-[#C41E3A]
                               transition-colors duration-150"
                             aria-label="Diminuer"
                           >
@@ -157,7 +157,7 @@ export default function CartPage() {
                           <button
                             onClick={() => updateQty(item.meal.id, +1)}
                             className="w-7 h-7 flex items-center justify-center rounded-lg
-                              text-cx-soft hover:bg-[#FFF0F2] hover:text-[#C41E3A]
+                              text-cx-soft hover:bg-[#C41E3A]/10 hover:text-[#C41E3A]
                               transition-colors duration-150"
                             aria-label="Augmenter"
                           >
@@ -254,6 +254,26 @@ export default function CartPage() {
           </div>
         )}
       </div>
+      {/* Mobile sticky checkout bar */}
+      {items.length > 0 && (
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-cx-card border-t border-cx-line
+          shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] px-4 py-3">
+          <div className="flex items-center justify-between mb-2.5">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[11px] text-cx-soft font-medium">Total (TPS + TVQ)</span>
+              <span className="text-[18px] font-extrabold text-[#C41E3A] leading-none">{fmt(grandTotal)}</span>
+            </div>
+            <span className="text-[12px] text-cx-soft">{fmt(taxes)} taxes</span>
+          </div>
+          <button
+            className="w-full bg-[#C41E3A] hover:bg-[#a01830] text-white font-bold
+              text-[14px] py-3 rounded-xl transition-all duration-200
+              hover:shadow-[0_4px_20px_rgba(196,30,58,0.4)] active:scale-[0.98]"
+          >
+            Passer la commande
+          </button>
+        </div>
+      )}
     </div>
   )
 }

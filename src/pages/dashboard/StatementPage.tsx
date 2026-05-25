@@ -42,8 +42,8 @@ export default function StatementPage() {
   const stats = data
     ? [
         { label: 'Solde actuel',   value: fmt(data.balance),            icon: Wallet,      color: 'text-cx-base', bg: 'bg-cx-fill' },
-        { label: 'Total crédités', value: fmt(data.totalCredits),       icon: TrendingUp,  color: 'text-green-600',  bg: 'bg-green-50' },
-        { label: 'Total débités',  value: fmt(Math.abs(data.totalDebits)), icon: TrendingDown, color: 'text-[#C41E3A]', bg: 'bg-[#FFF0F2]' },
+        { label: 'Total crédités', value: fmt(data.totalCredits),       icon: TrendingUp,  color: 'text-green-600 dark:text-green-400',  bg: 'bg-green-500/10' },
+        { label: 'Total débités',  value: fmt(Math.abs(data.totalDebits)), icon: TrendingDown, color: 'text-[#C41E3A]', bg: 'bg-[#C41E3A]/10' },
       ]
     : []
 
@@ -65,8 +65,8 @@ export default function StatementPage() {
         </div>
 
         {isError && (
-          <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3
-            text-red-600 text-[13.5px]">
+          <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3
+            text-red-600 dark:text-red-400 text-[13.5px]">
             Impossible de charger votre relevé. Veuillez réessayer.
           </div>
         )}
@@ -123,7 +123,7 @@ export default function StatementPage() {
                     </span>
                     <div className="flex items-center gap-3 min-w-0">
                       <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-                        ${t.type === 'credit' ? 'bg-green-50' : 'bg-[#FFF0F2]'}`}>
+                        ${t.type === 'credit' ? 'bg-green-500/10' : 'bg-[#C41E3A]/10'}`}>
                         {t.type === 'credit'
                           ? <ArrowDownLeft size={14} className="text-green-600" />
                           : <ArrowUpRight size={14} className="text-[#C41E3A]" />

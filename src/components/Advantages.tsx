@@ -4,11 +4,11 @@ import { Flame, ShieldCheck, CreditCard, Award, CalendarX } from 'lucide-react'
 import { useLang } from '../contexts/LangContext'
 
 const ADVANTAGE_META = [
-  { icon: Flame,      accent: '#C41E3A', bg: '#FFF0F2' },
-  { icon: ShieldCheck, accent: '#1A6FC4', bg: '#EFF6FF' },
-  { icon: CreditCard,  accent: '#0A7C59', bg: '#EDFAF4' },
-  { icon: Award,       accent: '#B45309', bg: '#FFFBEB' },
-  { icon: CalendarX,   accent: '#7B2535', bg: '#FDF2F4' },
+  { icon: Flame,       accent: '#C41E3A', iconBg: 'bg-[#C41E3A]/10' },
+  { icon: ShieldCheck, accent: '#1A6FC4', iconBg: 'bg-blue-500/10' },
+  { icon: CreditCard,  accent: '#0A7C59', iconBg: 'bg-emerald-500/10' },
+  { icon: Award,       accent: '#B45309', iconBg: 'bg-amber-500/10' },
+  { icon: CalendarX,   accent: '#7B2535', iconBg: 'bg-[#7B2535]/10' },
 ]
 
 const containerVariants = {
@@ -28,7 +28,7 @@ const cardVariants = {
 export default function Advantages() {
   const { t } = useLang()
   const advantages = t.advantages.items.map((item, i) => ({
-    ...ADVANTAGE_META[i],
+    ...(ADVANTAGE_META[i] ?? ADVANTAGE_META[0]),
     title: item.title,
     description: item.description,
   }))
@@ -88,14 +88,14 @@ type AdvantageCardProps = {
   title: string
   description: string
   accent: string
-  bg: string
+  iconBg: string
 }
 
-function AdvantageCard({ icon: Icon, title, description, accent, bg }: AdvantageCardProps) {
+function AdvantageCard({ icon: Icon, title, description, accent, iconBg }: AdvantageCardProps) {
   return (
     <motion.div
       variants={cardVariants}
-      className="group relative flex flex-col gap-5 p-7 bg-cx-card rounded-2xl
+      className="group relative flex flex-col gap-5 p-6 sm:p-7 bg-cx-card rounded-2xl
         border border-cx-line hover:border-transparent
         hover:shadow-[0_16px_48px_rgba(0,0,0,0.10)]
         transition-all duration-400 overflow-hidden"
@@ -109,19 +109,18 @@ function AdvantageCard({ icon: Icon, title, description, accent, bg }: Advantage
 
       {/* Icon */}
       <div
-        className="w-14 h-14 rounded-xl flex items-center justify-center
-          transition-transform duration-300 group-hover:scale-110"
-        style={{ background: bg }}
+        className={`w-14 h-14 rounded-xl ${iconBg} flex items-center justify-center
+          transition-transform duration-300 group-hover:scale-110`}
       >
         <Icon size={26} style={{ color: accent }} strokeWidth={1.8} />
       </div>
 
       {/* Text */}
       <div>
-        <h3 className="text-cx-base text-[17px] font-bold mb-2 tracking-tight">
+        <h3 className="text-cx-base text-[16px] sm:text-[17px] font-bold mb-2 tracking-tight">
           {title}
         </h3>
-        <p className="text-cx-body text-[14px] leading-relaxed">
+        <p className="text-cx-body text-[13.5px] sm:text-[14px] leading-relaxed">
           {description}
         </p>
       </div>

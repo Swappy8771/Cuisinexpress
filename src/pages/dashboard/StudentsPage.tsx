@@ -221,7 +221,7 @@ export default function StudentsPage() {
                   <button
                     onClick={() => removeMutation.mutate(s.id)}
                     disabled={removeMutation.isPending}
-                    className="opacity-0 group-hover:opacity-100 p-2 rounded-lg hover:bg-red-50
+                    className="opacity-0 group-hover:opacity-100 p-2 rounded-lg hover:bg-red-500/10
                       text-cx-faint hover:text-red-500 transition-all duration-200 disabled:opacity-30"
                   >
                     <Trash2 size={15} />

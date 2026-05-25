@@ -90,7 +90,7 @@ export default function ContactPage() {
                   shadow-[0_2px_12px_rgba(0,0,0,0.05)] hover:border-[#C41E3A]/20
                   hover:shadow-[0_4px_20px_rgba(196,30,58,0.08)] transition-all group"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#FFF0F2] flex items-center justify-center
+                <div className="w-10 h-10 rounded-xl bg-[#C41E3A]/10 flex items-center justify-center
                   flex-shrink-0 group-hover:bg-[#C41E3A] transition-colors">
                   <Icon size={17} className="text-[#C41E3A] group-hover:text-white transition-colors" />
                 </div>
@@ -126,7 +126,7 @@ export default function ContactPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="flex flex-col items-center text-center py-8 gap-4"
                   >
-                    <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
                       <CheckCircle2 size={32} className="text-green-500" strokeWidth={1.5} />
                     </div>
                     <div>

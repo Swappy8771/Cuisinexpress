@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Mail, ChevronRight, Home, ArrowRight, CheckCircle2, ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
 import { authService } from '../../services/authService'
-import { getFieldState, inputCls, FieldError, StatusIcon } from '../../lib/formUtils'
+import { getFieldState, inputCls } from '../../lib/formHelpers'
+import { FieldError, StatusIcon } from '../../lib/formUtils'
 import type { AxiosError } from 'axios'
 
 const schema = z.object({
@@ -97,7 +98,7 @@ export default function ForgotPasswordPage() {
                           className="h-12 w-auto mx-auto mb-3 rounded-sm"
                         />
                       </Link>
-                      <div className="w-12 h-12 rounded-2xl bg-[#FFF0F2] dark:bg-[#C41E3A]/10 flex items-center
+                      <div className="w-12 h-12 rounded-2xl bg-[#C41E3A]/10 flex items-center
                         justify-center mx-auto mb-3">
                         <Mail size={22} className="text-[#C41E3A]" strokeWidth={1.75} />
                       </div>
@@ -186,7 +187,7 @@ export default function ForgotPasswordPage() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.15, type: 'spring', stiffness: 200, damping: 14 }}
-                      className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center"
+                      className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center"
                     >
                       <CheckCircle2 size={34} className="text-green-500" strokeWidth={1.5} />
                     </motion.div>
@@ -202,7 +203,7 @@ export default function ForgotPasswordPage() {
                       </p>
                     </div>
 
-                    <div className="w-full bg-[#FFF4F5] dark:bg-[#C41E3A]/10 border border-[#C41E3A]/15 rounded-xl
+                    <div className="w-full bg-[#C41E3A]/10 border border-[#C41E3A]/15 rounded-xl
                       px-4 py-3 text-[13px] text-[#7B2535] leading-relaxed text-left">
                       Vous n'avez pas reçu l'e-mail ? Vérifiez votre dossier spam ou{' '}
                       <button

@@ -8,7 +8,8 @@ import {
 import { mealsService } from '../../services/mealsService'
 import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cartStore'
 import FilterSidebar from '../../components/orders/FilterSidebar'
-import MealCard, { MealCardSkeleton } from '../../components/orders/MealCard'
+import MealCard from '../../components/orders/MealCard'
+import MealCardSkeleton from '../../components/orders/MealCardSkeleton'
 import type { MealFilters, SortOption } from '../../types'
 
 const DEFAULT_FILTERS: MealFilters = {
@@ -188,7 +189,7 @@ export default function OrderPage() {
                         onClick={() => { patchFilters({ sort: opt.value }); setSortOpen(false) }}
                         className={`w-full text-left px-4 py-2.5 text-[13px] transition-colors ${
                           filters.sort === opt.value
-                            ? 'bg-[#FFF0F2] text-[#C41E3A] font-semibold'
+                            ? 'bg-[#C41E3A]/10 text-[#C41E3A] font-semibold'
                             : 'text-cx-sub hover:bg-cx-fill'
                         }`}
                       >
@@ -305,7 +306,7 @@ export default function OrderPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col items-center justify-center py-24 text-center"
               >
-                <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mb-4">
                   <AlertCircle size={28} className="text-red-400" />
                 </div>
                 <p className="text-cx-base font-semibold text-[16px] mb-1">
@@ -454,7 +455,7 @@ function ActiveChip({ label, onRemove }: { label: string; onRemove: () => void }
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className="inline-flex items-center gap-1.5 pl-3 pr-2 py-1 bg-[#FFF0F2]
+      className="inline-flex items-center gap-1.5 pl-3 pr-2 py-1 bg-[#C41E3A]/10
         text-[#C41E3A] text-[12px] font-semibold rounded-full border border-[#C41E3A]/20"
     >
       {label}

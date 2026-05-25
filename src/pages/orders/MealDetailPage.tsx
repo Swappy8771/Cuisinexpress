@@ -1,9 +1,8 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Home, ChevronRight, ArrowLeft, Heart, Check,
-  ChevronLeft, ChevronRight as ChevronRightIcon,
+  Home, ChevronRight, ArrowLeft, Check,
   Minus, Plus, Truck, FileText, ShoppingCart, User,
 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
@@ -13,134 +12,7 @@ import type { DayName } from '../../lib/menuConfig'
 import { studentsService } from '../../services/studentsService'
 import { useCartStore } from '../../store/cartStore'
 import { useAuthStore } from '../../store/authStore'
-import type { Meal } from '../../types'
-
-/* ── Mini add-on card ─────────────────────────────────────────── */
-function AddonCard({
-  meal, selected, onToggle,
-}: { meal: Meal; selected: boolean; onToggle: () => void }) {
-  const [isFav, setIsFav] = useState(false)
-
-  return (
-    <motion.div
-      whileHover={{ y: -3 }}
-      transition={{ duration: 0.2 }}
-      onClick={onToggle}
-      className={`relative flex-shrink-0 w-36 cursor-pointer rounded-2xl overflow-hidden
-        border-2 transition-all duration-200 group
-        bg-cx-card shadow-[0_2px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.3)]
-        ${selected
-          ? 'border-[#C41E3A] shadow-[0_0_0_3px_rgba(196,30,58,0.12)]'
-          : 'border-cx-line hover:border-cx-edge'}`}
-    >
-      {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-cx-muted">
-        <img
-          src={meal.image}
-          alt={meal.name}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-108"
-          style={{ transform: 'scale(1)' }}
-        />
-
-        {/* Selected overlay */}
-        <AnimatePresence>
-          {selected && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-[#C41E3A]/15 flex items-center justify-center"
-            >
-              <div className="w-8 h-8 rounded-full bg-[#C41E3A] flex items-center justify-center shadow-lg">
-                <Check size={14} className="text-white" strokeWidth={3} />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Favourite */}
-        <button
-          onClick={(e) => { e.stopPropagation(); setIsFav((f) => !f) }}
-          className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/90 backdrop-blur-sm
-            flex items-center justify-center shadow
-            opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-        >
-          <Heart size={11} className={isFav ? 'fill-[#C41E3A] text-[#C41E3A]' : 'text-cx-soft'} />
-        </button>
-      </div>
-
-      {/* Body */}
-      <div className="p-2.5">
-        <p className="text-[11.5px] font-semibold text-cx-base line-clamp-2 leading-snug mb-1.5">
-          {meal.name}
-        </p>
-        <p className="text-[13px] font-extrabold text-[#C41E3A]">{fmt(meal.price)}</p>
-      </div>
-    </motion.div>
-  )
-}
-
-/* ── Horizontal carousel ──────────────────────────────────────── */
-function CategoryCarousel({
-  label, items, selectedIds, onToggle,
-}: { label: string; items: Meal[]; selectedIds: Set<string>; onToggle: (id: string) => void }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const scroll = (dir: 1 | -1) =>
-    ref.current?.scrollBy({ left: dir * 220, behavior: 'smooth' })
-
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-baseline gap-2">
-        <h3 className="text-[17px] font-bold text-cx-base">{label}</h3>
-        <span className="text-[13px] text-cx-soft">({items.length} disponibles)</span>
-      </div>
-
-      <div className="relative">
-        {/* Left arrow */}
-        <button
-          onClick={() => scroll(-1)}
-          className="absolute -left-4 top-1/2 -translate-y-1/2 z-10
-            w-8 h-8 rounded-full bg-cx-card border border-cx-edge
-            shadow-[0_2px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.4)]
-            flex items-center justify-center text-cx-soft hover:text-cx-base
-            hover:border-cx-muted transition-all duration-200"
-        >
-          <ChevronLeft size={15} />
-        </button>
-
-        {/* Scroll container */}
-        <div
-          ref={ref}
-          className="flex gap-3 overflow-x-auto pb-1 px-0.5
-            [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-        >
-          {items.map((m) => (
-            <AddonCard
-              key={m.id}
-              meal={m}
-              selected={selectedIds.has(m.id)}
-              onToggle={() => onToggle(m.id)}
-            />
-          ))}
-        </div>
-
-        {/* Right arrow */}
-        <button
-          onClick={() => scroll(1)}
-          className="absolute -right-4 top-1/2 -translate-y-1/2 z-10
-            w-8 h-8 rounded-full bg-cx-card border border-cx-edge
-            shadow-[0_2px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.4)]
-            flex items-center justify-center text-cx-soft hover:text-cx-base
-            hover:border-cx-muted transition-all duration-200"
-        >
-          <ChevronRightIcon size={15} />
-        </button>
-      </div>
-    </div>
-  )
-}
-
-/* ── Main page ────────────────────────────────────────────────── */
+import CategoryCarousel from '../../components/orders/CategoryCarousel'
 export default function MealDetailPage() {
   const { mealId } = useParams<{ mealId: string }>()
   const navigate   = useNavigate()
@@ -228,6 +100,7 @@ export default function MealDetailPage() {
 
         {/* Back */}
         <button
+          type="button"
           onClick={() => navigate(-1)}
           className="inline-flex items-center gap-2 text-[13px] text-cx-soft
             hover:text-[#C41E3A] font-semibold transition-colors group w-fit"
@@ -239,7 +112,8 @@ export default function MealDetailPage() {
         {/* ── Main meal card (compact) ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.45 }}
           className="bg-cx-card rounded-2xl border border-cx-line overflow-hidden
             shadow-[0_2px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_24px_rgba(0,0,0,0.4)]"
@@ -301,7 +175,8 @@ export default function MealDetailPage() {
         {/* ── Student + Day selector ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.45, delay: 0.08 }}
           className="bg-cx-card rounded-2xl border border-cx-line overflow-hidden
             shadow-[0_2px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_24px_rgba(0,0,0,0.4)]"
@@ -312,11 +187,11 @@ export default function MealDetailPage() {
             </h2>
           </div>
 
-          <div className="px-6 py-5 flex flex-col gap-6">
+          <div className="px-4 sm:px-6 py-5 flex flex-col gap-6">
 
             {/* Student chips */}
-            <div className="flex items-start gap-4">
-              <span className="text-[12.5px] font-semibold text-cx-soft w-16 flex-shrink-0 pt-1.5">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
+              <span className="text-[12.5px] font-semibold text-cx-soft sm:w-16 sm:flex-shrink-0 sm:pt-1.5">
                 Élève
               </span>
               {students.length === 0 ? (
@@ -333,7 +208,7 @@ export default function MealDetailPage() {
                   {students.map((s) => {
                     const active = selectedStudent === s.id
                     return (
-                      <button
+                      <button type="button"
                         key={s.id}
                         onClick={() => setSelectedStudent(active ? null : s.id)}
                         className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full
@@ -344,7 +219,7 @@ export default function MealDetailPage() {
                           }`}
                       >
                         {active && <Check size={12} strokeWidth={3} />}
-                        {s.firstName}
+                        <span>{s.firstName}</span>
                       </button>
                     )
                   })}
@@ -353,15 +228,15 @@ export default function MealDetailPage() {
             </div>
 
             {/* Week + Day */}
-            <div className="flex items-start gap-4">
-              <span className="text-[12.5px] font-semibold text-cx-soft w-16 flex-shrink-0 pt-1.5">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
+              <span className="text-[12.5px] font-semibold text-cx-soft sm:w-16 sm:flex-shrink-0 sm:pt-1.5">
                 Journée
               </span>
               <div className="flex flex-col gap-3 flex-1">
                 {/* Week selector */}
                 <div className="flex flex-wrap gap-2">
                   {weeks.map((w) => (
-                    <button
+                    <button type="button"
                       key={w.id}
                       onClick={() => setSelectedWeekId(w.id)}
                       className={`px-3 py-1 rounded-lg text-[12px] font-semibold border transition-all duration-200
@@ -387,7 +262,7 @@ export default function MealDetailPage() {
                   {DAYS.map((day) => {
                     const active = selectedDay === day
                     return (
-                      <button
+                      <button type="button"
                         key={day}
                         onClick={() => setSelectedDay(day)}
                         className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full
@@ -398,7 +273,7 @@ export default function MealDetailPage() {
                           }`}
                       >
                         {active && <Check size={12} strokeWidth={3} />}
-                        {day}
+                        <span>{day}</span>
                       </button>
                     )
                   })}
@@ -411,7 +286,8 @@ export default function MealDetailPage() {
         {/* ── Add-on carousels ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.45, delay: 0.14 }}
           className="flex flex-col gap-8 px-4"
         >
@@ -429,7 +305,8 @@ export default function MealDetailPage() {
         {/* ── Order summary ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.45, delay: 0.2 }}
           className="bg-cx-card rounded-2xl border border-cx-line overflow-hidden
             shadow-[0_2px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_24px_rgba(0,0,0,0.4)]"
@@ -444,16 +321,16 @@ export default function MealDetailPage() {
             {/* Main meal row */}
             <div className="flex items-center gap-4 py-4">
               <div className="flex items-center rounded-xl overflow-hidden border border-cx-edge bg-cx-fill flex-shrink-0">
-                <button
+                <button type="button"
                   onClick={() => setMainQty((q) => Math.max(1, q - 1))}
-                  className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#FFF0F2] transition-colors"
+                  className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
                 >
                   <Minus size={13} />
                 </button>
                 <span className="w-7 text-center text-[14px] font-bold text-cx-base">{mainQty}</span>
-                <button
+                <button type="button"
                   onClick={() => setMainQty((q) => q + 1)}
-                  className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#FFF0F2] transition-colors"
+                  className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
                 >
                   <Plus size={13} />
                 </button>
@@ -477,7 +354,7 @@ export default function MealDetailPage() {
                   </div>
                   <span className="flex-1 text-[13.5px] font-semibold text-cx-base">{m.name}</span>
                   <span className="text-[13px] text-cx-soft font-medium">{fmt(m.price)}</span>
-                  <button
+                  <button type="button"
                     onClick={() => toggleAddon(m.id)}
                     className="w-6 h-6 rounded-full border border-cx-edge flex items-center justify-center
                       text-cx-faint hover:text-red-500 hover:border-red-300 transition-all duration-200 text-[15px] leading-none"
@@ -539,16 +416,16 @@ export default function MealDetailPage() {
                       </span>
                       {/* Qty control */}
                       <div className="flex items-center rounded-lg overflow-hidden border border-cx-edge bg-cx-fill flex-shrink-0">
-                        <button
+                        <button type="button"
                           onClick={() => updateQty(item.meal.id, -1)}
-                          className="w-7 h-7 flex items-center justify-center text-[#C41E3A] hover:bg-[#FFF0F2] transition-colors"
+                          className="w-7 h-7 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
                         >
                           <Minus size={11} />
                         </button>
                         <span className="w-6 text-center text-[12px] font-bold text-cx-base">{item.quantity}</span>
-                        <button
+                        <button type="button"
                           onClick={() => updateQty(item.meal.id, 1)}
-                          className="w-7 h-7 flex items-center justify-center text-[#C41E3A] hover:bg-[#FFF0F2] transition-colors"
+                          className="w-7 h-7 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
                         >
                           <Plus size={11} />
                         </button>
@@ -556,7 +433,7 @@ export default function MealDetailPage() {
                       <span className="text-[13px] text-cx-soft font-medium w-16 text-right flex-shrink-0">
                         {fmt(item.meal.price * item.quantity)}
                       </span>
-                      <button
+                      <button type="button"
                         onClick={() => removeItem(item.meal.id)}
                         className="w-6 h-6 rounded-full border border-cx-edge flex items-center justify-center
                           text-cx-faint hover:text-red-500 hover:border-red-300 transition-all duration-200 text-[15px] leading-none"
@@ -582,7 +459,7 @@ export default function MealDetailPage() {
 
           {/* CTA */}
           <div className="px-6 pb-6">
-            <button
+            <button type="button"
               onClick={handleAddToCart}
               disabled={!meal.available}
               className="w-full flex items-center justify-center gap-2.5

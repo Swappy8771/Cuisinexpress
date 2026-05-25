@@ -95,7 +95,7 @@ export default function CookiePreferencesPage() {
 
               {/* Heading */}
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-[#FFF0F2] flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-[#C41E3A]/10 flex items-center justify-center flex-shrink-0">
                   <ShieldCheck size={18} className="text-[#C41E3A]" />
                 </div>
                 <h1 className="text-[20px] font-extrabold text-cx-base tracking-tight">

@@ -13,12 +13,12 @@ interface Props {
 }
 
 const TAG_CONFIG: Record<MealTag, { label: string; emoji: string; active: string; inactive: string }> = {
-  vegetarian:   { label: 'Végétarien',  emoji: '🌿', active: 'bg-green-100   text-green-700   ring-1 ring-green-300',  inactive: 'bg-cx-fill text-cx-soft hover:bg-green-50  hover:text-green-700' },
-  vegan:        { label: 'Vegan',       emoji: '🌱', active: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300', inactive: 'bg-cx-fill text-cx-soft hover:bg-emerald-50 hover:text-emerald-700' },
-  hot:          { label: 'Chaud',       emoji: '🔥', active: 'bg-red-100     text-red-700     ring-1 ring-red-300',     inactive: 'bg-cx-fill text-cx-soft hover:bg-red-50    hover:text-red-700' },
-  cold:         { label: 'Froid',       emoji: '❄️', active: 'bg-blue-100    text-blue-700    ring-1 ring-blue-300',    inactive: 'bg-cx-fill text-cx-soft hover:bg-blue-50   hover:text-blue-700' },
-  halal:        { label: 'Halal',       emoji: '☪️', active: 'bg-amber-100   text-amber-700   ring-1 ring-amber-300',   inactive: 'bg-cx-fill text-cx-soft hover:bg-amber-50  hover:text-amber-700' },
-  'gluten-free':{ label: 'Sans gluten', emoji: '✅', active: 'bg-violet-100  text-violet-700  ring-1 ring-violet-300',  inactive: 'bg-cx-fill text-cx-soft hover:bg-violet-50 hover:text-violet-700' },
+  vegetarian:   { label: 'Végétarien',  emoji: '🌿', active: 'bg-green-100   text-green-700   ring-1 ring-green-300',  inactive: 'bg-cx-fill text-cx-soft hover:bg-green-500/10  hover:text-green-700' },
+  vegan:        { label: 'Vegan',       emoji: '🌱', active: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300', inactive: 'bg-cx-fill text-cx-soft hover:bg-emerald-500/10 hover:text-emerald-700' },
+  hot:          { label: 'Chaud',       emoji: '🔥', active: 'bg-red-100     text-red-700     ring-1 ring-red-300',     inactive: 'bg-cx-fill text-cx-soft hover:bg-red-500/10    hover:text-red-700' },
+  cold:         { label: 'Froid',       emoji: '❄️', active: 'bg-blue-100    text-blue-700    ring-1 ring-blue-300',    inactive: 'bg-cx-fill text-cx-soft hover:bg-blue-500/10   hover:text-blue-700' },
+  halal:        { label: 'Halal',       emoji: '☪️', active: 'bg-amber-100   text-amber-700   ring-1 ring-amber-300',   inactive: 'bg-cx-fill text-cx-soft hover:bg-amber-500/10  hover:text-amber-700' },
+  'gluten-free':{ label: 'Sans gluten', emoji: '✅', active: 'bg-violet-100  text-violet-700  ring-1 ring-violet-300',  inactive: 'bg-cx-fill text-cx-soft hover:bg-violet-500/10 hover:text-violet-700' },
 }
 
 const ALL_TAGS = Object.keys(TAG_CONFIG) as MealTag[]
@@ -36,13 +36,7 @@ function fmtWeekRange(startDate: string, endDate: string): string {
     : `${s} – ${e}`
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-[11px] font-bold tracking-[0.08em] uppercase text-cx-soft mb-2.5">
-      {children}
-    </p>
-  )
-}
+const sectionTitle = "text-[11px] font-bold tracking-[0.08em] uppercase text-cx-soft mb-2.5"
 
 export default function FilterSidebar({
   filters,
@@ -79,7 +73,7 @@ export default function FilterSidebar({
             <button
               onClick={onClear}
               className="flex items-center gap-1 text-[12px] text-cx-soft hover:text-[#C41E3A]
-                transition-colors px-2 py-1 rounded-lg hover:bg-red-50"
+                transition-colors px-2 py-1 rounded-lg hover:bg-red-500/10"
             >
               <RotateCcw size={11} />
               Effacer
@@ -101,7 +95,7 @@ export default function FilterSidebar({
 
         {/* Search */}
         <div>
-          <SectionTitle>Recherche</SectionTitle>
+          <p className={sectionTitle}>Recherche</p>
           <div className="relative">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none" />
             <input
@@ -119,7 +113,7 @@ export default function FilterSidebar({
 
         {/* School */}
         <div>
-          <SectionTitle>École</SectionTitle>
+          <p className={sectionTitle}>École</p>
           <select
             value={filters.schoolId}
             onChange={(e) => onFiltersChange({ schoolId: e.target.value })}
@@ -138,7 +132,7 @@ export default function FilterSidebar({
 
         {/* Week */}
         <div>
-          <SectionTitle>Semaine</SectionTitle>
+          <p className={sectionTitle}>Semaine</p>
           <div className="grid grid-cols-2 gap-1.5">
             {weeks.map((w) => {
               const active = filters.weekId === w.id
@@ -166,7 +160,7 @@ export default function FilterSidebar({
 
         {/* Category */}
         <div>
-          <SectionTitle>Catégorie</SectionTitle>
+          <p className={sectionTitle}>Catégorie</p>
           <div className="flex flex-col gap-1">
             {categories.map((cat) => (
               <button
@@ -175,7 +169,7 @@ export default function FilterSidebar({
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13.5px]
                   font-medium transition-all duration-200 text-left ${
                   filters.categoryId === cat.id
-                    ? 'bg-[#FFF0F2] text-[#C41E3A] font-semibold'
+                    ? 'bg-[#C41E3A]/10 text-[#C41E3A] font-semibold'
                     : 'text-cx-soft hover:bg-cx-fill hover:text-cx-base'
                 }`}
               >
@@ -191,7 +185,7 @@ export default function FilterSidebar({
 
         {/* Tags */}
         <div>
-          <SectionTitle>Régimes & Température</SectionTitle>
+          <p className={sectionTitle}>Régimes & Température</p>
           <div className="flex flex-wrap gap-2">
             {ALL_TAGS.map((tag) => {
               const cfg = TAG_CONFIG[tag]

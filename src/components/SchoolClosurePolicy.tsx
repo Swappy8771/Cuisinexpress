@@ -83,7 +83,7 @@ export default function SchoolClosurePolicy() {
 
           {/* Bottom note */}
           <div className="relative z-10 mx-8 sm:mx-12 mb-8 sm:mb-10 flex items-center gap-3
-            bg-[#FFF4F5] dark:bg-[#C41E3A]/10 border border-[#C41E3A]/15 rounded-xl px-5 py-4">
+            bg-[#C41E3A]/10 border border-[#C41E3A]/15 rounded-xl px-5 py-4">
             <span className="flex-shrink-0 w-1.5 h-8 rounded-full bg-[#C41E3A]" />
             <p className="text-[#7B2535] text-[13px] font-medium leading-relaxed">
               {t.closure.note}{' '}

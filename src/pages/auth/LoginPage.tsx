@@ -8,7 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, ChevronRight, Home, Mail, Lock, ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
-import { getFieldState, inputCls, FieldError, StatusIcon } from '../../lib/formUtils'
+import { getFieldState, inputCls } from '../../lib/formHelpers'
+import { FieldError, StatusIcon } from '../../lib/formUtils'
 import type { AxiosError } from 'axios'
 
 const schema = z.object({
@@ -99,11 +100,11 @@ export default function LoginPage() {
 
               {/* Demo credentials banner */}
               {import.meta.env.VITE_USE_MOCK !== 'false' && (
-                <div className="mb-4 rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5">
-                  <p className="text-[11px] font-bold text-amber-700 uppercase tracking-wide mb-1">
+                <div className="mb-4 rounded-xl bg-amber-500/10 border border-amber-500/25 px-4 py-2.5">
+                  <p className="text-[11px] font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wide mb-1">
                     Compte de démonstration
                   </p>
-                  <div className="flex flex-col gap-0.5 text-[12px] text-amber-800 font-mono">
+                  <div className="flex flex-col gap-0.5 text-[12px] text-amber-800 dark:text-amber-300 font-mono">
                     <span><span className="text-amber-500 font-semibold">Email :</span> demo@cuisinexpress.ca</span>
                     <span><span className="text-amber-500 font-semibold">Mot de passe :</span> demo1234</span>
                   </div>

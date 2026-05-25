@@ -9,7 +9,8 @@ import { toast } from 'sonner'
 import DashboardLayout from '../../layouts/DashboardLayout'
 import { useAuthStore } from '../../store/authStore'
 import { profileService } from '../../services/profileService'
-import { FieldWrapper, getFieldState, inputCls } from '../../lib/formUtils'
+import { getFieldState, inputCls } from '../../lib/formHelpers'
+import { FieldWrapper } from '../../lib/formUtils'
 import type { AxiosError } from 'axios'
 
 const schema = z.object({
@@ -136,8 +137,8 @@ export default function ProfilePage() {
           </div>
 
           {isError && (
-            <div className="mb-6 rounded-xl bg-red-50 border border-red-100 px-4 py-3
-              text-red-600 text-[13.5px]">
+            <div className="mb-6 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3
+              text-red-600 dark:text-red-400 text-[13.5px]">
               Impossible de charger votre profil. Veuillez réessayer.
             </div>
           )}

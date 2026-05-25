@@ -23,22 +23,63 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Breadcrumb */}
       <div className="w-full bg-cx-card border-b border-cx-line">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-3">
-          <ol className="flex items-center gap-1.5 text-[13px] text-cx-soft">
-            <li><a href="/" className="hover:text-[#C41E3A] transition-colors">Accueil</a></li>
-            <li><span className="mx-1">/</span></li>
-            <li><span className="hover:text-[#C41E3A] cursor-default">Votre compte</span></li>
-            <li><span className="mx-1">/</span></li>
-            <li className="text-cx-base font-medium">Profil</li>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <ol className="flex items-center gap-1.5 text-[13px] text-cx-soft overflow-hidden">
+            <li className="flex-shrink-0">
+              <a href="/" className="hover:text-[#C41E3A] transition-colors">Accueil</a>
+            </li>
+            <li className="flex-shrink-0"><span className="mx-1">/</span></li>
+            <li className="flex-shrink-0 hidden sm:block">
+              <span className="cursor-default">Votre compte</span>
+            </li>
+            <li className="flex-shrink-0 hidden sm:block"><span className="mx-1">/</span></li>
+            <li className="text-cx-base font-medium truncate">Mon compte</li>
           </ol>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      {/* Mobile nav tabs */}
+      <div className="md:hidden bg-cx-card border-b border-cx-line overflow-x-auto
+        [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex items-center gap-1 px-4 py-2 min-w-max">
+          {navItems.map(({ label, href, icon: Icon }) => (
+            <NavLink
+              key={href}
+              to={href}
+              className={({ isActive }) =>
+                `inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[13px] font-medium
+                whitespace-nowrap transition-all duration-200 flex-shrink-0
+                ${isActive
+                  ? 'bg-[#C41E3A]/10 text-[#C41E3A]'
+                  : 'text-cx-body hover:bg-cx-fill hover:text-cx-base'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <Icon size={13} className={isActive ? 'text-[#C41E3A]' : 'text-cx-soft'} />
+                  {label}
+                </>
+              )}
+            </NavLink>
+          ))}
+          <button
+            onClick={handleLogout}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[13px]
+              font-medium whitespace-nowrap text-cx-soft hover:text-[#C41E3A]
+              hover:bg-[#C41E3A]/10 transition-all duration-200 flex-shrink-0"
+          >
+            <LogOut size={13} />
+            Déconnexion
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         <div className="flex flex-col md:flex-row gap-6 lg:gap-8">
 
-          {/* Sidebar */}
-          <aside className="w-full md:w-56 lg:w-64 flex-shrink-0 flex flex-col gap-4">
+          {/* Sidebar — desktop only */}
+          <aside className="hidden md:flex w-56 lg:w-64 flex-shrink-0 flex-col gap-4">
 
             {/* User card */}
             <div className="bg-cx-card rounded-2xl border border-cx-line
@@ -96,7 +137,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   border-2 border-cx-edge hover:border-[#C41E3A] rounded-xl
                   text-[13.5px] font-bold text-cx-body hover:text-[#C41E3A]
                   tracking-widest uppercase transition-all duration-200
-                  hover:bg-[#FFF0F2] group"
+                  hover:bg-[#C41E3A]/10 group"
               >
                 <LogOut size={14} className="group-hover:text-[#C41E3A] transition-colors" />
                 Déconnexion

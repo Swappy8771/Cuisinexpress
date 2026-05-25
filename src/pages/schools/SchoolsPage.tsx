@@ -111,7 +111,7 @@ export default function SchoolsPage() {
                 <p className="text-[11.5px] text-cx-soft">{s.address}</p>
                 <span className={`mt-2 inline-flex items-center gap-1 text-[11px] font-semibold
                   px-2 py-0.5 rounded-full
-                  ${s.status === 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                  ${s.status === 'active' ? 'bg-green-500/10 text-emerald-700 dark:text-green-400' : 'bg-amber-500/10 text-amber-700 dark:text-amber-400'}`}>
                   {s.status === 'active' ? '● Active' : '● Bientôt'}
                 </span>
               </div>
@@ -173,11 +173,11 @@ export default function SchoolsPage() {
             </div>
 
             <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
-              <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100
-                rounded-xl px-4 py-2 text-[12.5px] font-semibold text-emerald-700">
+              <div className="flex items-center gap-2 bg-green-500/10 dark:bg-green-500/15 border border-green-500/20
+                rounded-xl px-4 py-2 text-[12.5px] font-semibold text-emerald-700 dark:text-green-400">
                 <CheckCircle2 size={13} /> {activeCnt} livraisons actives
               </div>
-              <div className="flex items-center gap-2 bg-[#FFF0F2] border border-[#C41E3A]/15
+              <div className="flex items-center gap-2 bg-[#C41E3A]/10 border border-[#C41E3A]/15
                 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-[#C41E3A]">
                 <Truck size={13} /> Livraison incluse
               </div>
@@ -276,7 +276,7 @@ export default function SchoolsPage() {
                     <div className="flex items-start gap-3.5">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center
                         flex-shrink-0 transition-colors duration-200
-                        ${selectedId === s.id ? 'bg-[#C41E3A]' : 'bg-[#FFF0F2] group-hover:bg-[#C41E3A]/10'}`}>
+                        ${selectedId === s.id ? 'bg-[#C41E3A]' : 'bg-[#C41E3A]/10 group-hover:bg-[#C41E3A]/20'}`}>
                         <GraduationCap size={18}
                           className={selectedId === s.id ? 'text-white' : 'text-[#C41E3A]'}
                           strokeWidth={1.75} />
@@ -302,8 +302,8 @@ export default function SchoolsPage() {
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1
                             rounded-full text-[11px] font-semibold
                             ${s.status === 'active'
-                              ? 'bg-emerald-50 text-emerald-700'
-                              : 'bg-amber-50 text-amber-700'}`}>
+                              ? 'bg-green-500/10 text-emerald-700 dark:text-green-400'
+                              : 'bg-amber-500/10 text-amber-700 dark:text-amber-400'}`}>
                             <span className={`w-1.5 h-1.5 rounded-full
                               ${s.status === 'active' ? 'bg-emerald-500' : 'bg-amber-400'}`} />
                             {s.status === 'active' ? 'Livraison active' : 'Bientôt'}
@@ -347,7 +347,7 @@ export default function SchoolsPage() {
                       shadow-[0_1px_10px_rgba(0,0,0,0.06)] active:scale-[0.99] transition-transform"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#FFF0F2] flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-[#C41E3A]/10 flex items-center justify-center flex-shrink-0">
                         <GraduationCap size={18} className="text-[#C41E3A]" strokeWidth={1.75} />
                       </div>
                       <div className="flex-1 min-w-0">

@@ -290,7 +290,7 @@ export default function PrivacyPage() {
                 ].map(({ icon: Icon, label, value, href }) => (
                   <div key={label} className="flex items-start gap-3 rounded-xl bg-cx-fill
                     border border-cx-line px-5 py-4">
-                    <div className="w-9 h-9 rounded-lg bg-[#FFF0F2] flex items-center justify-center flex-shrink-0">
+                    <div className="w-9 h-9 rounded-lg bg-[#C41E3A]/10 flex items-center justify-center flex-shrink-0">
                       <Icon size={15} className="text-[#C41E3A]" />
                     </div>
                     <div>
