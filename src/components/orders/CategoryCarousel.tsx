@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Meal } from '../../types'
 import AddonCard from './AddonCard'
+import { useLang } from '../../contexts/LangContext'
 
 type Props = {
   label: string
@@ -11,6 +12,7 @@ type Props = {
 }
 
 export default function CategoryCarousel({ label, items, selectedIds, onToggle }: Props) {
+  const { t } = useLang()
   const ref = useRef<HTMLDivElement>(null)
   const scroll = (dir: 1 | -1) =>
     ref.current?.scrollBy({ left: dir * 220, behavior: 'smooth' })
@@ -19,7 +21,7 @@ export default function CategoryCarousel({ label, items, selectedIds, onToggle }
     <div className="flex flex-col gap-3">
       <div className="flex items-baseline gap-2">
         <h3 className="text-[17px] font-bold text-cx-base">{label}</h3>
-        <span className="text-[13px] text-cx-soft">({items.length} disponibles)</span>
+        <span className="text-[13px] text-cx-soft">({items.length} {t.mealModal.available})</span>
       </div>
 
       <div className="relative">

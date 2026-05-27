@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, ChevronLeft, ChevronRight, Minus, Plus,
-  ShoppingCart, SkipForward,
+  ShoppingCart, SkipForward, Check,
 } from 'lucide-react'
 import type { Meal, MenuCategory, MealTag } from '../../types'
 import { fmt, TAG_CONFIG } from '../../lib/menuConfig'
 import { meals as allMeals } from '../../lib/mockData'
 import { useCartStore } from '../../store/cartStore'
 import { useLang } from '../../contexts/LangContext'
-import CategoryCarousel from './CategoryCarousel'
 
 interface Props {
   meals: Meal[]
@@ -17,6 +16,137 @@ interface Props {
   categories: MenuCategory[]
   onClose: () => void
   onNavigate: (index: number) => void
+}
+
+/* ── Addon grid card ── */
+function AddonGridCard({
+  meal,
+  selected,
+  qty,
+  onToggle,
+  onChangeQty,
+  tagLabels,
+}: {
+  meal: Meal
+  selected: boolean
+  qty: number
+  onToggle: () => void
+  onChangeQty: (delta: number) => void
+  tagLabels: Record<MealTag, string>
+}) {
+  return (
+    <motion.div
+      whileHover={{ y: -3 }}
+      transition={{ duration: 0.18 }}
+      onClick={onToggle}
+      className={`relative flex flex-col rounded-2xl overflow-hidden cursor-pointer
+        border-2 transition-all duration-200 bg-cx-card
+        ${selected
+          ? 'border-[#C41E3A] shadow-[0_0_0_3px_rgba(196,30,58,0.12),0_4px_20px_rgba(0,0,0,0.1)]'
+          : 'border-cx-line hover:border-[#C41E3A]/40 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]'
+        }`}
+    >
+      {/* Image */}
+      <div className="relative aspect-[4/3] overflow-hidden bg-cx-muted">
+        <img
+          src={meal.image}
+          alt={meal.name}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+        />
+
+        {/* Selected checkmark badge */}
+        <AnimatePresence>
+          {selected && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              className="absolute top-2 right-2 w-7 h-7 rounded-full
+                bg-[#C41E3A] flex items-center justify-center
+                shadow-[0_2px_8px_rgba(196,30,58,0.5)]"
+            >
+              <Check size={13} className="text-white" strokeWidth={3} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Unavailable overlay */}
+        {!meal.available && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <span className="bg-cx-card text-cx-soft text-[11px] font-bold px-3 py-1 rounded-full">
+              Indisponible
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="p-3 flex flex-col gap-1.5">
+        <p className="text-[12.5px] font-bold text-cx-base line-clamp-2 leading-snug">
+          {meal.name}
+        </p>
+        <p className="text-[15px] font-extrabold text-[#C41E3A] tracking-tight">
+          {fmt(meal.price)}
+        </p>
+
+        {/* Tags */}
+        {meal.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-0.5">
+            {meal.tags.slice(0, 2).map((tag) => {
+              const cfg = TAG_CONFIG[tag]
+              const Icon = cfg.icon
+              return (
+                <span
+                  key={tag}
+                  className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full
+                    text-[9.5px] font-semibold bg-cx-fill border border-cx-edge ${cfg.color}`}
+                >
+                  <Icon size={8} /> {tagLabels[tag]}
+                </span>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Qty stepper — shown only when selected */}
+        <AnimatePresence>
+          {selected && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mt-1 pt-2 border-t border-cx-line">
+                <span className="text-[10.5px] text-cx-soft font-medium">Qté</span>
+                <div className="flex items-center rounded-lg overflow-hidden border border-cx-edge bg-cx-fill">
+                  <button
+                    type="button"
+                    onClick={() => onChangeQty(-1)}
+                    className="w-7 h-7 flex items-center justify-center text-[#C41E3A]
+                      hover:bg-[#C41E3A]/10 transition-colors"
+                  >
+                    <Minus size={11} />
+                  </button>
+                  <span className="w-6 text-center text-[12px] font-bold text-cx-base">{qty}</span>
+                  <button
+                    type="button"
+                    onClick={() => onChangeQty(1)}
+                    className="w-7 h-7 flex items-center justify-center text-[#C41E3A]
+                      hover:bg-[#C41E3A]/10 transition-colors"
+                  >
+                    <Plus size={11} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  )
 }
 
 /* ── Inner content — key={meal.id} resets state on meal change ── */
@@ -67,7 +197,6 @@ function ModalContent({
   const hasPrevGroup = addonGroupIndex > 0
   const hasNextGroup = addonGroupIndex < addonGroups.length - 1
 
-  // Toggle: first click adds with qty 1; clicking again removes
   const toggleAddon = (id: string) =>
     setAddonQtys((prev) => {
       const next = new Map(prev)
@@ -78,140 +207,146 @@ function ModalContent({
   const changeAddonQty = (id: string, delta: number) =>
     setAddonQtys((prev) => {
       const next = new Map(prev)
-      const current = next.get(id) ?? 0
-      const updated = current + delta
+      const updated = (next.get(id) ?? 0) + delta
       if (updated <= 0) next.delete(id)
       else next.set(id, updated)
       return next
     })
 
-  // Derive a Set of selected IDs for CategoryCarousel
-  const selectedAddonIds = new Set(addonQtys.keys())
   const selectedAddonMeals = allMeals.filter((m) => addonQtys.has(m.id))
   const selectionTotal =
     meal.price * mainQty +
     selectedAddonMeals.reduce((s, m) => s + m.price * (addonQtys.get(m.id) ?? 1), 0)
 
+  const totalSelectedAddons = Array.from(addonQtys.values()).reduce((s, v) => s + v, 0)
+
   return (
     <div className="flex flex-col h-full">
 
       {/* ── Header ── */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-cx-line flex-shrink-0">
-        <div className="flex items-center gap-2">
-          {/* Progress dots */}
-          <div className="flex items-center gap-1">
-            {Array.from({ length: Math.min(total, 8) }).map((_, i) => {
-              const isActive = total <= 8
-                ? i === currentIndex
-                : i === Math.round(currentIndex / (total - 1) * 7)
-              return (
-                <div
-                  key={i}
-                  className={`rounded-full transition-all duration-300 ${
-                    isActive
-                      ? 'w-4 h-2 bg-[#C41E3A]'
-                      : 'w-2 h-2 bg-cx-edge'
-                  }`}
-                />
-              )
-            })}
-          </div>
-          <span className="text-[12px] text-cx-soft font-medium ml-1">
+      <div className="relative px-6 pt-5 pb-4 flex-shrink-0">
+        {/* Category label */}
+        <div className="flex items-center gap-2 mb-1">
+          {category && (
+            <span className="text-[11px] font-extrabold text-[#C41E3A] uppercase tracking-widest">
+              {category.emoji} {category.label}
+            </span>
+          )}
+          <span className="text-[11px] text-cx-faint ml-auto font-medium">
             {currentIndex + 1} / {total}
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => { /* handled by parent close */ }}
-          className="w-8 h-8 rounded-full bg-cx-fill border border-cx-edge flex items-center
-            justify-center text-cx-soft hover:text-cx-base hover:border-cx-muted transition-all
-            data-[close]:flex"
-          data-close
-        >
-          <X size={14} />
-        </button>
-      </div>
+        {/* Meal name as big title */}
+        <h2 className="text-[22px] sm:text-[26px] font-extrabold text-cx-base leading-tight tracking-tight pr-8">
+          {meal.name}
+        </h2>
 
-      {/* ── Scrollable body ── */}
-      <div className="flex-1 overflow-y-auto">
+        {/* Description + price row */}
+        <div className="flex items-end justify-between gap-4 mt-1.5">
+          <p className="text-[12.5px] text-cx-soft line-clamp-1 leading-relaxed flex-1">
+            {meal.description}
+          </p>
+          <span className="text-[22px] font-extrabold text-[#C41E3A] tracking-tight flex-shrink-0 leading-none">
+            {fmt(meal.price)}
+          </span>
+        </div>
 
-        {/* Meal hero */}
-        <div className="flex gap-4 p-5">
-          {/* Image */}
-          <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden bg-cx-muted flex-shrink-0">
-            <img
-              src={meal.image}
-              alt={meal.name}
-              className="w-full h-full object-cover"
-            />
+        {/* Main meal qty + tags row */}
+        <div className="flex items-center gap-3 mt-3 flex-wrap">
+          <div className="flex items-center rounded-xl overflow-hidden border border-cx-edge bg-cx-fill">
+            <button
+              type="button"
+              onClick={() => setMainQty((q) => Math.max(1, q - 1))}
+              className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
+            >
+              <Minus size={12} />
+            </button>
+            <span className="w-7 text-center text-[13px] font-bold text-cx-base">{mainQty}</span>
+            <button
+              type="button"
+              onClick={() => setMainQty((q) => q + 1)}
+              className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
+            >
+              <Plus size={12} />
+            </button>
           </div>
-
-          {/* Info */}
-          <div className="flex flex-col justify-center gap-1.5 min-w-0">
-            {category && (
-              <div className="flex items-center gap-1.5">
-                <span className="text-[13px]">{category.emoji}</span>
-                <span className="text-[11px] font-bold text-cx-soft uppercase tracking-wider">
-                  {category.label}
+          <div className="flex flex-wrap gap-1.5">
+            {meal.tags.slice(0, 3).map((tag) => {
+              const cfg = TAG_CONFIG[tag]
+              const Icon = cfg.icon
+              return (
+                <span
+                  key={tag}
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full
+                    text-[10.5px] font-semibold bg-cx-fill border border-cx-edge ${cfg.color}`}
+                >
+                  <Icon size={9} /> {tagLabels[tag]}
                 </span>
-              </div>
-            )}
-            <h2 className="text-[18px] sm:text-[20px] font-extrabold text-cx-base leading-tight">
-              {meal.name}
-            </h2>
-            <p className="text-[12px] text-cx-soft line-clamp-2 leading-relaxed">
-              {meal.description}
-            </p>
-            <div className="flex items-center gap-3 mt-1 flex-wrap">
-              {/* Tags */}
-              <div className="flex flex-wrap gap-1">
-                {meal.tags.slice(0, 3).map((tag) => {
-                  const cfg = TAG_CONFIG[tag]
-                  const Icon = cfg.icon
-                  return (
-                    <span
-                      key={tag}
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full
-                        text-[10px] font-semibold bg-cx-fill border border-cx-edge ${cfg.color}`}
-                    >
-                      <Icon size={9} /> {tagLabels[tag]}
-                    </span>
-                  )
-                })}
-              </div>
-              <span className="text-[20px] font-extrabold text-[#C41E3A] tracking-tight">
-                {fmt(meal.price)}
-              </span>
-            </div>
+              )
+            })}
           </div>
         </div>
 
-        {/* ── Add-on carousels — one category at a time ── */}
+        {/* Progress bar */}
+        <div className="flex gap-1 mt-4">
+          {Array.from({ length: Math.min(total, 10) }).map((_, i) => {
+            const isActive = total <= 10
+              ? i === currentIndex
+              : i === Math.round(currentIndex / (total - 1) * 9)
+            return (
+              <div
+                key={i}
+                className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                  isActive ? 'bg-[#C41E3A]' : 'bg-cx-edge'
+                }`}
+              />
+            )
+          })}
+        </div>
+      </div>
+
+      {/* ── Scrollable body ── */}
+      <div className="flex-1 overflow-y-auto border-t border-cx-line">
+
+        {/* ── Add-on section ── */}
         {addonGroups.length > 0 && activeGroup && (
-          <div className="border-t border-cx-line px-5 py-5 flex flex-col gap-4">
+          <div className="px-6 py-5 flex flex-col gap-4">
+
+            {/* Section title + category tabs */}
+            <div className="flex items-center justify-between">
+              <p className="text-[13px] font-extrabold text-cx-base uppercase tracking-wider">
+                {t.mealModal.extrasTitle}
+              </p>
+              {totalSelectedAddons > 0 && (
+                <span className="text-[11px] font-bold text-[#C41E3A]">
+                  {totalSelectedAddons} {totalSelectedAddons > 1 ? 'sélectionnés' : 'sélectionné'}
+                </span>
+              )}
+            </div>
+
             {/* Category tabs */}
-            <div className="flex items-center gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex items-center gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden -mx-1 px-1">
               {addonGroups.map((group, i) => {
-                const selectedCount = group.items.filter((m) => addonQtys.has(m.id)).length
+                const count = group.items.filter((m) => addonQtys.has(m.id)).length
                 return (
                   <button
                     key={group.id}
                     type="button"
                     onClick={() => setAddonGroupIndex(i)}
-                    className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full
-                      text-[12px] font-semibold border transition-all duration-200
+                    className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl
+                      text-[12px] font-bold border-2 transition-all duration-200
                       ${i === addonGroupIndex
-                        ? 'bg-[#C41E3A] border-[#C41E3A] text-white shadow-[0_2px_10px_rgba(196,30,58,0.3)]'
-                        : 'bg-cx-fill border-cx-edge text-cx-sub hover:border-cx-muted hover:text-cx-base'
+                        ? 'bg-[#C41E3A] border-[#C41E3A] text-white shadow-[0_4px_14px_rgba(196,30,58,0.35)]'
+                        : 'bg-cx-fill border-cx-edge text-cx-sub hover:border-[#C41E3A]/40 hover:text-cx-base'
                       }`}
                   >
                     <span>{group.emoji}</span>
                     <span>{group.label}</span>
-                    {selectedCount > 0 && (
-                      <span className={`w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center
+                    {count > 0 && (
+                      <span className={`w-4 h-4 rounded-full text-[10px] font-extrabold flex items-center justify-center
                         ${i === addonGroupIndex ? 'bg-white text-[#C41E3A]' : 'bg-[#C41E3A] text-white'}`}>
-                        {selectedCount}
+                        {count}
                       </span>
                     )}
                   </button>
@@ -219,27 +354,33 @@ function ModalContent({
               })}
             </div>
 
-            {/* Active category carousel */}
+            {/* Grid of addon cards */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeGroup.id}
-                initial={{ opacity: 0, x: 16 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -16 }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.18 }}
+                className="grid grid-cols-2 sm:grid-cols-3 gap-3"
               >
-                <CategoryCarousel
-                  label={activeGroup.label}
-                  items={activeGroup.items}
-                  selectedIds={selectedAddonIds}
-                  onToggle={toggleAddon}
-                />
+                {activeGroup.items.map((m) => (
+                  <AddonGridCard
+                    key={m.id}
+                    meal={m}
+                    selected={addonQtys.has(m.id)}
+                    qty={addonQtys.get(m.id) ?? 1}
+                    onToggle={() => toggleAddon(m.id)}
+                    onChangeQty={(delta) => changeAddonQty(m.id, delta)}
+                    tagLabels={tagLabels}
+                  />
+                ))}
               </motion.div>
             </AnimatePresence>
 
-            {/* Prev / Next group navigation */}
+            {/* Prev / Next group */}
             {addonGroups.length > 1 && (
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between pt-1">
                 <button
                   type="button"
                   onClick={() => setAddonGroupIndex((i) => i - 1)}
@@ -248,9 +389,9 @@ function ModalContent({
                     hover:text-cx-base transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <ChevronLeft size={14} />
-                  {addonGroupIndex > 0 ? addonGroups[addonGroupIndex - 1].label : ''}
+                  {hasPrevGroup ? addonGroups[addonGroupIndex - 1].label : ''}
                 </button>
-                <span className="text-[11px] text-cx-faint">
+                <span className="text-[11px] text-cx-faint font-medium">
                   {addonGroupIndex + 1} / {addonGroups.length}
                 </span>
                 <button
@@ -260,7 +401,7 @@ function ModalContent({
                   className="flex items-center gap-1 text-[12px] font-semibold text-cx-soft
                     hover:text-cx-base transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  {addonGroupIndex < addonGroups.length - 1 ? addonGroups[addonGroupIndex + 1].label : ''}
+                  {hasNextGroup ? addonGroups[addonGroupIndex + 1].label : ''}
                   <ChevronRight size={14} />
                 </button>
               </div>
@@ -268,166 +409,101 @@ function ModalContent({
           </div>
         )}
 
-        {/* ── Selection summary ── */}
-        <div className="border-t border-cx-line px-5 py-4 flex flex-col gap-0 divide-y divide-cx-line">
-          {/* Main meal row */}
-          <div className="flex items-center gap-3 py-3">
-            <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 border border-cx-line bg-cx-muted">
-              <img
-                src={meal.image}
-                alt={meal.name}
-                className="w-full h-full object-cover"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-              />
-            </div>
-            <span className="flex-1 text-[13px] font-semibold text-cx-base line-clamp-1">
-              {meal.name}
-            </span>
-            {/* Qty control */}
-            <div className="flex items-center rounded-lg overflow-hidden border border-cx-edge bg-cx-fill flex-shrink-0">
-              <button
-                type="button"
-                onClick={() => setMainQty((q) => Math.max(1, q - 1))}
-                className="w-8 h-8 flex items-center justify-center text-[#C41E3A]
-                  hover:bg-[#C41E3A]/10 transition-colors"
-              >
-                <Minus size={12} />
-              </button>
-              <span className="w-7 text-center text-[13px] font-bold text-cx-base">
-                {mainQty}
-              </span>
-              <button
-                type="button"
-                onClick={() => setMainQty((q) => q + 1)}
-                className="w-8 h-8 flex items-center justify-center text-[#C41E3A]
-                  hover:bg-[#C41E3A]/10 transition-colors"
-              >
-                <Plus size={12} />
-              </button>
-            </div>
-            <span className="text-[12px] text-cx-soft font-medium w-14 text-right flex-shrink-0">
-              {fmt(meal.price * mainQty)}
-            </span>
-          </div>
-
-          {/* Selected add-ons */}
-          <AnimatePresence>
-            {selectedAddonMeals.map((m) => {
-              const qty = addonQtys.get(m.id) ?? 1
-              return (
-                <motion.div
-                  key={m.id}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-3 py-3 overflow-hidden"
-                >
-                  <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 border border-cx-line bg-cx-muted">
-                    <img
-                      src={m.image}
-                      alt={m.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                    />
-                  </div>
-                  <span className="flex-1 text-[13px] font-semibold text-cx-base line-clamp-1">
-                    {m.name}
-                  </span>
-                  {/* Qty control */}
-                  <div className="flex items-center rounded-lg overflow-hidden border border-cx-edge bg-cx-fill flex-shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => changeAddonQty(m.id, -1)}
-                      className="w-8 h-8 flex items-center justify-center text-[#C41E3A]
-                        hover:bg-[#C41E3A]/10 transition-colors"
-                    >
-                      <Minus size={12} />
-                    </button>
-                    <span className="w-7 text-center text-[13px] font-bold text-cx-base">
-                      {qty}
+        {/* ── Selected summary (compact) ── */}
+        <AnimatePresence>
+          {selectedAddonMeals.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="border-t border-cx-line px-6 py-4 flex flex-col gap-2"
+            >
+              <p className="text-[11px] font-extrabold text-cx-soft uppercase tracking-widest mb-1">
+                {t.mealModal.subtotal}
+              </p>
+              {selectedAddonMeals.map((m) => {
+                const qty = addonQtys.get(m.id) ?? 1
+                return (
+                  <div key={m.id} className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 border border-cx-line bg-cx-muted">
+                      <img
+                        src={m.image}
+                        alt={m.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                      />
+                    </div>
+                    <span className="flex-1 text-[13px] font-semibold text-cx-base line-clamp-1">{m.name}</span>
+                    <span className="text-[12px] text-cx-soft">×{qty}</span>
+                    <span className="text-[13px] font-bold text-cx-base w-14 text-right flex-shrink-0">
+                      {fmt(m.price * qty)}
                     </span>
                     <button
                       type="button"
-                      onClick={() => changeAddonQty(m.id, 1)}
-                      className="w-8 h-8 flex items-center justify-center text-[#C41E3A]
-                        hover:bg-[#C41E3A]/10 transition-colors"
+                      onClick={() => toggleAddon(m.id)}
+                      className="w-5 h-5 rounded-full border border-cx-edge flex items-center justify-center
+                        text-cx-faint hover:text-red-500 hover:border-red-300 transition-all text-[13px]"
                     >
-                      <Plus size={12} />
+                      ×
                     </button>
                   </div>
-                  <span className="text-[12px] text-cx-soft font-medium w-14 text-right flex-shrink-0">
-                    {fmt(m.price * qty)}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => toggleAddon(m.id)}
-                    className="w-6 h-6 rounded-full border border-cx-edge flex items-center
-                      justify-center text-cx-faint hover:text-red-500 hover:border-red-300
-                      transition-all duration-200 text-[15px] leading-none flex-shrink-0"
-                  >
-                    ×
-                  </button>
-                </motion.div>
-              )
-            })}
-          </AnimatePresence>
-
-          {/* Total */}
-          <div className="flex items-center justify-between pt-3 pb-1">
-            <span className="text-[12px] text-cx-soft">Sous-total</span>
-            <span className="text-[18px] font-extrabold text-cx-base tracking-tight">
-              {fmt(selectionTotal)}
-            </span>
-          </div>
-        </div>
+                )
+              })}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* ── Footer action bar ── */}
+      {/* ── Footer ── */}
       <div className="flex-shrink-0 border-t border-cx-line bg-cx-card px-5 py-4">
+        {/* Total row */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-[12px] text-cx-soft font-medium">{t.mealModal.subtotal}</span>
+          <span className="text-[20px] font-extrabold text-cx-base tracking-tight">
+            {fmt(selectionTotal)}
+          </span>
+        </div>
+
+        {/* Action buttons */}
         <div className="flex items-center gap-2">
-          {/* Back */}
           <button
             type="button"
             onClick={onBack}
             disabled={!hasPrev}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-cx-edge
-              text-[13px] font-semibold text-cx-sub transition-all duration-200
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border-2 border-cx-edge
+              text-[13px] font-bold text-cx-sub transition-all duration-200
               hover:border-cx-muted hover:text-cx-base
               disabled:opacity-30 disabled:cursor-not-allowed flex-shrink-0"
           >
             <ChevronLeft size={15} />
-            <span className="hidden sm:inline">Retour</span>
+            <span className="hidden sm:inline">{t.mealModal.back}</span>
           </button>
 
-          {/* Skip */}
           <button
             type="button"
             onClick={onSkip}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-cx-edge
-              text-[13px] font-semibold text-cx-sub transition-all duration-200
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border-2 border-cx-edge
+              text-[13px] font-bold text-cx-sub transition-all duration-200
               hover:border-cx-muted hover:text-cx-base flex-shrink-0"
           >
             <SkipForward size={14} />
-            <span>{hasNext ? 'Passer' : 'Fermer'}</span>
+            <span>{hasNext ? t.mealModal.skip : t.mealModal.close}</span>
           </button>
 
-          {/* Add to cart */}
           <button
             type="button"
             onClick={() => onAdd(addonQtys, mainQty)}
             disabled={!meal.available}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl
-              bg-[#C41E3A] hover:bg-[#a01830] text-white font-bold text-[13.5px]
-              tracking-wide uppercase transition-all duration-200
-              hover:shadow-[0_6px_20px_rgba(196,30,58,0.35)] hover:-translate-y-0.5
+              bg-[#C41E3A] hover:bg-[#a01830] text-white font-extrabold text-[14px]
+              uppercase tracking-wide transition-all duration-200
+              hover:shadow-[0_6px_24px_rgba(196,30,58,0.45)] hover:-translate-y-0.5
               active:translate-y-0 disabled:bg-cx-muted disabled:text-cx-soft
               disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0"
           >
             <ShoppingCart size={15} />
-            <span>Ajouter</span>
-            {hasNext && (
-              <ChevronRight size={14} className="opacity-70" />
-            )}
+            <span>{t.mealModal.add}</span>
+            {hasNext && <ChevronRight size={14} className="opacity-80" />}
           </button>
         </div>
       </div>
@@ -445,13 +521,11 @@ export default function MealModal({
 }: Props) {
   const { addItem } = useCartStore()
 
-  // Lock body scroll
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = '' }
   }, [])
 
-  // ESC to close
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', handler)
@@ -491,36 +565,38 @@ export default function MealModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+        className="fixed inset-0 bg-black/65 backdrop-blur-sm z-50"
         onClick={onClose}
       />
 
-      {/* Panel */}
+      {/* Panel — wider to fit 3-col grid, with red glow border */}
       <motion.div
         initial={{ opacity: 0, y: 40, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 40, scale: 0.96 }}
         transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed inset-x-4 top-[4%] bottom-[4%]
+        className="fixed inset-x-4 top-[3%] bottom-[3%]
           sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2
-          sm:w-full sm:max-w-xl
+          sm:w-full sm:max-w-2xl
           z-50 bg-cx-card rounded-3xl overflow-hidden flex flex-col
-          shadow-[0_24px_80px_rgba(0,0,0,0.3)]"
+          ring-1 ring-[#C41E3A]/25
+          shadow-[0_0_0_1px_rgba(196,30,58,0.15),0_0_40px_rgba(196,30,58,0.12),0_24px_80px_rgba(0,0,0,0.35)]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button overlay */}
+        {/* Close button */}
         <div className="absolute top-4 right-5 z-10">
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-cx-fill border border-cx-edge flex items-center
-              justify-center text-cx-soft hover:text-cx-base hover:border-cx-muted transition-all"
+            className="w-8 h-8 rounded-full bg-cx-fill border-2 border-cx-edge flex items-center
+              justify-center text-cx-soft hover:text-cx-base hover:border-[#C41E3A]/50
+              hover:text-[#C41E3A] transition-all"
           >
             <X size={14} />
           </button>
         </div>
 
-        {/* Content — key resets local state (addons, qty) on meal change */}
+        {/* Content — key resets state on meal change */}
         <ModalContent
           key={meal.id}
           meal={meal}

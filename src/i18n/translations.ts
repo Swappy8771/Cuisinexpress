@@ -273,6 +273,16 @@ const translations = {
       add: 'Ajouter',
       added: 'Ajouté',
     },
+    // ── Meal modal ────────────────────────────────────────────────
+    mealModal: {
+      extrasTitle: 'Ajouter des extras',
+      subtotal: 'Sous-total',
+      back: 'Retour',
+      skip: 'Passer',
+      close: 'Fermer',
+      add: 'Ajouter',
+      available: 'disponibles',
+    },
     // ── Filter sidebar ────────────────────────────────────────────
     filter: {
       title: 'Filtres',
@@ -680,6 +690,16 @@ const translations = {
       perMeal: '/meal',
       add: 'Add',
       added: 'Added',
+    },
+    // ── Meal modal ────────────────────────────────────────────────
+    mealModal: {
+      extrasTitle: 'Add extras',
+      subtotal: 'Subtotal',
+      back: 'Back',
+      skip: 'Skip',
+      close: 'Close',
+      add: 'Add',
+      available: 'available',
     },
     // ── Filter sidebar ────────────────────────────────────────────
     filter: {
