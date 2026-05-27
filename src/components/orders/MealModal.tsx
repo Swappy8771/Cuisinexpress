@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, ChevronLeft, ChevronRight, Minus, Plus,
-  ShoppingCart, SkipForward, Check,
+  ShoppingCart, SkipForward, Check, Calendar,
 } from 'lucide-react'
-import type { Meal, MenuCategory, MealTag } from '../../types'
-import { fmt, TAG_CONFIG } from '../../lib/menuConfig'
-import { meals as allMeals } from '../../lib/mockData'
+import type { Meal, MenuCategory, MealTag, DeliveryInfo } from '../../types'
+import { fmt, TAG_CONFIG, DAYS, fmtWeekRange, fmtDeliveryDate } from '../../lib/menuConfig'
+import type { DayName } from '../../lib/menuConfig'
+import { meals as allMeals, weeks } from '../../lib/mockData'
 import { useCartStore } from '../../store/cartStore'
 import { useLang } from '../../contexts/LangContext'
 
@@ -26,6 +27,8 @@ function AddonGridCard({
   onToggle,
   onChangeQty,
   tagLabels,
+  unavailableLabel,
+  qtyLabel,
 }: {
   meal: Meal
   selected: boolean
@@ -33,6 +36,8 @@ function AddonGridCard({
   onToggle: () => void
   onChangeQty: (delta: number) => void
   tagLabels: Record<MealTag, string>
+  unavailableLabel: string
+  qtyLabel: string
 }) {
   return (
     <motion.div
@@ -75,7 +80,7 @@ function AddonGridCard({
         {!meal.available && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
             <span className="bg-cx-card text-cx-soft text-[11px] font-bold px-3 py-1 rounded-full">
-              Indisponible
+              {unavailableLabel}
             </span>
           </div>
         )}
@@ -120,7 +125,7 @@ function AddonGridCard({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mt-1 pt-2 border-t border-cx-line">
-                <span className="text-[10.5px] text-cx-soft font-medium">Qté</span>
+                <span className="text-[10.5px] text-cx-soft font-medium">{qtyLabel}</span>
                 <div className="flex items-center rounded-lg overflow-hidden border border-cx-edge bg-cx-fill">
                   <button
                     type="button"
@@ -169,9 +174,9 @@ function ModalContent({
   hasNext: boolean
   onBack: () => void
   onSkip: () => void
-  onAdd: (addonQtys: Map<string, number>, mainQty: number) => void
+  onAdd: (addonQtys: Map<string, number>, mainQty: number, delivery: DeliveryInfo) => void
 }) {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const tagLabels: Record<MealTag, string> = {
     hot: t.menu.tagLabels.hot,
     cold: t.menu.tagLabels.cold,
@@ -184,7 +189,11 @@ function ModalContent({
   const [addonQtys, setAddonQtys] = useState<Map<string, number>>(new Map())
   const [mainQty, setMainQty] = useState(1)
   const [addonGroupIndex, setAddonGroupIndex] = useState(0)
+  const [selectedWeekId, setSelectedWeekId] = useState(weeks[0]?.id ?? '')
+  const firstAvailableDay = (meal.availableDays?.find((d) => DAYS.includes(d as DayName)) as DayName | undefined) ?? 'Lundi'
+  const [selectedDay, setSelectedDay] = useState<DayName>(firstAvailableDay)
 
+  const selectedWeek = weeks.find((w) => w.id === selectedWeekId)
   const category = categories.find((c) => c.id === meal.categoryId)
 
   const otherMeals = allMeals.filter((m) => m.id !== meal.id && m.available)
@@ -285,24 +294,86 @@ function ModalContent({
           </div>
         </div>
 
-        {/* Tags row */}
-        {meal.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            {meal.tags.slice(0, 4).map((tag) => {
-              const cfg = TAG_CONFIG[tag]
-              const Icon = cfg.icon
+        {/* Tags + delivery day row */}
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {meal.tags.slice(0, 3).map((tag) => {
+            const cfg = TAG_CONFIG[tag]
+            const Icon = cfg.icon
+            return (
+              <span
+                key={tag}
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full
+                  text-[10.5px] font-semibold bg-cx-fill border border-cx-edge ${cfg.color}`}
+              >
+                <Icon size={9} /> {tagLabels[tag]}
+              </span>
+            )
+          })}
+          {/* Delivery day tag */}
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full
+            text-[10.5px] font-semibold bg-[#C41E3A]/10 border border-[#C41E3A]/25 text-[#C41E3A]">
+            <Calendar size={9} />
+            {selectedWeek
+              ? fmtDeliveryDate(selectedWeek.startDate, selectedDay, t.menu.dayLabels[selectedDay], lang)
+              : t.menu.dayLabels[selectedDay]}
+          </span>
+        </div>
+
+        {/* ── Week + Day selector ── */}
+        <div className="mt-4 flex flex-col gap-3">
+          {/* Week pills */}
+          <div className="flex flex-wrap gap-2">
+            {weeks.map((w) => (
+              <button
+                key={w.id}
+                type="button"
+                onClick={() => setSelectedWeekId(w.id)}
+                className={`px-3 py-1 rounded-lg text-[11.5px] font-semibold border transition-all duration-200
+                  ${selectedWeekId === w.id
+                    ? 'bg-cx-base text-cx-card border-cx-base'
+                    : 'bg-cx-fill border-cx-edge text-cx-soft hover:border-cx-muted hover:text-cx-base'
+                  }`}
+              >
+                {w.label}
+                {selectedWeek && selectedWeekId === w.id && (
+                  <span className="ml-1.5 text-[10px] opacity-70">
+                    {fmtWeekRange(w.startDate, w.endDate, lang)}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Day chips */}
+          <div className="flex flex-wrap gap-2">
+            {DAYS.map((day) => {
+              const active = selectedDay === day
+              const label = t.menu.dayLabels[day]
+              const shortLabel = label.slice(0, 3)
+              const disabled = !!(meal.availableDays && !meal.availableDays.includes(day))
               return (
-                <span
-                  key={tag}
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full
-                    text-[10.5px] font-semibold bg-cx-fill border border-cx-edge ${cfg.color}`}
+                <button
+                  key={day}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => !disabled && setSelectedDay(day)}
+                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full
+                    text-[12px] font-bold border-2 transition-all duration-200
+                    ${disabled
+                      ? 'bg-cx-fill border-cx-edge text-cx-faint opacity-35 cursor-not-allowed'
+                      : active
+                        ? 'bg-[#C41E3A] border-[#C41E3A] text-white shadow-[0_2px_10px_rgba(196,30,58,0.3)]'
+                        : 'bg-cx-fill border-cx-edge text-cx-sub hover:border-[#C41E3A]/40 hover:text-cx-base'
+                    }`}
                 >
-                  <Icon size={9} /> {tagLabels[tag]}
-                </span>
+                  {active && !disabled && <Check size={11} strokeWidth={3} />}
+                  <span className="sm:hidden">{shortLabel}</span>
+                  <span className="hidden sm:inline">{label}</span>
+                </button>
               )
             })}
           </div>
-        )}
+        </div>
 
         {/* Progress bar */}
         <div className="flex gap-1 mt-4">
@@ -336,7 +407,7 @@ function ModalContent({
               </p>
               {totalSelectedAddons > 0 && (
                 <span className="text-[11px] font-bold text-[#C41E3A]">
-                  {totalSelectedAddons} {totalSelectedAddons > 1 ? 'sélectionnés' : 'sélectionné'}
+                  {totalSelectedAddons} {totalSelectedAddons > 1 ? t.mealModal.selectedPlural : t.mealModal.selected}
                 </span>
               )}
             </div>
@@ -389,6 +460,8 @@ function ModalContent({
                     onToggle={() => toggleAddon(m.id)}
                     onChangeQty={(delta) => changeAddonQty(m.id, delta)}
                     tagLabels={tagLabels}
+                    unavailableLabel={t.mealModal.unavailable}
+                    qtyLabel={t.mealModal.qty}
                   />
                 ))}
               </motion.div>
@@ -502,7 +575,27 @@ function ModalContent({
 
           <button
             type="button"
-            onClick={() => onAdd(addonQtys, mainQty)}
+            onClick={() => {
+              const w = weeks.find((x) => x.id === selectedWeekId)
+              const dayIndex = DAYS.indexOf(selectedDay)
+              const isoDate = (() => {
+                if (!w) return ''
+                const d = new Date(w.startDate + 'T12:00:00')
+                d.setDate(d.getDate() + dayIndex)
+                return d.toISOString().slice(0, 10)
+              })()
+              const delivery: DeliveryInfo = {
+                weekId: selectedWeekId,
+                weekLabel: w?.label ?? '',
+                weekStartDate: w?.startDate ?? '',
+                day: selectedDay,
+                isoDate,
+                formattedDate: w
+                  ? fmtDeliveryDate(w.startDate, selectedDay, t.menu.dayLabels[selectedDay], lang)
+                  : t.menu.dayLabels[selectedDay],
+              }
+              onAdd(addonQtys, mainQty, delivery)
+            }}
             disabled={!meal.available}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl
               bg-[#C41E3A] hover:bg-[#a01830] text-white font-extrabold text-[14px]
@@ -548,11 +641,11 @@ export default function MealModal({
   const hasPrev = index > 0
   const hasNext = index < meals.length - 1
 
-  const handleAdd = (addonQtys: Map<string, number>, qty: number) => {
-    for (let i = 0; i < qty; i++) addItem(meal)
+  const handleAdd = (addonQtys: Map<string, number>, qty: number, delivery: DeliveryInfo) => {
+    for (let i = 0; i < qty; i++) addItem(meal, delivery)
     addonQtys.forEach((addonQty, id) => {
       const m = allMeals.find((x) => x.id === id)
-      if (m) for (let i = 0; i < addonQty; i++) addItem(m)
+      if (m) for (let i = 0; i < addonQty; i++) addItem(m, delivery)
     })
     if (hasNext) onNavigate(index + 1)
     else onClose()

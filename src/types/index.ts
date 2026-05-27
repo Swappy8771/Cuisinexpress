@@ -113,6 +113,7 @@ export interface Meal {
   popular: boolean
   isNew: boolean
   calories?: number
+  availableDays?: string[]   // DayName[] — which weekdays this meal is served
 }
 
 export type SortOption = 'popular' | 'price_asc' | 'price_desc' | 'name'
@@ -128,7 +129,18 @@ export interface MealFilters {
 
 // ─── Cart ─────────────────────────────────────────────────────────────────────
 
+export interface DeliveryInfo {
+  weekId: string
+  weekLabel: string
+  weekStartDate: string
+  day: string          // DayName value, e.g. 'Lundi'
+  isoDate: string      // YYYY-MM-DD for sorting
+  formattedDate: string // display label, e.g. "lundi le 26 mai"
+}
+
 export interface CartItem {
+  key: string          // meal.id  OR  `${meal.id}__${weekId}__${day}`
   meal: Meal
   quantity: number
+  delivery?: DeliveryInfo
 }

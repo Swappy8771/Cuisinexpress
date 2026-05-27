@@ -429,14 +429,14 @@ export default function MealDetailPage() {
                       {/* Qty control */}
                       <div className="flex items-center rounded-lg overflow-hidden border border-cx-edge bg-cx-fill flex-shrink-0">
                         <button type="button"
-                          onClick={() => updateQty(item.meal.id, -1)}
+                          onClick={() => updateQty(item.key ?? item.meal.id, -1)}
                           className="w-7 h-7 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
                         >
                           <Minus size={11} />
                         </button>
                         <span className="w-6 text-center text-[12px] font-bold text-cx-base">{item.quantity}</span>
                         <button type="button"
-                          onClick={() => updateQty(item.meal.id, 1)}
+                          onClick={() => updateQty(item.key ?? item.meal.id, 1)}
                           className="w-7 h-7 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
                         >
                           <Plus size={11} />
@@ -446,7 +446,7 @@ export default function MealDetailPage() {
                         {fmt(item.meal.price * item.quantity)}
                       </span>
                       <button type="button"
-                        onClick={() => removeItem(item.meal.id)}
+                        onClick={() => removeItem(item.key ?? item.meal.id)}
                         className="w-6 h-6 rounded-full border border-cx-edge flex items-center justify-center
                           text-cx-faint hover:text-red-500 hover:border-red-300 transition-all duration-200 text-[15px] leading-none"
                       >

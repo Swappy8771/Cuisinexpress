@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, Plus, Minus, ShoppingCart, Flame, Star, CheckCircle2 } from 'lucide-react'
 import type { Meal, Allergy, MenuCategory, MealTag } from '../../types'
-import { fmt, TAG_CONFIG } from '../../lib/menuConfig'
+import { fmt, TAG_CONFIG, DAYS } from '../../lib/menuConfig'
+import type { DayName } from '../../lib/menuConfig'
 import { useCartStore } from '../../store/cartStore'
 import { useLang } from '../../contexts/LangContext'
 
@@ -111,6 +112,26 @@ export default function MealCard({ meal, allergies, categories, onOpen }: Props)
               rounded-full shadow-lg">
               {t.mealCard.unavailable}
             </span>
+          </div>
+        )}
+
+        {/* Day availability chips on image */}
+        {meal.availableDays && meal.availableDays.length > 0 && meal.availableDays.length < 5 && meal.available && (
+          <div className="absolute bottom-2.5 left-2.5 flex flex-wrap gap-1">
+            {DAYS.map((day) => {
+              const active = meal.availableDays!.includes(day)
+              const short = t.menu.dayLabels[day as DayName].slice(0, 3)
+              return active ? (
+                <span
+                  key={day}
+                  className="inline-flex items-center px-1.5 py-0.5 rounded-md
+                    text-[9.5px] font-extrabold tracking-wide
+                    bg-[#C41E3A] text-white shadow-[0_1px_4px_rgba(0,0,0,0.4)]"
+                >
+                  {short}
+                </span>
+              ) : null
+            })}
           </div>
         )}
 

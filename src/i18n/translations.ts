@@ -282,6 +282,10 @@ const translations = {
       close: 'Fermer',
       add: 'Ajouter',
       available: 'disponibles',
+      unavailable: 'Indisponible',
+      qty: 'Qté',
+      selected: 'sélectionné',
+      selectedPlural: 'sélectionnés',
     },
     // ── Filter sidebar ────────────────────────────────────────────
     filter: {
@@ -700,6 +704,10 @@ const translations = {
       close: 'Close',
       add: 'Add',
       available: 'available',
+      unavailable: 'Unavailable',
+      qty: 'Qty',
+      selected: 'selected',
+      selectedPlural: 'selected',
     },
     // ── Filter sidebar ────────────────────────────────────────────
     filter: {

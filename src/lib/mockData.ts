@@ -31,10 +31,17 @@ export const allergies: Allergy[] = [
   { id: 'a-6', label: 'Sésame', emoji: '🌰', colorClass: 'bg-stone-100  text-stone-600  ring-stone-200'  },
 ]
 
-const ALL = ['sch-1', 'sch-2', 'sch-3']
-const W   = ['w-1', 'w-2', 'w-3', 'w-4']
+const ALL  = ['sch-1', 'sch-2', 'sch-3']
+const W    = ['w-1', 'w-2', 'w-3', 'w-4']
+
+// Day availability logic:
+//   Plats      → 2 specific days (cafeteria rotation)
+//   Entrées    → 2–3 days
+//   Desserts / Boissons / Collations → all 5 days (always available)
+const EVERY_DAY = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']
 
 export const meals: Meal[] = [
+  // ── Plats (cat-1) — 2 specific days each, distributed so every day has ≥1 plat ──
   {
     id: 'm-1',
     name: 'Spaghetti Bolognaise',
@@ -50,38 +57,7 @@ export const meals: Meal[] = [
     popular: true,
     isNew: false,
     calories: 520,
-  },
-  {
-    id: 'm-2',
-    name: 'Salade César Fraîche',
-    description: 'Laitue romaine croquante, croûtons maison dorés, copeaux de parmesan et sauce César légère.',
-    price: 6.25,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400&h=280',
-    categoryId: 'cat-2',
-    schoolIds: ALL,
-    weekIds: W,
-    tags: ['cold', 'vegetarian'],
-    allergyIds: ['a-1', 'a-2', 'a-4'],
-    available: true,
-    popular: false,
-    isNew: false,
-    calories: 320,
-  },
-  {
-    id: 'm-3',
-    name: 'Soupe à la Tomate',
-    description: 'Soupe onctueuse aux tomates fraîches et basilic, servie avec une tranche de pain de campagne.',
-    price: 5.00,
-    image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=400&h=280',
-    categoryId: 'cat-2',
-    schoolIds: ALL,
-    weekIds: W,
-    tags: ['hot', 'vegetarian'],
-    allergyIds: ['a-1'],
-    available: true,
-    popular: false,
-    isNew: true,
-    calories: 210,
+    availableDays: ['Lundi', 'Mercredi'],         // pasta on Mon & Wed
   },
   {
     id: 'm-4',
@@ -98,6 +74,7 @@ export const meals: Meal[] = [
     popular: true,
     isNew: false,
     calories: 480,
+    availableDays: ['Mardi', 'Jeudi'],            // protein on Tue & Thu
   },
   {
     id: 'm-5',
@@ -114,6 +91,7 @@ export const meals: Meal[] = [
     popular: false,
     isNew: false,
     calories: 380,
+    availableDays: ['Mercredi', 'Vendredi'],      // lighter option midweek & Friday
   },
   {
     id: 'm-6',
@@ -130,70 +108,7 @@ export const meals: Meal[] = [
     popular: false,
     isNew: true,
     calories: 390,
-  },
-  {
-    id: 'm-7',
-    name: 'Yaourt aux Fruits Rouges',
-    description: 'Yaourt nature onctueux garni de fraises, framboises et myrtilles fraîches, légèrement sucré.',
-    price: 3.25,
-    image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400&h=280',
-    categoryId: 'cat-3',
-    schoolIds: ALL,
-    weekIds: W,
-    tags: ['cold', 'vegetarian'],
-    allergyIds: ['a-2'],
-    available: true,
-    popular: false,
-    isNew: false,
-    calories: 140,
-  },
-  {
-    id: 'm-8',
-    name: 'Mousse au Chocolat',
-    description: 'Mousse légère au chocolat noir 70%, préparée avec des œufs frais et sans sucre ajouté.',
-    price: 3.75,
-    image: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=400&h=280',
-    categoryId: 'cat-3',
-    schoolIds: ['sch-1', 'sch-3'],
-    weekIds: W,
-    tags: ['cold', 'vegetarian'],
-    allergyIds: ['a-2', 'a-4'],
-    available: true,
-    popular: true,
-    isNew: false,
-    calories: 190,
-  },
-  {
-    id: 'm-9',
-    name: 'Jus d\'Orange Pressé',
-    description: 'Jus d\'oranges fraîchement pressées, sans sucre ajouté, riche en vitamine C.',
-    price: 2.50,
-    image: 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?auto=format&fit=crop&w=400&h=280',
-    categoryId: 'cat-4',
-    schoolIds: ALL,
-    weekIds: W,
-    tags: ['cold', 'vegetarian', 'vegan', 'gluten-free'],
-    allergyIds: [],
-    available: true,
-    popular: false,
-    isNew: false,
-    calories: 90,
-  },
-  {
-    id: 'm-10',
-    name: 'Salade de Fruits Exotiques',
-    description: 'Mélange de mangue, ananas, kiwi et papaye, arrosé d\'un coulis de fruits de la passion.',
-    price: 3.50,
-    image: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=400&h=280',
-    categoryId: 'cat-3',
-    schoolIds: ALL,
-    weekIds: W,
-    tags: ['cold', 'vegetarian', 'vegan', 'gluten-free'],
-    allergyIds: [],
-    available: true,
-    popular: false,
-    isNew: true,
-    calories: 110,
+    availableDays: ['Lundi', 'Vendredi'],         // vegan option Mon & Fri
   },
   {
     id: 'm-11',
@@ -210,7 +125,118 @@ export const meals: Meal[] = [
     popular: false,
     isNew: false,
     calories: 560,
+    availableDays: ['Jeudi'],                     // special Thursday only
   },
+
+  // ── Entrées (cat-2) — 2–3 days each ──────────────────────────────────────────
+  {
+    id: 'm-2',
+    name: 'Salade César Fraîche',
+    description: 'Laitue romaine croquante, croûtons maison dorés, copeaux de parmesan et sauce César légère.',
+    price: 6.25,
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400&h=280',
+    categoryId: 'cat-2',
+    schoolIds: ALL,
+    weekIds: W,
+    tags: ['cold', 'vegetarian'],
+    allergyIds: ['a-1', 'a-2', 'a-4'],
+    available: true,
+    popular: false,
+    isNew: false,
+    calories: 320,
+    availableDays: ['Lundi', 'Mardi', 'Mercredi'],
+  },
+  {
+    id: 'm-3',
+    name: 'Soupe à la Tomate',
+    description: 'Soupe onctueuse aux tomates fraîches et basilic, servie avec une tranche de pain de campagne.',
+    price: 5.00,
+    image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=400&h=280',
+    categoryId: 'cat-2',
+    schoolIds: ALL,
+    weekIds: W,
+    tags: ['hot', 'vegetarian'],
+    allergyIds: ['a-1'],
+    available: true,
+    popular: false,
+    isNew: true,
+    calories: 210,
+    availableDays: ['Mardi', 'Jeudi', 'Vendredi'],
+  },
+
+  // ── Desserts (cat-3) — every day ─────────────────────────────────────────────
+  {
+    id: 'm-7',
+    name: 'Yaourt aux Fruits Rouges',
+    description: 'Yaourt nature onctueux garni de fraises, framboises et myrtilles fraîches, légèrement sucré.',
+    price: 3.25,
+    image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400&h=280',
+    categoryId: 'cat-3',
+    schoolIds: ALL,
+    weekIds: W,
+    tags: ['cold', 'vegetarian'],
+    allergyIds: ['a-2'],
+    available: true,
+    popular: false,
+    isNew: false,
+    calories: 140,
+    availableDays: EVERY_DAY,
+  },
+  {
+    id: 'm-8',
+    name: 'Mousse au Chocolat',
+    description: 'Mousse légère au chocolat noir 70%, préparée avec des œufs frais et sans sucre ajouté.',
+    price: 3.75,
+    image: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=400&h=280',
+    categoryId: 'cat-3',
+    schoolIds: ['sch-1', 'sch-3'],
+    weekIds: W,
+    tags: ['cold', 'vegetarian'],
+    allergyIds: ['a-2', 'a-4'],
+    available: true,
+    popular: true,
+    isNew: false,
+    calories: 190,
+    availableDays: ['Lundi', 'Mercredi', 'Vendredi'], // special treat 3×/week
+  },
+  {
+    id: 'm-10',
+    name: 'Salade de Fruits Exotiques',
+    description: 'Mélange de mangue, ananas, kiwi et papaye, arrosé d\'un coulis de fruits de la passion.',
+    price: 3.50,
+    image: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=400&h=280',
+    categoryId: 'cat-3',
+    schoolIds: ALL,
+    weekIds: W,
+    tags: ['cold', 'vegetarian', 'vegan', 'gluten-free'],
+    allergyIds: [],
+    available: true,
+    popular: false,
+    isNew: true,
+    calories: 110,
+    availableDays: EVERY_DAY,
+  },
+
+  // ── Boissons (cat-4) — every day ─────────────────────────────────────────────
+  {
+    id: 'm-9',
+    name: 'Jus d\'Orange Pressé',
+    description: 'Jus d\'oranges fraîchement pressées, sans sucre ajouté, riche en vitamine C.',
+    price: 2.50,
+    image: 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?auto=format&fit=crop&w=400&h=280',
+    categoryId: 'cat-4',
+    schoolIds: ALL,
+    weekIds: W,
+    tags: ['cold', 'vegetarian', 'vegan', 'gluten-free'],
+    allergyIds: [],
+    available: true,
+    popular: false,
+    isNew: false,
+    calories: 90,
+    availableDays: EVERY_DAY,
+  },
+
+  // ── Collations (cat-5) — every day ───────────────────────────────────────────
   {
     id: 'm-12',
     name: 'Compote Pomme-Cannelle',
@@ -226,5 +252,6 @@ export const meals: Meal[] = [
     popular: false,
     isNew: false,
     calories: 80,
+    availableDays: EVERY_DAY,
   },
 ]
