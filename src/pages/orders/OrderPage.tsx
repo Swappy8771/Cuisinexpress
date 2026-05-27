@@ -10,9 +10,11 @@ import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cart
 import FilterSidebar from '../../components/orders/FilterSidebar'
 import MealCard from '../../components/orders/MealCard'
 import MealCardSkeleton from '../../components/orders/MealCardSkeleton'
-import MealModal from '../../components/orders/MealModal'
+import DayOrderModal from '../../components/orders/DayOrderModal'
 import { useLang } from '../../contexts/LangContext'
-import type { MealFilters, SortOption } from '../../types'
+import { DAYS } from '../../lib/menuConfig'
+import type { DayName } from '../../lib/menuConfig'
+import type { Meal, MealFilters, SortOption } from '../../types'
 
 const DEFAULT_FILTERS: MealFilters = {
   schoolId: '',
@@ -38,7 +40,8 @@ export default function OrderPage() {
   ]
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [sortOpen, setSortOpen] = useState(false)
-  const [modalIndex, setModalIndex] = useState<number | null>(null)
+  const [cardMeal, setCardMeal] = useState<Meal | null>(null)
+  const [dayModal, setDayModal] = useState<DayName | null>(null)
 
   const cartCount = useCartStore(selectCartCount)
   const cartTotal = useCartStore(selectCartTotal)
@@ -262,6 +265,50 @@ export default function OrderPage() {
           {/* ── Product grid ────────────────────────────────────────── */}
           <main className="flex-1 min-w-0">
 
+            {/* Day tabs */}
+            {!isLoading && meals.length > 0 && (
+              <div className="mb-5">
+                <p className="text-[11px] font-extrabold text-cx-soft uppercase tracking-widest mb-3">
+                  {t.dayOrder.tabsTitle}
+                </p>
+                <div className="flex gap-2 overflow-x-auto [scrollbar-width:none]
+                  [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden -mx-1 px-1 pb-1">
+                  {DAYS.map((day) => {
+                    const count = meals.filter(
+                      (m) => m.categoryId === 'cat-1' && m.available && m.availableDays?.includes(day)
+                    ).length
+                    return (
+                      <motion.button
+                        key={day}
+                        whileHover={count > 0 ? { y: -2 } : {}}
+                        transition={{ duration: 0.15 }}
+                        onClick={() => count > 0 && setDayModal(day)}
+                        disabled={count === 0}
+                        className={`flex-shrink-0 flex flex-col items-center gap-1.5 px-4 py-3 rounded-2xl
+                          border-2 transition-all duration-200
+                          ${count > 0
+                            ? 'border-cx-edge bg-cx-card hover:border-[#C41E3A] hover:shadow-[0_4px_16px_rgba(196,30,58,0.12)] cursor-pointer'
+                            : 'border-cx-edge bg-cx-fill opacity-45 cursor-not-allowed'
+                          }`}
+                      >
+                        <span className={`text-[13px] font-extrabold ${count > 0 ? 'text-cx-base' : 'text-cx-faint'}`}>
+                          {t.menu.dayLabels[day]}
+                        </span>
+                        {count > 0 ? (
+                          <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5
+                            rounded-full bg-[#C41E3A] text-white text-[10px] font-bold">
+                            {count}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-cx-faint font-medium">—</span>
+                        )}
+                      </motion.button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Active filters chips */}
             <AnimatePresence>
               {activeFilterCount > 0 && (
@@ -364,13 +411,13 @@ export default function OrderPage() {
                 className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"
               >
                 <AnimatePresence>
-                  {meals.map((meal, i) => (
+                  {meals.map((meal) => (
                     <MealCard
                       key={meal.id}
                       meal={meal}
                       allergies={allergies}
                       categories={categories}
-                      onOpen={() => setModalIndex(i)}
+                      onOpen={() => setCardMeal(meal)}
                     />
                   ))}
                 </AnimatePresence>
@@ -453,15 +500,29 @@ export default function OrderPage() {
         <div className="fixed inset-0 z-20" onClick={() => setSortOpen(false)} />
       )}
 
-      {/* ── Meal modal ── */}
+      {/* ── Day order modal — card click (pre-selected meal, skip step 1) ── */}
       <AnimatePresence>
-        {modalIndex !== null && meals.length > 0 && (
-          <MealModal
+        {cardMeal && (
+          <DayOrderModal
+            day={(cardMeal.availableDays?.[0] as DayName) ?? 'Lundi'}
+            defaultWeekId={filters.weekId}
             meals={meals}
-            index={modalIndex}
             categories={categories}
-            onClose={() => setModalIndex(null)}
-            onNavigate={(i) => setModalIndex(i)}
+            preSelectedMeal={cardMeal}
+            onClose={() => setCardMeal(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ── Day order modal — day tab click ── */}
+      <AnimatePresence>
+        {dayModal !== null && (
+          <DayOrderModal
+            day={dayModal}
+            defaultWeekId={filters.weekId}
+            meals={meals}
+            categories={categories}
+            onClose={() => setDayModal(null)}
           />
         )}
       </AnimatePresence>

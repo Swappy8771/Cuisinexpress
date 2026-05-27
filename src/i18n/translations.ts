@@ -273,6 +273,18 @@ const translations = {
       add: 'Ajouter',
       added: 'Ajouté',
     },
+    // ── Day order modal ───────────────────────────────────────────
+    dayOrder: {
+      step1: 'Étape 1 / 2',
+      step2: 'Étape 2 / 2',
+      selectMealTitle: 'Choisir un repas',
+      availableOn: 'Repas disponibles le',
+      continue: 'Continuer',
+      selectHint: 'Sélectionnez un repas pour continuer',
+      noMeals: 'Aucun repas disponible ce jour',
+      mealsLabel: 'repas',
+      tabsTitle: 'Commander par jour',
+    },
     // ── Meal modal ────────────────────────────────────────────────
     mealModal: {
       extrasTitle: 'Ajouter des extras',
@@ -694,6 +706,18 @@ const translations = {
       perMeal: '/meal',
       add: 'Add',
       added: 'Added',
+    },
+    // ── Day order modal ───────────────────────────────────────────
+    dayOrder: {
+      step1: 'Step 1 / 2',
+      step2: 'Step 2 / 2',
+      selectMealTitle: 'Choose a meal',
+      availableOn: 'Meals available on',
+      continue: 'Continue',
+      selectHint: 'Select a meal to continue',
+      noMeals: 'No meals available this day',
+      mealsLabel: 'meals',
+      tabsTitle: 'Order by day',
     },
     // ── Meal modal ────────────────────────────────────────────────
     mealModal: {
