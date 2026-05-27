@@ -11,10 +11,12 @@ interface Props {
   meal: Meal
   allergies: Allergy[]
   categories: MenuCategory[]
+  onOpen?: () => void
 }
 
-export default function MealCard({ meal, allergies, categories }: Props) {
+export default function MealCard({ meal, allergies, categories, onOpen }: Props) {
   const navigate = useNavigate()
+  const handleOpen = () => onOpen ? onOpen() : navigate(`/commander/${meal.id}`)
   const { t } = useLang()
   const tagLabels: Record<MealTag, string> = {
     hot: t.menu.tagLabels.hot, cold: t.menu.tagLabels.cold,
@@ -52,7 +54,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
       {/* Image — click navigates to detail */}
       <div
         className="relative aspect-[4/3] overflow-hidden bg-cx-muted cursor-pointer"
-        onClick={() => navigate(`/commander/${meal.id}`)}
+        onClick={handleOpen}
       >
         <motion.img
           src={meal.image}
@@ -140,7 +142,7 @@ export default function MealCard({ meal, allergies, categories }: Props) {
         <h3
           className="text-[15px] font-bold text-cx-base leading-snug line-clamp-1
             hover:text-[#C41E3A] transition-colors cursor-pointer"
-          onClick={() => navigate(`/commander/${meal.id}`)}
+          onClick={handleOpen}
         >
           {meal.name}
         </h3>

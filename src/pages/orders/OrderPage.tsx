@@ -10,6 +10,7 @@ import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cart
 import FilterSidebar from '../../components/orders/FilterSidebar'
 import MealCard from '../../components/orders/MealCard'
 import MealCardSkeleton from '../../components/orders/MealCardSkeleton'
+import MealModal from '../../components/orders/MealModal'
 import { useLang } from '../../contexts/LangContext'
 import type { MealFilters, SortOption } from '../../types'
 
@@ -37,6 +38,7 @@ export default function OrderPage() {
   ]
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [sortOpen, setSortOpen] = useState(false)
+  const [modalIndex, setModalIndex] = useState<number | null>(null)
 
   const cartCount = useCartStore(selectCartCount)
   const cartTotal = useCartStore(selectCartTotal)
@@ -362,12 +364,13 @@ export default function OrderPage() {
                 className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"
               >
                 <AnimatePresence>
-                  {meals.map((meal) => (
+                  {meals.map((meal, i) => (
                     <MealCard
                       key={meal.id}
                       meal={meal}
                       allergies={allergies}
                       categories={categories}
+                      onOpen={() => setModalIndex(i)}
                     />
                   ))}
                 </AnimatePresence>
@@ -449,6 +452,19 @@ export default function OrderPage() {
       {sortOpen && (
         <div className="fixed inset-0 z-20" onClick={() => setSortOpen(false)} />
       )}
+
+      {/* ── Meal modal ── */}
+      <AnimatePresence>
+        {modalIndex !== null && meals.length > 0 && (
+          <MealModal
+            meals={meals}
+            index={modalIndex}
+            categories={categories}
+            onClose={() => setModalIndex(null)}
+            onNavigate={(i) => setModalIndex(i)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
