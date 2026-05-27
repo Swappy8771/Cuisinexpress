@@ -224,55 +224,71 @@ function ModalContent({
     <div className="flex flex-col h-full">
 
       {/* ── Header ── */}
-      <div className="relative px-6 pt-5 pb-4 flex-shrink-0">
-        {/* Category label */}
-        <div className="flex items-center gap-2 mb-1">
+      <div className="relative px-5 pt-5 pb-4 flex-shrink-0">
+        {/* Counter row */}
+        <div className="flex items-center justify-between mb-3">
           {category && (
             <span className="text-[11px] font-extrabold text-[#C41E3A] uppercase tracking-widest">
               {category.emoji} {category.label}
             </span>
           )}
-          <span className="text-[11px] text-cx-faint ml-auto font-medium">
+          <span className="text-[11px] text-cx-faint font-medium">
             {currentIndex + 1} / {total}
           </span>
         </div>
 
-        {/* Meal name as big title */}
-        <h2 className="text-[22px] sm:text-[26px] font-extrabold text-cx-base leading-tight tracking-tight pr-8">
-          {meal.name}
-        </h2>
+        {/* Image + info side by side */}
+        <div className="flex gap-4">
+          {/* Meal image */}
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-cx-muted flex-shrink-0 border border-cx-line">
+            <img
+              src={meal.image}
+              alt={meal.name}
+              className="w-full h-full object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+            />
+          </div>
 
-        {/* Description + price row */}
-        <div className="flex items-end justify-between gap-4 mt-1.5">
-          <p className="text-[12.5px] text-cx-soft line-clamp-1 leading-relaxed flex-1">
-            {meal.description}
-          </p>
-          <span className="text-[22px] font-extrabold text-[#C41E3A] tracking-tight flex-shrink-0 leading-none">
-            {fmt(meal.price)}
-          </span>
+          {/* Text info */}
+          <div className="flex flex-col justify-between min-w-0 flex-1 pr-6">
+            <div>
+              <h2 className="text-[18px] sm:text-[21px] font-extrabold text-cx-base leading-tight tracking-tight">
+                {meal.name}
+              </h2>
+              <p className="text-[12px] text-cx-soft line-clamp-2 leading-relaxed mt-1">
+                {meal.description}
+              </p>
+            </div>
+            <div className="flex items-center justify-between mt-2 flex-wrap gap-2">
+              <span className="text-[21px] font-extrabold text-[#C41E3A] tracking-tight leading-none">
+                {fmt(meal.price)}
+              </span>
+              {/* Qty control */}
+              <div className="flex items-center rounded-xl overflow-hidden border border-cx-edge bg-cx-fill">
+                <button
+                  type="button"
+                  onClick={() => setMainQty((q) => Math.max(1, q - 1))}
+                  className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
+                >
+                  <Minus size={12} />
+                </button>
+                <span className="w-7 text-center text-[13px] font-bold text-cx-base">{mainQty}</span>
+                <button
+                  type="button"
+                  onClick={() => setMainQty((q) => q + 1)}
+                  className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
+                >
+                  <Plus size={12} />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Main meal qty + tags row */}
-        <div className="flex items-center gap-3 mt-3 flex-wrap">
-          <div className="flex items-center rounded-xl overflow-hidden border border-cx-edge bg-cx-fill">
-            <button
-              type="button"
-              onClick={() => setMainQty((q) => Math.max(1, q - 1))}
-              className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
-            >
-              <Minus size={12} />
-            </button>
-            <span className="w-7 text-center text-[13px] font-bold text-cx-base">{mainQty}</span>
-            <button
-              type="button"
-              onClick={() => setMainQty((q) => q + 1)}
-              className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors"
-            >
-              <Plus size={12} />
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {meal.tags.slice(0, 3).map((tag) => {
+        {/* Tags row */}
+        {meal.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {meal.tags.slice(0, 4).map((tag) => {
               const cfg = TAG_CONFIG[tag]
               const Icon = cfg.icon
               return (
@@ -286,7 +302,7 @@ function ModalContent({
               )
             })}
           </div>
-        </div>
+        )}
 
         {/* Progress bar */}
         <div className="flex gap-1 mt-4">
@@ -378,32 +394,12 @@ function ModalContent({
               </motion.div>
             </AnimatePresence>
 
-            {/* Prev / Next group */}
+                {/* Group counter */}
             {addonGroups.length > 1 && (
-              <div className="flex items-center justify-between pt-1">
-                <button
-                  type="button"
-                  onClick={() => setAddonGroupIndex((i) => i - 1)}
-                  disabled={!hasPrevGroup}
-                  className="flex items-center gap-1 text-[12px] font-semibold text-cx-soft
-                    hover:text-cx-base transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  <ChevronLeft size={14} />
-                  {hasPrevGroup ? addonGroups[addonGroupIndex - 1].label : ''}
-                </button>
+              <div className="flex justify-center">
                 <span className="text-[11px] text-cx-faint font-medium">
                   {addonGroupIndex + 1} / {addonGroups.length}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => setAddonGroupIndex((i) => i + 1)}
-                  disabled={!hasNextGroup}
-                  className="flex items-center gap-1 text-[12px] font-semibold text-cx-soft
-                    hover:text-cx-base transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  {hasNextGroup ? addonGroups[addonGroupIndex + 1].label : ''}
-                  <ChevronRight size={14} />
-                </button>
               </div>
             )}
           </div>
@@ -466,28 +462,42 @@ function ModalContent({
 
         {/* Action buttons */}
         <div className="flex items-center gap-2">
+          {/* Back — goes to prev addon group, or prev meal if already on first */}
           <button
             type="button"
-            onClick={onBack}
-            disabled={!hasPrev}
+            onClick={() => {
+              if (hasPrevGroup) setAddonGroupIndex((i) => i - 1)
+              else onBack()
+            }}
+            disabled={!hasPrevGroup && !hasPrev}
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border-2 border-cx-edge
               text-[13px] font-bold text-cx-sub transition-all duration-200
               hover:border-cx-muted hover:text-cx-base
               disabled:opacity-30 disabled:cursor-not-allowed flex-shrink-0"
           >
             <ChevronLeft size={15} />
-            <span className="hidden sm:inline">{t.mealModal.back}</span>
+            <span className="hidden sm:inline">
+              {hasPrevGroup ? addonGroups[addonGroupIndex - 1].label : t.mealModal.back}
+            </span>
           </button>
 
+          {/* Skip — goes to next addon group, or next meal if on last group */}
           <button
             type="button"
-            onClick={onSkip}
+            onClick={() => {
+              if (hasNextGroup) setAddonGroupIndex((i) => i + 1)
+              else onSkip()
+            }}
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border-2 border-cx-edge
               text-[13px] font-bold text-cx-sub transition-all duration-200
               hover:border-cx-muted hover:text-cx-base flex-shrink-0"
           >
             <SkipForward size={14} />
-            <span>{hasNext ? t.mealModal.skip : t.mealModal.close}</span>
+            <span>
+              {hasNextGroup
+                ? addonGroups[addonGroupIndex + 1].label
+                : hasNext ? t.mealModal.skip : t.mealModal.close}
+            </span>
           </button>
 
           <button
