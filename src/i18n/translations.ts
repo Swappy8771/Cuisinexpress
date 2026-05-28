@@ -307,8 +307,10 @@ const translations = {
       searchPlaceholder: 'Nom du repas…',
       schoolLabel: 'École',
       weekLabel: 'Semaine',
+      weekPrefix: 'Sem.',
       categoryLabel: 'Catégorie',
       tagsLabel: 'Régimes & Température',
+      daysLabel: 'Jour',
       tags: {
         vegetarian: 'Végétarien',
         vegan: 'Vegan',
@@ -741,7 +743,9 @@ const translations = {
       searchPlaceholder: 'Meal name…',
       schoolLabel: 'School',
       weekLabel: 'Week',
+      weekPrefix: 'Week',
       categoryLabel: 'Category',
+      daysLabel: 'Day',
       tagsLabel: 'Diets & Temperature',
       tags: {
         vegetarian: 'Vegetarian',

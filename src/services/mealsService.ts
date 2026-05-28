@@ -15,6 +15,9 @@ function applyFilters(meals: Meal[], f: Partial<MealFilters>): Meal[] {
   if (f.weekId)    result = result.filter((m) => m.weekIds.includes(f.weekId!))
   if (f.categoryId) result = result.filter((m) => m.categoryId === f.categoryId)
   if (f.tags?.length) result = result.filter((m) => f.tags!.every((t) => m.tags.includes(t)))
+  if (f.days?.length) result = result.filter((m) =>
+    !m.availableDays || f.days!.some((d) => m.availableDays!.includes(d))
+  )
   if (f.search) {
     const q = f.search.toLowerCase()
     result = result.filter(

@@ -123,6 +123,7 @@ export interface MealFilters {
   weekId: string
   categoryId: string
   tags: MealTag[]
+  days: string[]       // weekday names e.g. ['Lundi', 'Mercredi']
   search: string
   sort: SortOption
 }

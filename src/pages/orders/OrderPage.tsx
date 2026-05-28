@@ -21,6 +21,7 @@ const DEFAULT_FILTERS: MealFilters = {
   weekId: '',
   categoryId: '',
   tags: [],
+  days: [],
   search: '',
   sort: 'popular',
 }
@@ -29,7 +30,7 @@ const fmt = (n: number) =>
   new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(n)
 
 export default function OrderPage() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const [filters, setFilters] = useState<MealFilters>(DEFAULT_FILTERS)
 
   const SORT_OPTIONS: { value: SortOption; label: string }[] = [
@@ -100,6 +101,7 @@ export default function OrderPage() {
     [
       filters.categoryId !== '',
       filters.tags.length > 0,
+      filters.days.length > 0,
       filters.search !== '',
     ].filter(Boolean).length,
     [filters]
@@ -265,42 +267,81 @@ export default function OrderPage() {
           {/* ── Product grid ────────────────────────────────────────── */}
           <main className="flex-1 min-w-0">
 
-            {/* Day tabs */}
-            {!isLoading && meals.length > 0 && (
+            {/* Weekly calendar */}
+            {selectedWeek && (
               <div className="mb-5">
-                <p className="text-[11px] font-extrabold text-cx-soft uppercase tracking-widest mb-3">
-                  {t.dayOrder.tabsTitle}
-                </p>
-                <div className="flex gap-2 overflow-x-auto [scrollbar-width:none]
-                  [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden -mx-1 px-1 pb-1">
-                  {DAYS.map((day) => {
+                {/* Calendar header */}
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-[11px] font-extrabold text-cx-soft uppercase tracking-widest">
+                    {t.dayOrder.tabsTitle}
+                  </p>
+                  <p className="text-[11.5px] font-semibold text-cx-soft">
+                    {new Date(selectedWeek.startDate + 'T12:00:00').toLocaleDateString(
+                      lang === 'en' ? 'en-CA' : 'fr-CA',
+                      { day: 'numeric', month: 'long', year: 'numeric' }
+                    )}
+                    {' – '}
+                    {new Date(selectedWeek.endDate + 'T12:00:00').toLocaleDateString(
+                      lang === 'en' ? 'en-CA' : 'fr-CA',
+                      { day: 'numeric', month: 'long' }
+                    )}
+                  </p>
+                </div>
+
+                {/* Day cells grid */}
+                <div className="grid grid-cols-5 gap-2">
+                  {DAYS.map((day, di) => {
+                    const cellDate = new Date(selectedWeek.startDate + 'T12:00:00')
+                    cellDate.setDate(cellDate.getDate() + di)
+                    const dateNum = cellDate.getDate()
+                    const monthShort = cellDate.toLocaleDateString(
+                      lang === 'en' ? 'en-CA' : 'fr-CA',
+                      { month: 'short' }
+                    )
                     const count = meals.filter(
                       (m) => m.categoryId === 'cat-1' && m.available && m.availableDays?.includes(day)
                     ).length
+                    const hasItems = count > 0
+
                     return (
                       <motion.button
                         key={day}
-                        whileHover={count > 0 ? { y: -2 } : {}}
+                        whileHover={hasItems ? { y: -3 } : {}}
                         transition={{ duration: 0.15 }}
-                        onClick={() => count > 0 && setDayModal(day)}
-                        disabled={count === 0}
-                        className={`flex-shrink-0 flex flex-col items-center gap-1.5 px-4 py-3 rounded-2xl
-                          border-2 transition-all duration-200
-                          ${count > 0
-                            ? 'border-cx-edge bg-cx-card hover:border-[#C41E3A] hover:shadow-[0_4px_16px_rgba(196,30,58,0.12)] cursor-pointer'
-                            : 'border-cx-edge bg-cx-fill opacity-45 cursor-not-allowed'
+                        onClick={() => hasItems && setDayModal(day)}
+                        disabled={!hasItems}
+                        className={`flex flex-col items-center gap-1 py-3 rounded-2xl border-2
+                          transition-all duration-200
+                          ${hasItems
+                            ? 'bg-cx-card border-cx-edge hover:border-[#C41E3A] hover:shadow-[0_4px_16px_rgba(196,30,58,0.12)] cursor-pointer'
+                            : 'bg-cx-fill border-cx-edge opacity-40 cursor-not-allowed'
                           }`}
                       >
-                        <span className={`text-[13px] font-extrabold ${count > 0 ? 'text-cx-base' : 'text-cx-faint'}`}>
-                          {t.menu.dayLabels[day]}
+                        {/* Day abbreviation */}
+                        <span className={`text-[10.5px] font-bold uppercase tracking-wider
+                          ${hasItems ? 'text-cx-soft' : 'text-cx-faint'}`}>
+                          {t.menu.dayLabels[day].slice(0, 3)}
                         </span>
-                        {count > 0 ? (
-                          <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5
-                            rounded-full bg-[#C41E3A] text-white text-[10px] font-bold">
+
+                        {/* Date number */}
+                        <span className={`text-[22px] font-extrabold leading-none
+                          ${hasItems ? 'text-cx-base' : 'text-cx-faint'}`}>
+                          {dateNum}
+                        </span>
+
+                        {/* Month */}
+                        <span className={`text-[10px] font-medium capitalize
+                          ${hasItems ? 'text-cx-soft' : 'text-cx-faint'}`}>
+                          {monthShort}
+                        </span>
+
+                        {/* Meal count badge */}
+                        {hasItems && (
+                          <span className="mt-0.5 inline-flex items-center justify-center
+                            min-w-[20px] h-5 px-1.5 rounded-full bg-[#C41E3A]
+                            text-white text-[10px] font-bold">
                             {count}
                           </span>
-                        ) : (
-                          <span className="text-[10px] text-cx-faint font-medium">—</span>
                         )}
                       </motion.button>
                     )
