@@ -76,7 +76,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
       {/* Content */}
-      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16
+      <div className="relative z-10 h-full max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6
         flex flex-col justify-center">
 
         {/* Slide label pill */}

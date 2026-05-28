@@ -25,7 +25,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Breadcrumb */}
       <div className="w-full bg-cx-card border-b border-cx-line">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 py-3">
           <ol className="flex items-center gap-1.5 text-[13px] text-cx-soft overflow-hidden">
             <li className="flex-shrink-0">
               <a href="/" className="hover:text-[#C41E3A] transition-colors">{t.common.home}</a>
@@ -78,7 +78,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-10">
         <div className="flex flex-col md:flex-row gap-6 lg:gap-8">
 
           {/* Sidebar — desktop only */}

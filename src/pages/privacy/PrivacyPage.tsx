@@ -253,7 +253,7 @@ export default function PrivacyPage() {
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #C41E3A 0%, transparent 60%), radial-gradient(circle at 80% 50%, #7B2535 0%, transparent 60%)' }} />
         <div className="absolute inset-0 flex flex-col justify-center">
-          <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+          <div className="max-w-[1380px] mx-auto w-full px-3 sm:px-4 lg:px-6">
             <ol className="flex items-center gap-1.5 text-[13px] text-white/50 mb-3">
               <li>
                 <Link to="/" className="flex items-center gap-1 hover:text-white transition-colors">
@@ -283,7 +283,7 @@ export default function PrivacyPage() {
       </div>
 
       {/* ── Body ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 py-12">
 
         {/* Intro card */}
         <motion.div

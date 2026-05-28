@@ -73,7 +73,7 @@ export default function Footer() {
     <footer className="w-full bg-[#0A0A0A] text-white">
 
       {/* Main footer body */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10 sm:pb-12">
+      <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 pt-12 sm:pt-16 pb-10 sm:pb-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-16">
 
           {/* Column 1 — Brand */}
@@ -161,12 +161,12 @@ export default function Footer() {
       </div>
 
       {/* Divider */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6">
         <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </div>
 
       {/* Copyright bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+      <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 py-5 sm:py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
           <p className="text-white/35 text-[12.5px]">
             Copyright ©2026{' '}

@@ -30,7 +30,7 @@ export default function Header() {
 
   return (
     <header className="w-full bg-cx-card sticky top-0 z-50 shadow-[0_2px_16px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.4)] transition-colors duration-300 border-b border-cx-line">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6">
         <div className="flex items-center justify-between h-20">
 
           {/* Logo */}

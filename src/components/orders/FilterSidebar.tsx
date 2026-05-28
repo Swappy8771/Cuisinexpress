@@ -85,7 +85,7 @@ export default function FilterSidebar({
     <div className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_20px_rgba(0,0,0,0.06)] overflow-hidden">
 
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-cx-line">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-cx-line">
         <div className="flex items-center gap-2">
           <span className="text-[15px] font-bold text-cx-base">{t.filter.title}</span>
           {activeCount > 0 && (
@@ -120,7 +120,7 @@ export default function FilterSidebar({
         </div>
       </div>
 
-      <div className="px-5 py-4 flex flex-col gap-6">
+      <div className="px-4 py-3 flex flex-col gap-4">
 
         {/* École */}
         <div>
@@ -157,7 +157,7 @@ export default function FilterSidebar({
               <span className="truncate">
                 {selectedWeek
                   ? `${t.filter.weekPrefix} ${weekNum(selectedWeek.label)} · ${fmtDateRange(selectedWeek.startDate, selectedWeek.endDate, lang)}`
-                  : '—'}
+                  : (lang === 'en' ? 'All weeks' : 'Toutes les semaines')}
               </span>
               <ChevronDown
                 size={14}
@@ -173,6 +173,22 @@ export default function FilterSidebar({
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-20
                   bg-cx-card border border-cx-line rounded-xl
                   shadow-[0_8px_24px_rgba(0,0,0,0.12)] overflow-hidden">
+                  {/* All weeks option */}
+                  <button
+                    type="button"
+                    onClick={() => { onFiltersChange({ weekId: '' }); setWeekOpen(false) }}
+                    className={`w-full flex items-center justify-between gap-3 px-4 py-3
+                      text-left text-[13px] transition-colors duration-150
+                      ${filters.weekId === ''
+                        ? 'bg-[#C41E3A]/8 text-[#C41E3A] font-semibold'
+                        : 'text-cx-sub hover:bg-cx-fill hover:text-cx-base'
+                      }`}
+                  >
+                    <span className="font-bold text-[12.5px]">
+                      {lang === 'en' ? 'All weeks' : 'Toutes les semaines'}
+                    </span>
+                    {filters.weekId === '' && <Check size={14} className="flex-shrink-0 text-[#C41E3A]" />}
+                  </button>
                   {weeks.map((w) => {
                     const active = filters.weekId === w.id
                     return (

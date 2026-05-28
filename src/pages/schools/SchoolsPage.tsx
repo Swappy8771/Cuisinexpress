@@ -142,7 +142,7 @@ export default function SchoolsPage() {
 
       {/* ── Breadcrumb ── */}
       <div className="w-full bg-cx-card border-b border-cx-line">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 py-3">
           <ol className="flex items-center gap-1.5 text-[13px] text-cx-soft">
             <li>
               <Link to="/" className="flex items-center gap-1 hover:text-[#C41E3A] transition-colors">
@@ -157,7 +157,7 @@ export default function SchoolsPage() {
 
       {/* ── Hero strip ── */}
       <div className="bg-cx-card border-b border-cx-line">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 py-10">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5">
             <div>
               <p className="text-[11.5px] font-semibold text-[#C41E3A] tracking-widest uppercase mb-2 flex items-center gap-1.5">
@@ -239,7 +239,7 @@ export default function SchoolsPage() {
       </div>
 
       {/* ── Main content ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6">
 
         {/* Desktop split */}
         <div className="hidden lg:flex gap-6 py-8 items-start">

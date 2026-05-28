@@ -36,7 +36,7 @@ export default function Advantages() {
 
   return (
     <section className="w-full bg-cx-page py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6">
 
         {/* Heading */}
         <motion.div

@@ -3,18 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
 import {
   SlidersHorizontal, Search, ChevronDown, ShoppingCart,
-  AlertCircle, Inbox, X, School, Calendar,
+  X, School, Calendar,
 } from 'lucide-react'
 import { mealsService } from '../../services/mealsService'
 import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cartStore'
 import FilterSidebar from '../../components/orders/FilterSidebar'
-import MealCard from '../../components/orders/MealCard'
-import MealCardSkeleton from '../../components/orders/MealCardSkeleton'
 import DayOrderModal from '../../components/orders/DayOrderModal'
+import MenuCalendar from '../../components/orders/MenuCalendar'
 import { useLang } from '../../contexts/LangContext'
-import { DAYS } from '../../lib/menuConfig'
 import type { DayName } from '../../lib/menuConfig'
-import type { Meal, MealFilters, SortOption } from '../../types'
+import type { MealFilters, SortOption } from '../../types'
 
 const DEFAULT_FILTERS: MealFilters = {
   schoolId: '',
@@ -41,8 +39,7 @@ export default function OrderPage() {
   ]
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [sortOpen, setSortOpen] = useState(false)
-  const [cardMeal, setCardMeal] = useState<Meal | null>(null)
-  const [dayModal, setDayModal] = useState<DayName | null>(null)
+  const [dayModal, setDayModal] = useState<{ day: DayName; weekId: string } | null>(null)
 
   const cartCount = useCartStore(selectCartCount)
   const cartTotal = useCartStore(selectCartTotal)
@@ -60,10 +57,6 @@ export default function OrderPage() {
     queryKey: ['ordering-categories'],
     queryFn: mealsService.getCategories,
   })
-  const { data: allergies = [] } = useQuery({
-    queryKey: ['ordering-allergies'],
-    queryFn: mealsService.getAllergies,
-  })
 
   // Set defaults once reference data loads; guards prevent re-running after user changes selection
   useEffect(() => {
@@ -73,18 +66,13 @@ export default function OrderPage() {
     }
   }, [schools]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    if (weeks.length && !filters.weekId) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFilters((f) => ({ ...f, weekId: weeks[0].id }))
-    }
-  }, [weeks]) // eslint-disable-line react-hooks/exhaustive-deps
+  // weekId stays '' by default → "All weeks" view
 
-  // Fetch meals (server-side when real API; client-side filter for mock)
-  const { data: meals = [], isLoading, isError, refetch } = useQuery({
-    queryKey: ['meals', filters],
-    queryFn: () => mealsService.getMeals(filters),
-    enabled: !!filters.schoolId && !!filters.weekId,
+  // All meals across all weeks (for calendar — shows every week row)
+  const { data: allMeals = [] } = useQuery({
+    queryKey: ['meals-calendar', filters.schoolId],
+    queryFn: () => mealsService.getMeals({ schoolId: filters.schoolId, sort: 'popular' }),
+    enabled: !!filters.schoolId,
   })
 
   const patchFilters = (patch: Partial<MealFilters>) =>
@@ -121,7 +109,7 @@ export default function OrderPage() {
       {/* ── Sticky top toolbar ────────────────────────────────────────── */}
       <div className="sticky top-[80px] z-30 bg-cx-card border-b border-cx-line
         shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center gap-3 h-14">
 
             {/* Left: title + meta */}
@@ -160,12 +148,6 @@ export default function OrderPage() {
               )}
             </div>
 
-            {/* Result count */}
-            {!isLoading && (
-              <span className="hidden sm:block text-[12.5px] text-cx-soft whitespace-nowrap">
-                {meals.length} {meals.length !== 1 ? t.order.results_plural : t.order.results}
-              </span>
-            )}
 
             {/* Sort dropdown */}
             <div className="relative">
@@ -231,7 +213,7 @@ export default function OrderPage() {
       </div>
 
       {/* ── Main layout ───────────────────────────────────────────────── */}
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 py-4">
 
         {/* Context bar (mobile) */}
         {selectedSchool && selectedWeek && (
@@ -247,11 +229,11 @@ export default function OrderPage() {
           </div>
         )}
 
-        <div className="flex gap-6">
+        <div className="flex gap-4">
 
           {/* ── Desktop sidebar ─────────────────────────────────────── */}
-          <aside className="hidden lg:block w-72 flex-shrink-0">
-            <div className="sticky top-[148px]">
+          <aside className="hidden lg:block w-60 flex-shrink-0">
+            <div className="sticky top-[132px]">
               <FilterSidebar
                 filters={filters}
                 schools={schools}
@@ -267,203 +249,33 @@ export default function OrderPage() {
           {/* ── Product grid ────────────────────────────────────────── */}
           <main className="flex-1 min-w-0">
 
-            {/* Weekly calendar */}
-            {selectedWeek && (
-              <div className="mb-5">
-                {/* Calendar header */}
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-[11px] font-extrabold text-cx-soft uppercase tracking-widest">
+            {/* ── Meal Calendar ──────────────────────────────────────── */}
+            {weeks.length > 0 && (
+              <div className="mb-3">
+                {/* Section header */}
+                <div className="mb-3">
+                  <span className="inline-block px-2.5 py-1 bg-[#C41E3A]/10 text-[#C41E3A]
+                    text-[10px] font-extrabold uppercase tracking-[0.12em] rounded-full mb-2">
                     {t.dayOrder.tabsTitle}
-                  </p>
-                  <p className="text-[11.5px] font-semibold text-cx-soft">
-                    {new Date(selectedWeek.startDate + 'T12:00:00').toLocaleDateString(
-                      lang === 'en' ? 'en-CA' : 'fr-CA',
-                      { day: 'numeric', month: 'long', year: 'numeric' }
-                    )}
-                    {' – '}
-                    {new Date(selectedWeek.endDate + 'T12:00:00').toLocaleDateString(
-                      lang === 'en' ? 'en-CA' : 'fr-CA',
-                      { day: 'numeric', month: 'long' }
-                    )}
+                  </span>
+                  <h2 className="text-[22px] font-extrabold text-cx-base leading-none">
+                    {lang === 'en' ? 'Calendar' : 'Calendrier'}
+                  </h2>
+                  <p className="text-[13px] text-cx-soft mt-1">
+                    {lang === 'en'
+                      ? 'Click a day to order your meal'
+                      : 'Cliquez sur un jour pour commander votre repas'}
                   </p>
                 </div>
 
-                {/* Day cells grid */}
-                <div className="grid grid-cols-5 gap-2">
-                  {DAYS.map((day, di) => {
-                    const cellDate = new Date(selectedWeek.startDate + 'T12:00:00')
-                    cellDate.setDate(cellDate.getDate() + di)
-                    const dateNum = cellDate.getDate()
-                    const monthShort = cellDate.toLocaleDateString(
-                      lang === 'en' ? 'en-CA' : 'fr-CA',
-                      { month: 'short' }
-                    )
-                    const count = meals.filter(
-                      (m) => m.categoryId === 'cat-1' && m.available && m.availableDays?.includes(day)
-                    ).length
-                    const hasItems = count > 0
-
-                    return (
-                      <motion.button
-                        key={day}
-                        whileHover={hasItems ? { y: -3 } : {}}
-                        transition={{ duration: 0.15 }}
-                        onClick={() => hasItems && setDayModal(day)}
-                        disabled={!hasItems}
-                        className={`flex flex-col items-center gap-1 py-3 rounded-2xl border-2
-                          transition-all duration-200
-                          ${hasItems
-                            ? 'bg-cx-card border-cx-edge hover:border-[#C41E3A] hover:shadow-[0_4px_16px_rgba(196,30,58,0.12)] cursor-pointer'
-                            : 'bg-cx-fill border-cx-edge opacity-40 cursor-not-allowed'
-                          }`}
-                      >
-                        {/* Day abbreviation */}
-                        <span className={`text-[10.5px] font-bold uppercase tracking-wider
-                          ${hasItems ? 'text-cx-soft' : 'text-cx-faint'}`}>
-                          {t.menu.dayLabels[day].slice(0, 3)}
-                        </span>
-
-                        {/* Date number */}
-                        <span className={`text-[22px] font-extrabold leading-none
-                          ${hasItems ? 'text-cx-base' : 'text-cx-faint'}`}>
-                          {dateNum}
-                        </span>
-
-                        {/* Month */}
-                        <span className={`text-[10px] font-medium capitalize
-                          ${hasItems ? 'text-cx-soft' : 'text-cx-faint'}`}>
-                          {monthShort}
-                        </span>
-
-                        {/* Meal count badge */}
-                        {hasItems && (
-                          <span className="mt-0.5 inline-flex items-center justify-center
-                            min-w-[20px] h-5 px-1.5 rounded-full bg-[#C41E3A]
-                            text-white text-[10px] font-bold">
-                            {count}
-                          </span>
-                        )}
-                      </motion.button>
-                    )
-                  })}
-                </div>
+                <MenuCalendar
+                  allMeals={allMeals}
+                  weeks={filters.weekId ? [selectedWeek!] : weeks}
+                  onDayClick={(day, weekId) => setDayModal({ day, weekId })}
+                />
               </div>
             )}
 
-            {/* Active filters chips */}
-            <AnimatePresence>
-              {activeFilterCount > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex flex-wrap gap-2 mb-4"
-                >
-                  {filters.categoryId && categories.find((c) => c.id === filters.categoryId) && (
-                    <ActiveChip
-                      label={categories.find((c) => c.id === filters.categoryId)!.label}
-                      onRemove={() => patchFilters({ categoryId: '' })}
-                    />
-                  )}
-                  {filters.tags.map((tag) => (
-                    <ActiveChip
-                      key={tag}
-                      label={tag}
-                      onRemove={() => patchFilters({ tags: filters.tags.filter((t) => t !== tag) })}
-                    />
-                  ))}
-                  {filters.search && (
-                    <ActiveChip
-                      label={`"${filters.search}"`}
-                      onRemove={() => patchFilters({ search: '' })}
-                    />
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Loading */}
-            {isLoading && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <MealCardSkeleton key={i} />
-                ))}
-              </div>
-            )}
-
-            {/* Error */}
-            {isError && !isLoading && (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-center justify-center py-24 text-center"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mb-4">
-                  <AlertCircle size={28} className="text-red-400" />
-                </div>
-                <p className="text-cx-base font-semibold text-[16px] mb-1">
-                  {t.order.errorTitle}
-                </p>
-                <p className="text-cx-soft text-[13.5px] mb-5">
-                  {t.order.errorHint}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => refetch()}
-                  className="px-5 py-2.5 bg-[#7B2535] text-white text-[13.5px] font-semibold
-                    rounded-xl hover:bg-[#9B3045] transition-colors"
-                >
-                  {t.order.retry}
-                </button>
-              </motion.div>
-            )}
-
-            {/* Empty */}
-            {!isLoading && !isError && meals.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-center justify-center py-24 text-center"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-cx-fill flex items-center justify-center mb-4">
-                  <Inbox size={28} className="text-cx-faint" />
-                </div>
-                <p className="text-cx-base font-semibold text-[16px] mb-1">
-                  {t.order.noResults}
-                </p>
-                <p className="text-cx-soft text-[13.5px] mb-5">
-                  {t.order.noResultsHint}
-                </p>
-                <button
-                  type="button"
-                  onClick={clearFilters}
-                  className="px-5 py-2.5 bg-cx-muted text-cx-sub text-[13.5px] font-semibold
-                    rounded-xl hover:bg-cx-fill transition-colors"
-                >
-                  {t.order.clearFilters}
-                </button>
-              </motion.div>
-            )}
-
-            {/* Meal grid */}
-            {!isLoading && !isError && meals.length > 0 && (
-              <motion.div
-                layout
-                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"
-              >
-                <AnimatePresence>
-                  {meals.map((meal) => (
-                    <MealCard
-                      key={meal.id}
-                      meal={meal}
-                      allergies={allergies}
-                      categories={categories}
-                      onOpen={() => setCardMeal(meal)}
-                    />
-                  ))}
-                </AnimatePresence>
-              </motion.div>
-            )}
           </main>
         </div>
       </div>
@@ -541,27 +353,13 @@ export default function OrderPage() {
         <div className="fixed inset-0 z-20" onClick={() => setSortOpen(false)} />
       )}
 
-      {/* ── Day order modal — card click (pre-selected meal, skip step 1) ── */}
-      <AnimatePresence>
-        {cardMeal && (
-          <DayOrderModal
-            day={(cardMeal.availableDays?.[0] as DayName) ?? 'Lundi'}
-            defaultWeekId={filters.weekId}
-            meals={meals}
-            categories={categories}
-            preSelectedMeal={cardMeal}
-            onClose={() => setCardMeal(null)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* ── Day order modal — day tab click ── */}
+      {/* ── Day order modal — calendar click ── */}
       <AnimatePresence>
         {dayModal !== null && (
           <DayOrderModal
-            day={dayModal}
-            defaultWeekId={filters.weekId}
-            meals={meals}
+            day={dayModal.day}
+            defaultWeekId={dayModal.weekId}
+            meals={allMeals.filter((m) => m.weekIds.includes(dayModal.weekId))}
             categories={categories}
             onClose={() => setDayModal(null)}
           />
@@ -571,23 +369,3 @@ export default function OrderPage() {
   )
 }
 
-function ActiveChip({ label, onRemove }: { label: string; onRemove: () => void }) {
-  return (
-    <motion.span
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      className="inline-flex items-center gap-1.5 pl-3 pr-2 py-1 bg-[#C41E3A]/10
-        text-[#C41E3A] text-[12px] font-semibold rounded-full border border-[#C41E3A]/20"
-    >
-      {label}
-      <button
-        onClick={onRemove}
-        className="w-4 h-4 flex items-center justify-center rounded-full
-          bg-[#C41E3A]/15 hover:bg-[#C41E3A]/30 transition-colors"
-      >
-        <X size={9} />
-      </button>
-    </motion.span>
-  )
-}
