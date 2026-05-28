@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { X, RotateCcw, ChevronDown, Check } from 'lucide-react'
 import { useLang } from '../../contexts/LangContext'
 import type { MealFilters, MealTag, OrderingSchool, MealWeek, MenuCategory } from '../../types'
-import { DAYS } from '../../lib/menuConfig'
 
 interface Props {
   filters: MealFilters
@@ -66,13 +65,6 @@ export default function FilterSidebar({
       ? filters.tags.filter((tg) => tg !== tag)
       : [...filters.tags, tag]
     onFiltersChange({ tags: next })
-  }
-
-  const toggleDay = (day: string) => {
-    const next = filters.days.includes(day)
-      ? filters.days.filter((d) => d !== day)
-      : [...filters.days, day]
-    onFiltersChange({ days: next })
   }
 
   const toggleCategory = (id: string) => {
@@ -239,30 +231,6 @@ export default function FilterSidebar({
                   <span className="text-[13px] leading-none flex items-center gap-1.5 text-cx-sub group-hover:text-cx-base transition-colors">
                     <span>{cat.emoji}</span>
                     <span className={active ? 'font-semibold text-cx-base' : ''}>{cat.label}</span>
-                  </span>
-                </label>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Jour — checkboxes */}
-        <div>
-          <p className={sectionTitle}>{t.filter.daysLabel}</p>
-          <div className="flex flex-col gap-0.5">
-            {DAYS.map((day) => {
-              const active = filters.days.includes(day)
-              return (
-                <label key={day} className={checkRow} onClick={() => toggleDay(day)}>
-                  <span className={checkBox(active)}>
-                    {active && (
-                      <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
-                        <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    )}
-                  </span>
-                  <span className={`text-[13px] text-cx-sub group-hover:text-cx-base transition-colors ${active ? 'font-semibold text-cx-base' : ''}`}>
-                    {t.menu.dayLabels[day]}
                   </span>
                 </label>
               )
