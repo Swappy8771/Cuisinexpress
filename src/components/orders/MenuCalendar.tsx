@@ -29,7 +29,7 @@ export default function MenuCalendar({ allMeals, weeks, onDayClick }: Props) {
       </div>
 
       {/* Week rows */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-5">
         {weeks.map((week) => (
           <div key={week.id} className="grid grid-cols-5 gap-3">
             {DAYS.map((day, di) => {
