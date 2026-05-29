@@ -17,10 +17,10 @@ export default function MenuCalendar({ allMeals, weeks, onDayClick }: Props) {
   return (
     <div className="mb-2">
 
-      {/* Day column headers */}
-      <div className="grid grid-cols-5 gap-3 mb-3">
+      {/* Day column headers — sticky */}
+      <div className="sticky top-[136px] z-10 bg-cx-page/90 backdrop-blur-sm grid grid-cols-5 gap-3 mb-3 py-2 -mx-1 px-1">
         {DAYS.map((day) => (
-          <div key={day} className="text-center py-1">
+          <div key={day} className="text-center">
             <span className="text-[11px] sm:text-[12px] font-extrabold uppercase tracking-[0.15em] text-cx-soft">
               {t.menu.dayLabels[day]}
             </span>
@@ -58,7 +58,7 @@ export default function MenuCalendar({ allMeals, weeks, onDayClick }: Props) {
                   transition={{ duration: 0.2, ease: 'easeOut' }}
                   onClick={() => featured && onDayClick(day, week.id)}
                   disabled={!featured}
-                  className={`relative overflow-hidden rounded-3xl aspect-[3/4]
+                  className={`group relative overflow-hidden rounded-3xl aspect-[3/4]
                     transition-shadow duration-300
                     ${featured
                       ? 'cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.22)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.4)]'

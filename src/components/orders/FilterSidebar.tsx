@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { X, RotateCcw, ChevronDown, Check } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { X, RotateCcw, ChevronDown, Check, Search } from 'lucide-react'
 import { useLang } from '../../contexts/LangContext'
 import type { MealFilters, MealTag, OrderingSchool, MealWeek, MenuCategory } from '../../types'
 
@@ -59,6 +59,19 @@ export default function FilterSidebar({
   }
 
   const [weekOpen, setWeekOpen] = useState(false)
+  const [schoolOpen, setSchoolOpen] = useState(false)
+  const [schoolSearch, setSchoolSearch] = useState('')
+  const schoolSearchRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (schoolOpen) setTimeout(() => schoolSearchRef.current?.focus(), 50)
+    else setSchoolSearch('')
+  }, [schoolOpen])
+
+  const filteredSchools = schools.filter((s) =>
+    s.name.toLowerCase().includes(schoolSearch.toLowerCase())
+  )
+  const selectedSchool = schools.find((s) => s.id === filters.schoolId)
 
   const toggleTag = (tag: MealTag) => {
     const next = filters.tags.includes(tag)
@@ -114,22 +127,79 @@ export default function FilterSidebar({
 
       <div className="px-4 py-3 flex flex-col gap-4">
 
-        {/* École */}
+        {/* École — searchable dropdown */}
         <div>
           <p className={sectionTitle}>{t.filter.schoolLabel}</p>
           <div className="relative">
-            <select
-              value={filters.schoolId}
-              onChange={(e) => onFiltersChange({ schoolId: e.target.value })}
-              className="w-full appearance-none px-3 pr-8 py-2.5 text-[13px] font-medium
-                bg-cx-fill border border-cx-edge rounded-xl outline-none transition-all text-cx-base
-                focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)] cursor-pointer"
+            {/* Trigger */}
+            <button
+              type="button"
+              onClick={() => setSchoolOpen((o) => !o)}
+              className="w-full flex items-center justify-between gap-2 px-3 py-2.5
+                bg-cx-fill border border-cx-edge rounded-xl text-[13px] font-medium
+                text-cx-base hover:border-[#C41E3A]/50 transition-all duration-200
+                focus:outline-none focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
             >
-              {schools.map((s) => (
-                <option key={s.id} value={s.id}>{s.name}</option>
-              ))}
-            </select>
-            <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none" />
+              <span className="truncate text-left">{selectedSchool?.name ?? '—'}</span>
+              <ChevronDown
+                size={14}
+                className={`flex-shrink-0 text-cx-soft transition-transform duration-200 ${schoolOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+
+            {/* Dropdown */}
+            {schoolOpen && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setSchoolOpen(false)} />
+                <div className="absolute top-full left-0 right-0 mt-1.5 z-20
+                  bg-cx-card border border-cx-line rounded-xl
+                  shadow-[0_8px_24px_rgba(0,0,0,0.14)] overflow-hidden">
+                  {/* Search input */}
+                  <div className="flex items-center gap-2 px-3 py-2.5 border-b border-cx-line">
+                    <Search size={13} className="text-cx-faint flex-shrink-0" />
+                    <input
+                      ref={schoolSearchRef}
+                      type="text"
+                      value={schoolSearch}
+                      onChange={(e) => setSchoolSearch(e.target.value)}
+                      placeholder={lang === 'en' ? 'Search school…' : 'Rechercher une école…'}
+                      className="flex-1 text-[12.5px] bg-transparent outline-none text-cx-base placeholder:text-cx-faint"
+                    />
+                    {schoolSearch && (
+                      <button type="button" onClick={() => setSchoolSearch('')}>
+                        <X size={11} className="text-cx-soft hover:text-cx-base" />
+                      </button>
+                    )}
+                  </div>
+                  {/* Results */}
+                  <div className="max-h-48 overflow-y-auto">
+                    {filteredSchools.length === 0 ? (
+                      <p className="px-4 py-3 text-[12px] text-cx-faint">
+                        {lang === 'en' ? 'No schools found' : 'Aucune école trouvée'}
+                      </p>
+                    ) : filteredSchools.map((s) => {
+                      const active = filters.schoolId === s.id
+                      return (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => { onFiltersChange({ schoolId: s.id }); setSchoolOpen(false) }}
+                          className={`w-full flex items-center justify-between gap-3 px-4 py-2.5
+                            text-left text-[13px] transition-colors duration-150
+                            ${active
+                              ? 'bg-[#C41E3A]/8 text-[#C41E3A] font-semibold'
+                              : 'text-cx-sub hover:bg-cx-fill hover:text-cx-base'
+                            }`}
+                        >
+                          <span className="truncate">{s.name}</span>
+                          {active && <Check size={13} className="flex-shrink-0 text-[#C41E3A]" />}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
