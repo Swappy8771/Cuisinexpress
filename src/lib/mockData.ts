@@ -53,7 +53,7 @@ export const meals: Meal[] = [
     name: 'Spaghetti Bolognaise',
     description: 'Sauce tomate mijotée maison avec viande hachée et légumes du jardin, servie avec des pâtes al dente.',
     price: 7.50,
-    image: 'https://images.unsplash.com/photo-1555949258-aed28a8c8e97?auto=format&fit=crop&w=400&h=280',
+    image: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?auto=format&fit=crop&w=400&h=280',
     categoryId: 'cat-1', schoolIds: ALL, weekIds: W1,
     tags: ['hot'], allergyIds: ['a-1', 'a-2'],
     available: true, popular: true, isNew: false, calories: 520,
@@ -88,7 +88,7 @@ export const meals: Meal[] = [
     name: 'Poulet Rôti & Légumes',
     description: 'Cuisse de poulet rôtie au four, accompagnée de légumes de saison grillés et de sauce aux herbes.',
     price: 8.50,
-    image: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c3?auto=format&fit=crop&w=400&h=280',
+    image: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=400&h=280',
     categoryId: 'cat-1', schoolIds: ALL, weekIds: W1,
     tags: ['hot'], allergyIds: [],
     available: true, popular: true, isNew: false, calories: 480,
@@ -169,7 +169,7 @@ export const meals: Meal[] = [
     name: 'Pâtes Primavera',
     description: 'Pâtes fraîches sautées aux légumes de saison — courgettes, tomates cerises, poivrons et basilic.',
     price: 6.50,
-    image: 'https://images.unsplash.com/photo-1473093226555-0d10be5c3e27?auto=format&fit=crop&w=400&h=280',
+    image: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?auto=format&fit=crop&w=400&h=280',
     categoryId: 'cat-1', schoolIds: ALL, weekIds: W1,
     tags: ['hot', 'vegetarian'], allergyIds: ['a-1', 'a-2'],
     available: true, popular: false, isNew: false, calories: 410,
@@ -281,7 +281,7 @@ export const meals: Meal[] = [
   // Lundi
   { id: 'w4-m-1', name: 'Steak Haché Frites', description: 'Steak haché pur bœuf cuit à point, frites maison croustillantes, salade verte et sauce poivre maison.', price: 8.50, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot'], allergyIds: ['a-2'], available: true, popular: true, isNew: false, calories: 600, availableDays: ['Lundi'] },
   { id: 'w4-m-2', name: 'Entrecôte Bordelaise', description: 'Entrecôte de bœuf grillée, sauce bordelaise au vin rouge et échalotes, gratin de pommes de terre.', price: 11.00, image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot', 'gluten-free'], allergyIds: [], available: true, popular: false, isNew: false, calories: 630, availableDays: ['Lundi'] },
-  { id: 'w4-m-3', name: 'Poulet Basquaise', description: 'Poulet mijoté à la basquaise — tomates, poivrons rouges et verts, piment d\'Espelette et jambon de Bayonne.', price: 8.75, image: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c3?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot'], allergyIds: [], available: true, popular: false, isNew: true, calories: 500, availableDays: ['Lundi'] },
+  { id: 'w4-m-3', name: 'Poulet Basquaise', description: 'Poulet mijoté à la basquaise — tomates, poivrons rouges et verts, piment d\'Espelette et jambon de Bayonne.', price: 8.75, image: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot'], allergyIds: [], available: true, popular: false, isNew: true, calories: 500, availableDays: ['Lundi'] },
 
   // Mardi
   { id: 'w4-m-4', name: 'Poulet Tikka Masala', description: 'Poulet mariné au yaourt et épices, sauce masala crémeuse aux tomates et crème, servi avec naan beurré.', price: 8.25, image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot', 'halal'], allergyIds: ['a-1', 'a-2'], available: true, popular: true, isNew: false, calories: 530, availableDays: ['Mardi'] },
@@ -289,9 +289,9 @@ export const meals: Meal[] = [
   { id: 'w4-m-6', name: 'Nems au Poulet', description: 'Nems croustillants au poulet et légumes sautés, servis avec salade fraîche, menthe et sauce nuoc-mâm.', price: 7.25, image: 'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot'], allergyIds: ['a-1', 'a-5'], available: true, popular: false, isNew: true, calories: 440, availableDays: ['Mardi'] },
 
   // Mercredi
-  { id: 'w4-m-7', name: 'Penne all\'Arrabbiata', description: 'Penne rigate en sauce arrabbiata épicée, tomates san marzano, ail, piment rouge et basilic frais.', price: 7.00, image: 'https://images.unsplash.com/photo-1473093226555-0d10be5c3e27?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot', 'vegetarian', 'vegan'], allergyIds: ['a-1'], available: true, popular: false, isNew: false, calories: 420, availableDays: ['Mercredi'] },
+  { id: 'w4-m-7', name: 'Penne all\'Arrabbiata', description: 'Penne rigate en sauce arrabbiata épicée, tomates san marzano, ail, piment rouge et basilic frais.', price: 7.00, image: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot', 'vegetarian', 'vegan'], allergyIds: ['a-1'], available: true, popular: false, isNew: false, calories: 420, availableDays: ['Mercredi'] },
   { id: 'w4-m-8', name: 'Gnocchi Sauce Gorgonzola', description: 'Gnocchi de pomme de terre maison, sauce gorgonzola crémeuse, noix torréfiées et roquette fraîche.', price: 7.75, image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot', 'vegetarian'], allergyIds: ['a-2', 'a-3'], available: true, popular: true, isNew: false, calories: 510, availableDays: ['Mercredi'] },
-  { id: 'w4-m-9', name: 'Fusilli Pesto Genovese', description: 'Fusilli al dente, pesto basilic-pignons maison, tomates cerises rôties et copeaux de pecorino romano.', price: 7.25, image: 'https://images.unsplash.com/photo-1555949258-aed28a8c8e97?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot', 'vegetarian'], allergyIds: ['a-1', 'a-2', 'a-3'], available: true, popular: false, isNew: true, calories: 460, availableDays: ['Mercredi'] },
+  { id: 'w4-m-9', name: 'Fusilli Pesto Genovese', description: 'Fusilli al dente, pesto basilic-pignons maison, tomates cerises rôties et copeaux de pecorino romano.', price: 7.25, image: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot', 'vegetarian'], allergyIds: ['a-1', 'a-2', 'a-3'], available: true, popular: false, isNew: true, calories: 460, availableDays: ['Mercredi'] },
 
   // Jeudi
   { id: 'w4-m-10', name: 'Porc à l\'Orange', description: 'Filet de porc rôti, sauce à l\'orange sanguine et miel, purée de patate douce et haricots verts fins.', price: 8.75, image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=400&h=280', categoryId: 'cat-1', schoolIds: ALL, weekIds: W4, tags: ['hot', 'gluten-free'], allergyIds: [], available: true, popular: false, isNew: false, calories: 520, availableDays: ['Jeudi'] },

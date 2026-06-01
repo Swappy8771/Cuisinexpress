@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, ChevronLeft, ChevronRight, Minus, Plus,
-  ShoppingCart, SkipForward, Check, Calendar,
+  ShoppingCart, SkipForward, Check, Calendar, Zap,
 } from 'lucide-react'
 import type { Meal, MenuCategory, MealTag, DeliveryInfo } from '../../types'
 import { fmt, TAG_CONFIG, DAYS, fmtWeekRange, fmtDeliveryDate } from '../../lib/menuConfig'
@@ -10,6 +10,7 @@ import type { DayName } from '../../lib/menuConfig'
 import { meals as allMeals, weeks } from '../../lib/mockData'
 import { useCartStore } from '../../store/cartStore'
 import { useLang } from '../../contexts/LangContext'
+import { useNavigate } from 'react-router-dom'
 
 interface Props {
   meals: Meal[]
@@ -165,6 +166,7 @@ function ModalContent({
   onBack,
   onSkip,
   onAdd,
+  onDirectCheckout,
 }: {
   meal: Meal
   categories: MenuCategory[]
@@ -175,6 +177,7 @@ function ModalContent({
   onBack: () => void
   onSkip: () => void
   onAdd: (addonQtys: Map<string, number>, mainQty: number, delivery: DeliveryInfo) => void
+  onDirectCheckout: (mainQty: number, delivery: DeliveryInfo) => void
 }) {
   const { t, lang } = useLang()
   const tagLabels: Record<MealTag, string> = {
@@ -533,6 +536,40 @@ function ModalContent({
           </span>
         </div>
 
+        {/* Direct checkout button */}
+        <button
+          type="button"
+          onClick={() => {
+            const w = weeks.find((x) => x.id === selectedWeekId)
+            const dayIndex = DAYS.indexOf(selectedDay)
+            const isoDate = (() => {
+              if (!w) return ''
+              const d = new Date(w.startDate + 'T12:00:00')
+              d.setDate(d.getDate() + dayIndex)
+              return d.toISOString().slice(0, 10)
+            })()
+            const delivery: DeliveryInfo = {
+              weekId: selectedWeekId,
+              weekLabel: w?.label ?? '',
+              weekStartDate: w?.startDate ?? '',
+              day: selectedDay,
+              isoDate,
+              formattedDate: w
+                ? fmtDeliveryDate(w.startDate, selectedDay, t.menu.dayLabels[selectedDay], lang)
+                : t.menu.dayLabels[selectedDay],
+            }
+            onDirectCheckout(mainQty, delivery)
+          }}
+          disabled={!meal.available}
+          className="w-full flex items-center justify-center gap-2 py-2 mb-2 rounded-xl
+            border-2 border-[#C41E3A]/40 text-[#C41E3A] font-bold text-[13px]
+            hover:bg-[#C41E3A]/8 hover:border-[#C41E3A] transition-all duration-200
+            disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <Zap size={14} />
+          <span>{t.mealModal.directCheckout}</span>
+        </button>
+
         {/* Action buttons */}
         <div className="flex items-center gap-2">
           {/* Back — goes to prev addon group, or prev meal if already on first */}
@@ -623,6 +660,7 @@ export default function MealModal({
   onNavigate,
 }: Props) {
   const { addItem } = useCartStore()
+  const navigate = useNavigate()
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -658,6 +696,12 @@ export default function MealModal({
 
   const handleBack = () => {
     if (hasPrev) onNavigate(index - 1)
+  }
+
+  const handleDirectCheckout = (qty: number, delivery: DeliveryInfo) => {
+    for (let i = 0; i < qty; i++) addItem(meal, delivery)
+    onClose()
+    navigate('/panier')
   }
 
   return (
@@ -711,6 +755,7 @@ export default function MealModal({
           onBack={handleBack}
           onSkip={handleSkip}
           onAdd={handleAdd}
+          onDirectCheckout={handleDirectCheckout}
         />
       </motion.div>
     </>

@@ -298,6 +298,7 @@ const translations = {
       qty: 'Qté',
       selected: 'sélectionné',
       selectedPlural: 'sélectionnés',
+      directCheckout: 'Commander sans extras',
     },
     // ── Filter sidebar ────────────────────────────────────────────
     filter: {
@@ -734,6 +735,7 @@ const translations = {
       qty: 'Qty',
       selected: 'selected',
       selectedPlural: 'selected',
+      directCheckout: 'Checkout without extras',
     },
     // ── Filter sidebar ────────────────────────────────────────────
     filter: {

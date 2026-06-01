@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, Check, ChevronLeft, ChevronRight,
-  Minus, Plus, ShoppingCart, Calendar,
+  Minus, Plus, ShoppingCart, Calendar, Zap,
 } from 'lucide-react'
 import type { Meal, MenuCategory, MealTag, DeliveryInfo } from '../../types'
 import { fmt, TAG_CONFIG, DAYS, fmtDeliveryDate } from '../../lib/menuConfig'
@@ -10,6 +10,7 @@ import type { DayName } from '../../lib/menuConfig'
 import { weeks } from '../../lib/mockData'
 import { useCartStore } from '../../store/cartStore'
 import { useLang } from '../../contexts/LangContext'
+import { useNavigate } from 'react-router-dom'
 
 interface Props {
   day: DayName
@@ -32,6 +33,7 @@ export default function DayOrderModal({
 }: Props) {
   const { t, lang } = useLang()
   const { addItem } = useCartStore()
+  const navigate = useNavigate()
 
   const tagLabels: Record<MealTag, string> = {
     hot: t.menu.tagLabels.hot,
@@ -147,6 +149,31 @@ export default function DayOrderModal({
   const handleFooterAction = () => {
     if (isLastGroup) commitCart()
     else setAddonGroupIndex((i) => i + 1)
+  }
+
+  const directCheckout = () => {
+    if (!selectedMeal) return
+    const w = weeks.find((x) => x.id === selectedWeekId)
+    const dayIndex = DAYS.indexOf(selectedDay)
+    const isoDate = (() => {
+      if (!w) return ''
+      const d = new Date(w.startDate + 'T12:00:00')
+      d.setDate(d.getDate() + dayIndex)
+      return d.toISOString().slice(0, 10)
+    })()
+    const delivery: DeliveryInfo = {
+      weekId: selectedWeekId,
+      weekLabel: w?.label ?? '',
+      weekStartDate: w?.startDate ?? '',
+      day: selectedDay,
+      isoDate,
+      formattedDate: w
+        ? fmtDeliveryDate(w.startDate, selectedDay, t.menu.dayLabels[selectedDay], lang)
+        : t.menu.dayLabels[selectedDay],
+    }
+    for (let i = 0; i < mainQty; i++) addItem(selectedMeal, delivery)
+    onClose()
+    navigate('/panier')
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -559,6 +586,18 @@ export default function DayOrderModal({
                     {fmt(grandTotal)}
                   </span>
                 </div>
+
+                {/* Direct checkout — no extras */}
+                <button
+                  type="button"
+                  onClick={directCheckout}
+                  className="w-full flex items-center justify-center gap-2 py-2 mb-2 rounded-xl
+                    border-2 border-[#C41E3A]/40 text-[#C41E3A] font-bold text-[13px]
+                    hover:bg-[#C41E3A]/10 hover:border-[#C41E3A] transition-all duration-200"
+                >
+                  <Zap size={14} />
+                  <span>{t.mealModal.directCheckout}</span>
+                </button>
 
                 <div className="flex items-center gap-2">
                   {/* Back — prev add-on group, or back to step 1 if already on first */}
