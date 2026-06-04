@@ -58,7 +58,7 @@ function AddStudentModal({
   open: boolean
   onClose: () => void
   schools: { id: string; name: string; city: string }[]
-  grades: string[]
+  grades: readonly string[]
   onSubmit: (data: FormData) => void
   isPending: boolean
   register: ReturnType<typeof useForm<FormData>>['register']
