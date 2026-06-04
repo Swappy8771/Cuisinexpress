@@ -99,7 +99,7 @@ function AddStudentModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 16 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg bg-cx-card rounded-2xl shadow-2xl overflow-hidden"
           >
             {/* Top accent bar */}
             <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
@@ -107,10 +107,10 @@ function AddStudentModal({
             <div className="p-6 sm:p-8">
               {/* Modal header */}
               <div className="flex items-center justify-between mb-6">
-                <h3 className="font-extrabold text-[#0A0A0A] text-[18px] tracking-tight">{title}</h3>
+                <h3 className="font-extrabold text-cx-base text-[18px] tracking-tight">{title}</h3>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-lg text-[#1A1A1A]/40 hover:text-[#C41E3A] hover:bg-[#C41E3A]/08
+                  className="p-1.5 rounded-lg text-cx-soft hover:text-[#C41E3A] hover:bg-[#C41E3A]/10
                     transition-all duration-200"
                 >
                   <X size={18} />
@@ -125,16 +125,16 @@ function AddStudentModal({
                     { name: 'lastName' as const, label: lastNameLabel, placeholder: 'Tremblay' },
                   ].map(({ name, label, placeholder }) => (
                     <div key={name} className="flex flex-col gap-1.5">
-                      <label className="text-[13px] font-semibold text-[#1A1A1A]/60">{label}</label>
+                      <label className="text-[13px] font-semibold text-cx-sub">{label}</label>
                       <div className="relative">
-                        <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1A1A1A]/30 pointer-events-none" />
+                        <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none" />
                         <input
                           {...register(name)}
                           placeholder={placeholder}
-                          className={`w-full pl-9 pr-4 py-3 rounded-xl border text-[14px] bg-[#F5F5F5]
-                            outline-none transition-all duration-200 placeholder:text-[#1A1A1A]/25
-                            focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
-                            ${errors[name] ? 'border-red-400' : 'border-[#E0E0E0]'}`}
+                          className={`w-full pl-9 pr-4 py-3 rounded-xl border text-[14px] bg-cx-fill text-cx-base
+                            outline-none transition-all duration-200 placeholder:text-cx-faint
+                            focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
+                            ${errors[name] ? 'border-red-400' : 'border-cx-edge'}`}
                         />
                       </div>
                       {errors[name] && <p className="text-red-500 text-[12px]">{errors[name]?.message}</p>}
@@ -143,13 +143,13 @@ function AddStudentModal({
 
                   {/* School — full width */}
                   <div className="sm:col-span-2 flex flex-col gap-1.5">
-                    <label className="text-[13px] font-semibold text-[#1A1A1A]/60">{schoolLabel}</label>
+                    <label className="text-[13px] font-semibold text-cx-sub">{schoolLabel}</label>
                     <select
                       {...register('school')}
-                      className={`w-full px-4 py-3 rounded-xl border text-[14px] bg-[#F5F5F5] outline-none
-                        transition-all duration-200 focus:bg-white focus:border-[#C41E3A]
-                        focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)] text-[#1A1A1A]
-                        ${errors.school ? 'border-red-400' : 'border-[#E0E0E0]'}`}
+                      className={`w-full px-4 py-3 rounded-xl border text-[14px] bg-cx-fill text-cx-base outline-none
+                        transition-all duration-200 focus:bg-cx-card focus:border-[#C41E3A]
+                        focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
+                        ${errors.school ? 'border-red-400' : 'border-cx-edge'}`}
                     >
                       <option value="">{schoolPlaceholder}</option>
                       {schools.map((s) => (
@@ -163,13 +163,13 @@ function AddStudentModal({
 
                   {/* Grade */}
                   <div className="sm:col-span-2 flex flex-col gap-1.5">
-                    <label className="text-[13px] font-semibold text-[#1A1A1A]/60">{gradeLabel}</label>
+                    <label className="text-[13px] font-semibold text-cx-sub">{gradeLabel}</label>
                     <select
                       {...register('grade')}
-                      className={`w-full px-4 py-3 rounded-xl border text-[14px] bg-[#F5F5F5] outline-none
-                        transition-all duration-200 focus:bg-white focus:border-[#C41E3A]
-                        focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)] text-[#1A1A1A]
-                        ${errors.grade ? 'border-red-400' : 'border-[#E0E0E0]'}`}
+                      className={`w-full px-4 py-3 rounded-xl border text-[14px] bg-cx-fill text-cx-base outline-none
+                        transition-all duration-200 focus:bg-cx-card focus:border-[#C41E3A]
+                        focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
+                        ${errors.grade ? 'border-red-400' : 'border-cx-edge'}`}
                     >
                       <option value="">{selectGradeLabel}</option>
                       {grades.map((g) => (
@@ -185,8 +185,8 @@ function AddStudentModal({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-5 py-2.5 rounded-xl border-2 border-[#E0E0E0] text-[13.5px] font-semibold
-                      text-[#1A1A1A] hover:border-[#BDBDBD] transition-colors duration-200"
+                    className="px-5 py-2.5 rounded-xl border-2 border-cx-edge text-[13.5px] font-semibold
+                      text-cx-body hover:border-cx-muted transition-colors duration-200"
                   >
                     {cancelLabel}
                   </button>
