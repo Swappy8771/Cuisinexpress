@@ -6,6 +6,7 @@ import {
   X, School, Calendar,
 } from 'lucide-react'
 import { mealsService } from '../../services/mealsService'
+import { studentsService } from '../../services/studentsService'
 import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cartStore'
 import FilterSidebar from '../../components/orders/FilterSidebar'
 import DayOrderModal from '../../components/orders/DayOrderModal'
@@ -73,6 +74,19 @@ export default function OrderPage() {
     queryKey: ['meals-calendar', filters.schoolId],
     queryFn: () => mealsService.getMeals({ schoolId: filters.schoolId, sort: 'popular' }),
     enabled: !!filters.schoolId,
+  })
+
+  // Meals for the modal — no school filter so each child sees their own school's meals
+  const { data: modalMeals = [] } = useQuery({
+    queryKey: ['meals-modal', dayModal?.weekId],
+    queryFn: () => mealsService.getMeals({ weekId: dayModal!.weekId }),
+    enabled: !!dayModal,
+  })
+
+  // Registered students — used to drive the per-child wizard
+  const { data: students = [] } = useQuery({
+    queryKey: ['students'],
+    queryFn: studentsService.list,
   })
 
   const patchFilters = (patch: Partial<MealFilters>) =>
@@ -358,9 +372,11 @@ export default function OrderPage() {
         {dayModal !== null && (
           <DayOrderModal
             day={dayModal.day}
-            defaultWeekId={dayModal.weekId}
-            meals={allMeals.filter((m) => m.weekIds.includes(dayModal.weekId))}
+            weekId={dayModal.weekId}
+            meals={modalMeals}
             categories={categories}
+            students={students}
+            schools={schools}
             onClose={() => setDayModal(null)}
           />
         )}

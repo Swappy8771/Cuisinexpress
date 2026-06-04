@@ -1,13 +1,15 @@
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Users, Plus, Trash2, User, GraduationCap, X } from 'lucide-react'
+import { Users, Plus, Trash2, User, X } from 'lucide-react'
 import DashboardLayout from '../../layouts/DashboardLayout'
 import { studentsService } from '../../services/studentsService'
+import { mealsService } from '../../services/mealsService'
 import { useLang } from '../../contexts/LangContext'
 import type { Student } from '../../types'
 import type { AxiosError } from 'axios'
@@ -32,14 +34,204 @@ function SkeletonRow() {
   )
 }
 
+function AddStudentModal({
+  open,
+  onClose,
+  schools,
+  grades,
+  onSubmit,
+  isPending,
+  register,
+  handleSubmit,
+  errors,
+  cancelLabel,
+  confirmLabel,
+  savingLabel,
+  title,
+  firstNameLabel,
+  lastNameLabel,
+  schoolLabel,
+  schoolPlaceholder,
+  gradeLabel,
+  selectGradeLabel,
+}: {
+  open: boolean
+  onClose: () => void
+  schools: { id: string; name: string; city: string }[]
+  grades: string[]
+  onSubmit: (data: FormData) => void
+  isPending: boolean
+  register: ReturnType<typeof useForm<FormData>>['register']
+  handleSubmit: ReturnType<typeof useForm<FormData>>['handleSubmit']
+  errors: ReturnType<typeof useForm<FormData>>['formState']['errors']
+  cancelLabel: string
+  confirmLabel: string
+  savingLabel: string
+  title: string
+  firstNameLabel: string
+  lastNameLabel: string
+  schoolLabel: string
+  schoolPlaceholder: string
+  gradeLabel: string
+  selectGradeLabel: string
+}) {
+  if (!open) return null
+
+  return createPortal(
+    <AnimatePresence>
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={onClose}
+          />
+
+          {/* Modal panel */}
+          <motion.div
+            key="panel"
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 16 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden"
+          >
+            {/* Top accent bar */}
+            <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
+
+            <div className="p-6 sm:p-8">
+              {/* Modal header */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-extrabold text-[#0A0A0A] text-[18px] tracking-tight">{title}</h3>
+                <button
+                  onClick={onClose}
+                  className="p-1.5 rounded-lg text-[#1A1A1A]/40 hover:text-[#C41E3A] hover:bg-[#C41E3A]/08
+                    transition-all duration-200"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* First name */}
+                  {[
+                    { name: 'firstName' as const, label: firstNameLabel, placeholder: 'Emma' },
+                    { name: 'lastName' as const, label: lastNameLabel, placeholder: 'Tremblay' },
+                  ].map(({ name, label, placeholder }) => (
+                    <div key={name} className="flex flex-col gap-1.5">
+                      <label className="text-[13px] font-semibold text-[#1A1A1A]/60">{label}</label>
+                      <div className="relative">
+                        <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1A1A1A]/30 pointer-events-none" />
+                        <input
+                          {...register(name)}
+                          placeholder={placeholder}
+                          className={`w-full pl-9 pr-4 py-3 rounded-xl border text-[14px] bg-[#F5F5F5]
+                            outline-none transition-all duration-200 placeholder:text-[#1A1A1A]/25
+                            focus:bg-white focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
+                            ${errors[name] ? 'border-red-400' : 'border-[#E0E0E0]'}`}
+                        />
+                      </div>
+                      {errors[name] && <p className="text-red-500 text-[12px]">{errors[name]?.message}</p>}
+                    </div>
+                  ))}
+
+                  {/* School — full width */}
+                  <div className="sm:col-span-2 flex flex-col gap-1.5">
+                    <label className="text-[13px] font-semibold text-[#1A1A1A]/60">{schoolLabel}</label>
+                    <select
+                      {...register('school')}
+                      className={`w-full px-4 py-3 rounded-xl border text-[14px] bg-[#F5F5F5] outline-none
+                        transition-all duration-200 focus:bg-white focus:border-[#C41E3A]
+                        focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)] text-[#1A1A1A]
+                        ${errors.school ? 'border-red-400' : 'border-[#E0E0E0]'}`}
+                    >
+                      <option value="">{schoolPlaceholder}</option>
+                      {schools.map((s) => (
+                        <option key={s.id} value={s.name}>
+                          {s.name} — {s.city}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.school && <p className="text-red-500 text-[12px]">{errors.school.message}</p>}
+                  </div>
+
+                  {/* Grade */}
+                  <div className="sm:col-span-2 flex flex-col gap-1.5">
+                    <label className="text-[13px] font-semibold text-[#1A1A1A]/60">{gradeLabel}</label>
+                    <select
+                      {...register('grade')}
+                      className={`w-full px-4 py-3 rounded-xl border text-[14px] bg-[#F5F5F5] outline-none
+                        transition-all duration-200 focus:bg-white focus:border-[#C41E3A]
+                        focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)] text-[#1A1A1A]
+                        ${errors.grade ? 'border-red-400' : 'border-[#E0E0E0]'}`}
+                    >
+                      <option value="">{selectGradeLabel}</option>
+                      {grades.map((g) => (
+                        <option key={g} value={g}>{g}</option>
+                      ))}
+                    </select>
+                    {errors.grade && <p className="text-red-500 text-[12px]">{errors.grade.message}</p>}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="px-5 py-2.5 rounded-xl border-2 border-[#E0E0E0] text-[13.5px] font-semibold
+                      text-[#1A1A1A] hover:border-[#BDBDBD] transition-colors duration-200"
+                  >
+                    {cancelLabel}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isPending}
+                    className="px-6 py-2.5 rounded-xl bg-[#7B2535] hover:bg-[#9B3045] text-white
+                      font-bold text-[13.5px] uppercase tracking-widest transition-all duration-200
+                      hover:shadow-[0_4px_16px_rgba(196,30,58,0.3)] disabled:bg-[#BDBDBD] disabled:text-white/60"
+                  >
+                    {isPending ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        <span>{savingLabel}</span>
+                      </span>
+                    ) : confirmLabel}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>,
+    document.body
+  )
+}
+
 export default function StudentsPage() {
   const { t } = useLang()
-  const [showForm, setShowForm] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const queryClient = useQueryClient()
 
   const { data: students = [], isLoading } = useQuery({
     queryKey: ['students'],
     queryFn: studentsService.list,
+  })
+
+  const { data: schools = [] } = useQuery({
+    queryKey: ['schools'],
+    queryFn: mealsService.getSchools,
+  })
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema),
   })
 
   const addMutation = useMutation({
@@ -48,7 +240,7 @@ export default function StudentsPage() {
       queryClient.setQueryData<Student[]>(['students'], (prev = []) => [...prev, newStudent])
       toast.success('Élève ajouté !')
       reset()
-      setShowForm(false)
+      setShowModal(false)
     },
     onError: (err: AxiosError<{ message?: string }>) => {
       toast.error(err.response?.data?.message ?? "Erreur lors de l'ajout")
@@ -74,11 +266,12 @@ export default function StudentsPage() {
     },
   })
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  })
-
   const onSubmit = (data: FormData) => addMutation.mutate(data)
+
+  const closeModal = () => {
+    reset()
+    setShowModal(false)
+  }
 
   return (
     <DashboardLayout>
@@ -97,7 +290,7 @@ export default function StudentsPage() {
               <p className="text-cx-soft text-[13px] mt-0.5">{t.studentsPage.subtitle}</p>
             </div>
             <button
-              onClick={() => setShowForm(true)}
+              onClick={() => setShowModal(true)}
               className="inline-flex items-center gap-2 bg-[#7B2535] hover:bg-[#9B3045] text-white
                 font-semibold text-[13.5px] px-5 py-2.5 rounded-xl transition-all duration-200
                 hover:shadow-[0_4px_16px_rgba(196,30,58,0.3)] hover:-translate-y-0.5"
@@ -106,83 +299,6 @@ export default function StudentsPage() {
             </button>
           </div>
         </div>
-
-        {/* Add form */}
-        <AnimatePresence>
-          {showForm && (
-            <motion.div
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.3 }}
-              className="bg-cx-card rounded-2xl border border-[#C41E3A]/20 shadow-[0_4px_24px_rgba(196,30,58,0.08)] overflow-hidden"
-            >
-              <div className="h-1 bg-[#C41E3A]" />
-              <div className="p-6 sm:p-8">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-bold text-cx-base text-[16px]">{t.studentsPage.newStudent}</h3>
-                  <button onClick={() => setShowForm(false)}
-                    className="text-cx-soft hover:text-[#C41E3A] transition-colors p-1">
-                    <X size={18} />
-                  </button>
-                </div>
-                <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {[
-                      { name: 'firstName' as const, label: t.studentsPage.firstName, icon: User, placeholder: 'Emma' },
-                      { name: 'lastName' as const, label: t.studentsPage.lastName, icon: User, placeholder: 'Tremblay' },
-                      { name: 'school' as const, label: t.studentsPage.school, icon: GraduationCap, placeholder: t.studentsPage.schoolPlaceholder },
-                    ].map(({ name, label, icon: Icon, placeholder }) => (
-                      <div key={name} className="flex flex-col gap-1.5">
-                        <label className="text-[13px] font-semibold text-cx-sub">{label}</label>
-                        <div className="relative">
-                          <Icon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none" />
-                          <input {...register(name)} placeholder={placeholder}
-                            className={`w-full pl-9 pr-4 py-3 rounded-xl border text-[14px] bg-cx-fill
-                              outline-none transition-all duration-200 placeholder:text-cx-faint
-                              focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
-                              ${errors[name] ? 'border-red-400' : 'border-cx-edge'}`}
-                          />
-                        </div>
-                        {errors[name] && <p className="text-red-500 text-[12px]">{errors[name]?.message}</p>}
-                      </div>
-                    ))}
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[13px] font-semibold text-cx-sub">{t.studentsPage.grade}</label>
-                      <select {...register('grade')}
-                        className={`w-full px-4 py-3 rounded-xl border text-[14px] bg-cx-fill outline-none
-                          transition-all duration-200 focus:bg-cx-card focus:border-[#C41E3A]
-                          focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)] text-cx-sub
-                          ${errors.grade ? 'border-red-400' : 'border-cx-edge'}`}>
-                        <option value="">{t.studentsPage.selectGrade}</option>
-                        {t.studentsPage.grades.map((g: string) => <option key={g} value={g}>{g}</option>)}
-                      </select>
-                      {errors.grade && <p className="text-red-500 text-[12px]">{errors.grade.message}</p>}
-                    </div>
-                  </div>
-                  <div className="mt-6 flex justify-end gap-3">
-                    <button type="button" onClick={() => setShowForm(false)}
-                      className="px-5 py-2.5 rounded-xl border-2 border-cx-edge text-[13.5px] font-semibold
-                        text-cx-body hover:border-cx-muted transition-colors">
-                      {t.common.cancel}
-                    </button>
-                    <button type="submit" disabled={addMutation.isPending}
-                      className="px-6 py-2.5 rounded-xl bg-[#7B2535] hover:bg-[#9B3045] text-white
-                        font-bold text-[13.5px] uppercase tracking-widest transition-all duration-200
-                        disabled:bg-cx-muted disabled:text-cx-soft">
-                      {addMutation.isPending ? (
-                        <span className="flex items-center gap-2">
-                          <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                          <span>{t.common.saving}</span>
-                        </span>
-                      ) : t.common.confirm}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Students list */}
         <div className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
@@ -203,7 +319,8 @@ export default function StudentsPage() {
           ) : (
             <div className="divide-y divide-cx-line">
               {students.map((s, i) => (
-                <motion.div key={s.id}
+                <motion.div
+                  key={s.id}
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.06, duration: 0.4 }}
@@ -232,6 +349,29 @@ export default function StudentsPage() {
           )}
         </div>
       </motion.div>
+
+      {/* Add student modal */}
+      <AddStudentModal
+        open={showModal}
+        onClose={closeModal}
+        schools={schools}
+        grades={t.studentsPage.grades}
+        onSubmit={onSubmit}
+        isPending={addMutation.isPending}
+        register={register}
+        handleSubmit={handleSubmit}
+        errors={errors}
+        title={t.studentsPage.newStudent}
+        firstNameLabel={t.studentsPage.firstName}
+        lastNameLabel={t.studentsPage.lastName}
+        schoolLabel={t.studentsPage.school}
+        schoolPlaceholder={t.studentsPage.schoolPlaceholder}
+        gradeLabel={t.studentsPage.grade}
+        selectGradeLabel={t.studentsPage.selectGrade}
+        cancelLabel={t.common.cancel}
+        confirmLabel={t.common.confirm}
+        savingLabel={t.common.saving}
+      />
     </DashboardLayout>
   )
 }

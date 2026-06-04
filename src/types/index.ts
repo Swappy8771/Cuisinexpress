@@ -140,8 +140,9 @@ export interface DeliveryInfo {
 }
 
 export interface CartItem {
-  key: string          // meal.id  OR  `${meal.id}__${weekId}__${day}`
+  key: string          // meal.id  OR  `${meal.id}__${weekId}__${day}__${studentId}`
   meal: Meal
   quantity: number
   delivery?: DeliveryInfo
+  student?: { id: string; firstName: string; lastName: string }
 }

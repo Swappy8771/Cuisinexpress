@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ShoppingCart, Trash2, Plus, Minus, ArrowLeft,
-  ShoppingBag, Tag, Calendar,
+  ShoppingBag, Tag, Calendar, User,
 } from 'lucide-react'
 import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cartStore'
 import type { CartItem } from '../../types'
@@ -10,31 +10,20 @@ import type { CartItem } from '../../types'
 const fmt = (n: number) =>
   new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(n)
 
-/* Group cart items by delivery day. Items without delivery go under a "no date" bucket. */
-function groupByDelivery(items: CartItem[]) {
-  const buckets = new Map<string, { label: string; isoDate: string; items: CartItem[] }>()
+// Group cart items by student, preserving insertion order
+function groupByStudent(items: CartItem[]) {
+  const map = new Map<string, { name: string; items: CartItem[] }>()
 
   for (const item of items) {
-    const bucketKey = item.delivery
-      ? `${item.delivery.weekId}__${item.delivery.day}`
-      : '__no_date'
-
-    if (!buckets.has(bucketKey)) {
-      buckets.set(bucketKey, {
-        label: item.delivery?.formattedDate ?? 'Sans date programmée',
-        isoDate: item.delivery?.isoDate ?? '',
-        items: [],
-      })
-    }
-    buckets.get(bucketKey)!.items.push(item)
+    const key = item.student?.id ?? '__unassigned'
+    const name = item.student
+      ? `${item.student.firstName} ${item.student.lastName}`
+      : 'Commande générale'
+    if (!map.has(key)) map.set(key, { name, items: [] })
+    map.get(key)!.items.push(item)
   }
 
-  // Sort buckets by date (no-date last)
-  return [...buckets.values()].sort((a, b) => {
-    if (!a.isoDate) return 1
-    if (!b.isoDate) return -1
-    return a.isoDate.localeCompare(b.isoDate)
-  })
+  return [...map.values()]
 }
 
 export default function CartPage() {
@@ -50,7 +39,10 @@ export default function CartPage() {
   const taxes      = total * TAX_RATE
   const grandTotal = total + taxes
 
-  const groups = groupByDelivery(items)
+  const studentGroups = groupByStudent(items)
+
+  const groupSubtotal = (groupItems: CartItem[]) =>
+    groupItems.reduce((s, i) => s + i.meal.price * i.quantity, 0)
 
   return (
     <div className="min-h-screen bg-cx-page transition-colors duration-300">
@@ -111,7 +103,7 @@ export default function CartPage() {
         {items.length > 0 && (
           <div className="flex flex-col lg:flex-row gap-6 items-start">
 
-            {/* ── Item list grouped by day ── */}
+            {/* ── Item list grouped by student ── */}
             <div className="flex-1 min-w-0 flex flex-col gap-6">
 
               {/* List header */}
@@ -129,17 +121,17 @@ export default function CartPage() {
                 </button>
               </div>
 
-              {/* Day groups */}
-              {groups.map((group, gi) => (
+              {/* Student groups */}
+              {studentGroups.map((group, gi) => (
                 <div key={gi} className="flex flex-col gap-3">
 
-                  {/* Day header */}
+                  {/* Student header */}
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl
-                      bg-[#C41E3A]/8 border border-[#C41E3A]/20">
-                      <Calendar size={13} className="text-[#C41E3A]" />
-                      <span className="text-[12.5px] font-extrabold text-[#C41E3A] capitalize">
-                        {group.label}
+                      bg-[#7B2535]/8 border border-[#7B2535]/20">
+                      <User size={13} className="text-[#7B2535]" />
+                      <span className="text-[12.5px] font-extrabold text-[#7B2535]">
+                        {group.name}
                       </span>
                     </div>
                     <div className="flex-1 h-px bg-cx-line" />
@@ -148,7 +140,7 @@ export default function CartPage() {
                     </span>
                   </div>
 
-                  {/* Items in this group */}
+                  {/* Items for this student */}
                   <AnimatePresence initial={false}>
                     {group.items.map((item) => {
                       const key = item.key ?? item.meal.id
@@ -180,10 +172,15 @@ export default function CartPage() {
                               <p className="text-[14.5px] font-bold text-cx-base truncate">
                                 {item.meal.name}
                               </p>
-                              <p className="text-[12.5px] text-cx-soft mt-0.5 line-clamp-1">
-                                {item.meal.description}
-                              </p>
-                              <p className="text-[13px] font-semibold text-[#C41E3A] mt-1.5">
+                              {item.delivery && (
+                                <div className="flex items-center gap-1 mt-0.5">
+                                  <Calendar size={11} className="text-cx-faint" />
+                                  <span className="text-[11.5px] text-cx-soft capitalize">
+                                    {item.delivery.formattedDate}
+                                  </span>
+                                </div>
+                              )}
+                              <p className="text-[13px] font-semibold text-[#C41E3A] mt-1">
                                 {fmt(item.meal.price)} / repas
                               </p>
                             </div>
@@ -229,12 +226,12 @@ export default function CartPage() {
                     })}
                   </AnimatePresence>
 
-                  {/* Day subtotal */}
+                  {/* Student subtotal */}
                   <div className="flex justify-end pr-1">
                     <span className="text-[12px] text-cx-soft">
-                      Sous-total :{' '}
+                      Sous-total {group.name} :{' '}
                       <span className="font-bold text-cx-base">
-                        {fmt(group.items.reduce((s, i) => s + i.meal.price * i.quantity, 0))}
+                        {fmt(groupSubtotal(group.items))}
                       </span>
                     </span>
                   </div>
@@ -261,14 +258,14 @@ export default function CartPage() {
                   <h2 className="text-[15px] font-extrabold text-cx-base">Récapitulatif</h2>
                 </div>
 
-                {/* Summary by day */}
+                {/* Summary by student */}
                 <div className="px-6 py-4 flex flex-col gap-4 max-h-72 overflow-y-auto">
-                  {groups.map((group, gi) => (
+                  {studentGroups.map((group, gi) => (
                     <div key={gi} className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-1.5 mb-0.5">
-                        <Calendar size={11} className="text-[#C41E3A]" />
-                        <span className="text-[11px] font-extrabold text-[#C41E3A] uppercase tracking-wide capitalize">
-                          {group.label}
+                        <User size={11} className="text-[#7B2535]" />
+                        <span className="text-[11px] font-extrabold text-[#7B2535] uppercase tracking-wide">
+                          {group.name}
                         </span>
                       </div>
                       {group.items.map((item) => (

@@ -2,14 +2,18 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Meal, CartItem, DeliveryInfo } from '../types'
 
-const makeKey = (meal: Meal, delivery?: DeliveryInfo) =>
-  delivery ? `${meal.id}__${delivery.weekId}__${delivery.day}` : meal.id
+type StudentInfo = { id: string; firstName: string; lastName: string }
+
+const makeKey = (meal: Meal, delivery?: DeliveryInfo, student?: StudentInfo) => {
+  const base = delivery ? `${meal.id}__${delivery.weekId}__${delivery.day}` : meal.id
+  return student ? `${base}__${student.id}` : base
+}
 
 interface CartStore {
   items: CartItem[]
   schoolId: string | null
   weekId: string | null
-  addItem: (meal: Meal, delivery?: DeliveryInfo) => void
+  addItem: (meal: Meal, delivery?: DeliveryInfo, student?: StudentInfo) => void
   removeItem: (key: string) => void
   updateQty: (key: string, delta: number) => void
   clearCart: () => void
@@ -23,37 +27,34 @@ export const useCartStore = create<CartStore>()(
       schoolId: null,
       weekId: null,
 
-      addItem: (meal, delivery) =>
+      addItem: (meal, delivery, student) =>
         set((state) => {
-          const key = makeKey(meal, delivery)
-          const existing = state.items.find((i) => (i.key ?? i.meal.id) === key)
+          const key = makeKey(meal, delivery, student)
+          const existing = state.items.find((i) => i.key === key)
           if (existing) {
             return {
               items: state.items.map((i) =>
-                (i.key ?? i.meal.id) === key ? { ...i, quantity: i.quantity + 1 } : i
+                i.key === key ? { ...i, quantity: i.quantity + 1 } : i
               ),
             }
           }
-          return { items: [...state.items, { key, meal, quantity: 1, delivery }] }
+          return { items: [...state.items, { key, meal, quantity: 1, delivery, student }] }
         }),
 
       removeItem: (key) =>
         set((state) => ({
-          items: state.items.filter((i) => (i.key ?? i.meal.id) !== key),
+          items: state.items.filter((i) => i.key !== key),
         })),
 
       updateQty: (key, delta) =>
         set((state) => ({
           items: state.items
-            .map((i) =>
-              (i.key ?? i.meal.id) === key ? { ...i, quantity: i.quantity + delta } : i
-            )
+            .map((i) => i.key === key ? { ...i, quantity: i.quantity + delta } : i)
             .filter((i) => i.quantity > 0),
         })),
 
       clearCart: () => set({ items: [] }),
 
-      // Sums across all delivery variations for the same meal
       getQty: (mealId) =>
         get().items
           .filter((i) => i.meal.id === mealId)
