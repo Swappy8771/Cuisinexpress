@@ -5,7 +5,22 @@ export type CreateStudentRequest = Omit<Student, 'id'>
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
-const mockStudents: Student[] = []
+const mockStudents: Student[] = [
+  {
+    id: 'mock-default-1',
+    firstName: 'Emma',
+    lastName: 'Tremblay',
+    school: 'École Primaire Saint-Jean',
+    grade: '3e année',
+  },
+  {
+    id: 'mock-default-2',
+    firstName: 'Lucas',
+    lastName: 'Tremblay',
+    school: 'École des Sommets',
+    grade: '5e année',
+  },
+]
 let nextId = 1
 
 function delay(ms = 300) {
