@@ -146,10 +146,10 @@ export default function OrderPage() {
                 placeholder={t.order.searchPlaceholder}
                 value={filters.search}
                 onChange={(e) => patchFilters({ search: e.target.value })}
-                className="w-full pl-8 pr-4 py-2 text-[13.5px] bg-cx-fill border border-cx-edge
+                className="w-full pl-8 pr-4 py-2 text-[15px] bg-cx-fill border border-cx-edge
                   rounded-xl outline-none transition-all
                   focus:border-[#C41E3A] focus:bg-cx-card focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]
-                  placeholder:text-cx-faint"
+                  placeholder:text-cx-soft"
               />
               {filters.search && (
                 <button

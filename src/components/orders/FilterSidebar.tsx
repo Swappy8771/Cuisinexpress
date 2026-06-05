@@ -28,8 +28,8 @@ function weekNum(label: string): string {
   return label.replace(/[^\d]/g, '').trim()
 }
 
-const sectionTitle = 'text-[10.5px] font-extrabold tracking-[0.1em] uppercase text-cx-soft mb-2.5'
-const checkRow = 'flex items-center gap-2.5 py-1.5 cursor-pointer group select-none'
+const sectionTitle = 'text-[12px] font-extrabold tracking-[0.1em] uppercase text-cx-soft mb-2.5'
+const checkRow = 'flex items-center gap-2.5 py-2 cursor-pointer group select-none'
 const checkBox = (active: boolean) =>
   `w-4 h-4 rounded flex-shrink-0 border-2 transition-all duration-150 flex items-center justify-center
   ${active
@@ -136,7 +136,7 @@ export default function FilterSidebar({
               type="button"
               onClick={() => setSchoolOpen((o) => !o)}
               className="w-full flex items-center justify-between gap-2 px-3 py-2.5
-                bg-cx-fill border border-cx-edge rounded-xl text-[13px] font-medium
+                bg-cx-fill border border-cx-edge rounded-xl text-[14px] font-medium
                 text-cx-base hover:border-[#C41E3A]/50 transition-all duration-200
                 focus:outline-none focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
             >
@@ -163,7 +163,7 @@ export default function FilterSidebar({
                       value={schoolSearch}
                       onChange={(e) => setSchoolSearch(e.target.value)}
                       placeholder={lang === 'en' ? 'Search school…' : 'Rechercher une école…'}
-                      className="flex-1 text-[12.5px] bg-transparent outline-none text-cx-base placeholder:text-cx-faint"
+                      className="flex-1 text-[14px] bg-transparent outline-none text-cx-base placeholder:text-cx-soft"
                     />
                     {schoolSearch && (
                       <button type="button" onClick={() => setSchoolSearch('')}>
@@ -185,7 +185,7 @@ export default function FilterSidebar({
                           type="button"
                           onClick={() => { onFiltersChange({ schoolId: s.id }); setSchoolOpen(false) }}
                           className={`w-full flex items-center justify-between gap-3 px-4 py-2.5
-                            text-left text-[13px] transition-colors duration-150
+                            text-left text-[14px] transition-colors duration-150
                             ${active
                               ? 'bg-[#C41E3A]/8 text-[#C41E3A] font-semibold'
                               : 'text-cx-sub hover:bg-cx-fill hover:text-cx-base'
@@ -212,7 +212,7 @@ export default function FilterSidebar({
               type="button"
               onClick={() => setWeekOpen((o) => !o)}
               className="w-full flex items-center justify-between gap-2 px-3 py-2.5
-                bg-cx-fill border border-cx-edge rounded-xl text-[13px] font-medium
+                bg-cx-fill border border-cx-edge rounded-xl text-[14px] font-medium
                 text-cx-base hover:border-[#C41E3A]/50 transition-all duration-200
                 focus:outline-none focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
             >
@@ -240,13 +240,13 @@ export default function FilterSidebar({
                     type="button"
                     onClick={() => { onFiltersChange({ weekId: '' }); setWeekOpen(false) }}
                     className={`w-full flex items-center justify-between gap-3 px-4 py-3
-                      text-left text-[13px] transition-colors duration-150
+                      text-left text-[14px] transition-colors duration-150
                       ${filters.weekId === ''
                         ? 'bg-[#C41E3A]/8 text-[#C41E3A] font-semibold'
                         : 'text-cx-sub hover:bg-cx-fill hover:text-cx-base'
                       }`}
                   >
-                    <span className="font-bold text-[12.5px]">
+                    <span className="font-bold text-[14px]">
                       {lang === 'en' ? 'All weeks' : 'Toutes les semaines'}
                     </span>
                     {filters.weekId === '' && <Check size={14} className="flex-shrink-0 text-[#C41E3A]" />}
@@ -259,14 +259,14 @@ export default function FilterSidebar({
                         type="button"
                         onClick={() => { onFiltersChange({ weekId: w.id }); setWeekOpen(false) }}
                         className={`w-full flex items-center justify-between gap-3 px-4 py-3
-                          text-left text-[13px] transition-colors duration-150
+                          text-left text-[14px] transition-colors duration-150
                           ${active
                             ? 'bg-[#C41E3A]/8 text-[#C41E3A] font-semibold'
                             : 'text-cx-sub hover:bg-cx-fill hover:text-cx-base'
                           }`}
                       >
                         <div className="flex flex-col gap-0.5">
-                          <span className="font-bold text-[12.5px]">
+                          <span className="font-bold text-[14px]">
                             {t.filter.weekPrefix} {weekNum(w.label)}
                           </span>
                           <span className={`text-[11px] ${active ? 'text-[#C41E3A]/70' : 'text-cx-faint'}`}>
@@ -298,7 +298,7 @@ export default function FilterSidebar({
                       </svg>
                     )}
                   </span>
-                  <span className="text-[13px] leading-none flex items-center gap-1.5 text-cx-sub group-hover:text-cx-base transition-colors">
+                  <span className="text-[14px] leading-none flex items-center gap-1.5 text-cx-sub group-hover:text-cx-base transition-colors">
                     <span>{cat.emoji}</span>
                     <span className={active ? 'font-semibold text-cx-base' : ''}>{cat.label}</span>
                   </span>
@@ -323,7 +323,7 @@ export default function FilterSidebar({
                       </svg>
                     )}
                   </span>
-                  <span className={`text-[13px] text-cx-sub group-hover:text-cx-base transition-colors ${active ? 'font-semibold text-cx-base' : ''}`}>
+                  <span className={`text-[14px] text-cx-sub group-hover:text-cx-base transition-colors ${active ? 'font-semibold text-cx-base' : ''}`}>
                     {tagLabels[tag]}
                   </span>
                 </label>

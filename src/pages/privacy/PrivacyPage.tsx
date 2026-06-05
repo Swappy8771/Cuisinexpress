@@ -58,7 +58,7 @@ function SectionBody({ body }: { body: SectionBody }) {
     case 'text':
       return (
         <div className="px-8 sm:px-12 py-6">
-          <p className="text-[14px] text-cx-soft leading-relaxed">{body.body}</p>
+          <p className="text-[16px] text-cx-body leading-relaxed">{body.body}</p>
         </div>
       )
 
@@ -68,7 +68,7 @@ function SectionBody({ body }: { body: SectionBody }) {
           {body.points.map((text, i) => (
             <div key={i} className="flex items-start gap-3">
               <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#C41E3A]/50 flex-shrink-0" />
-              <p className="text-[14px] text-cx-soft leading-relaxed">{text}</p>
+              <p className="text-[16px] text-cx-body leading-relaxed">{text}</p>
             </div>
           ))}
         </div>
@@ -81,9 +81,9 @@ function SectionBody({ body }: { body: SectionBody }) {
             <div key={title} className="rounded-xl bg-cx-fill border border-cx-line px-5 py-5">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#C41E3A] flex-shrink-0" />
-                <p className="text-[14px] font-bold text-cx-base">{title}</p>
+                <p className="text-[15px] font-bold text-cx-base">{title}</p>
               </div>
-              <p className="text-[13px] text-cx-soft leading-relaxed">{cardBody}</p>
+              <p className="text-[15px] text-cx-body leading-relaxed">{cardBody}</p>
             </div>
           ))}
         </div>
@@ -92,9 +92,9 @@ function SectionBody({ body }: { body: SectionBody }) {
     case 'table':
       return (
         <div className="px-8 sm:px-12 py-6 flex flex-col gap-5">
-          <p className="text-[14px] text-cx-soft leading-relaxed">{body.intro}</p>
+          <p className="text-[16px] text-cx-body leading-relaxed">{body.intro}</p>
           <div className="rounded-xl border border-cx-line overflow-hidden overflow-x-auto">
-            <table className="w-full min-w-[540px] text-[13.5px]">
+            <table className="w-full min-w-[540px] text-[15px]">
               <thead>
                 <tr className="bg-cx-fill">
                   {body.cols.map((col) => (
@@ -121,24 +121,24 @@ function SectionBody({ body }: { body: SectionBody }) {
               </tbody>
             </table>
           </div>
-          <p className="text-[13px] text-cx-soft italic">{body.footnote}</p>
+          <p className="text-[14px] text-cx-body italic">{body.footnote}</p>
         </div>
       )
 
     case 'infobox':
       return (
         <div className="px-8 sm:px-12 py-6 flex flex-col gap-5">
-          <p className="text-[14px] text-cx-soft leading-relaxed">{body.p1}</p>
-          <p className="text-[14px] text-cx-soft leading-relaxed">
+          <p className="text-[16px] text-cx-body leading-relaxed">{body.p1}</p>
+          <p className="text-[16px] text-cx-body leading-relaxed">
             {body.p2.pre}<span className="font-semibold text-cx-base">{body.p2.bold}</span>{body.p2.post}
           </p>
           <div className="rounded-xl bg-cx-fill border border-cx-line px-6 py-5">
-            <p className="text-[13px] font-semibold text-cx-base mb-3">{body.boxTitle}</p>
+            <p className="text-[14px] font-semibold text-cx-base mb-3">{body.boxTitle}</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1.5">
               {body.items.map((item) => (
                 <div key={item} className="flex items-start gap-2">
                   <span className="mt-[7px] w-1 h-1 rounded-full bg-[#C41E3A]/60 flex-shrink-0" />
-                  <span className="text-[13px] text-cx-soft">{item}</span>
+                  <span className="text-[15px] text-cx-body">{item}</span>
                 </div>
               ))}
             </div>
@@ -149,10 +149,10 @@ function SectionBody({ body }: { body: SectionBody }) {
     case 'contact':
       return (
         <div className="px-8 sm:px-12 py-6 flex flex-col gap-5">
-          <p className="text-[14px] text-cx-soft leading-relaxed">
+          <p className="text-[16px] text-cx-body leading-relaxed">
             {body.p1.pre}<span className="font-semibold text-cx-base">{body.p1.name}</span>{body.p1.post}
           </p>
-          <p className="text-[14px] text-cx-soft leading-relaxed">{body.p2}</p>
+          <p className="text-[16px] text-cx-body leading-relaxed">{body.p2}</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-1">
             {body.cards.map(({ icon: Icon, label, value, href }) => (
               <div key={label} className="flex items-start gap-3 rounded-xl bg-cx-fill border border-cx-line px-5 py-4">
@@ -160,10 +160,10 @@ function SectionBody({ body }: { body: SectionBody }) {
                   <Icon size={15} className="text-[#C41E3A]" />
                 </div>
                 <div>
-                  <p className="text-[11px] font-semibold text-cx-soft uppercase tracking-wide mb-0.5">{label}</p>
+                  <p className="text-[12px] font-semibold text-cx-soft uppercase tracking-wide mb-0.5">{label}</p>
                   {href
-                    ? <a href={href} className="text-[13px] font-semibold text-[#C41E3A] hover:underline underline-offset-2">{value}</a>
-                    : <p className="text-[13px] font-semibold text-cx-base leading-snug">{value}</p>
+                    ? <a href={href} className="text-[15px] font-semibold text-[#C41E3A] hover:underline underline-offset-2">{value}</a>
+                    : <p className="text-[15px] font-semibold text-cx-base leading-snug">{value}</p>
                   }
                 </div>
               </div>

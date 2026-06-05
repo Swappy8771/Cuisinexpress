@@ -1,29 +1,64 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useQuery } from '@tanstack/react-query'
 import {
   ShoppingCart, Trash2, Plus, Minus, ArrowLeft,
-  ShoppingBag, Tag, Calendar, User,
+  ShoppingBag, Tag, Calendar, User, Pencil,
 } from 'lucide-react'
 import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cartStore'
+import DayOrderModal from '../../components/orders/DayOrderModal'
+import { mealsService } from '../../services/mealsService'
 import type { CartItem } from '../../types'
+import type { DayName } from '../../lib/menuConfig'
+import woodTexture from '../../assets/wooden-texture.png'
 
 const fmt = (n: number) =>
   new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(n)
 
-// Group cart items by student, preserving insertion order
-function groupByStudent(items: CartItem[]) {
-  const map = new Map<string, { name: string; items: CartItem[] }>()
+// Nested grouping: student → days within that student
+function groupByStudentThenDay(items: CartItem[]) {
+  const studentMap = new Map<string, {
+    studentKey: string
+    name: string
+    student: CartItem['student']
+    days: Map<string, { dayKey: string; day: DayName; weekId: string; label: string; items: CartItem[] }>
+  }>()
 
   for (const item of items) {
-    const key = item.student?.id ?? '__unassigned'
+    const sKey = item.student?.id ?? '__unassigned'
     const name = item.student
       ? `${item.student.firstName} ${item.student.lastName}`
       : 'Commande générale'
-    if (!map.has(key)) map.set(key, { name, items: [] })
-    map.get(key)!.items.push(item)
+
+    if (!studentMap.has(sKey)) {
+      studentMap.set(sKey, { studentKey: sKey, name, student: item.student, days: new Map() })
+    }
+    const sg = studentMap.get(sKey)!
+
+    const dKey = item.delivery ? `${item.delivery.weekId}__${item.delivery.day}` : '__noday'
+    if (!sg.days.has(dKey)) {
+      sg.days.set(dKey, {
+        dayKey: dKey,
+        day: (item.delivery?.day ?? '') as DayName,
+        weekId: item.delivery?.weekId ?? '',
+        label: item.delivery?.formattedDate ?? 'Sans date',
+        items: [],
+      })
+    }
+    sg.days.get(dKey)!.items.push(item)
   }
 
-  return [...map.values()]
+  return [...studentMap.values()].map((sg) => ({
+    ...sg,
+    days: [...sg.days.values()],
+  }))
+}
+
+type EditTarget = {
+  student: NonNullable<CartItem['student']>
+  day: DayName
+  weekId: string
 }
 
 export default function CartPage() {
@@ -35,33 +70,60 @@ export default function CartPage() {
   const clearCart  = useCartStore((s) => s.clearCart)
   const navigate   = useNavigate()
 
+  const [editTarget, setEditTarget] = useState<EditTarget | null>(null)
+
   const TAX_RATE   = 0.14975
   const taxes      = total * TAX_RATE
   const grandTotal = total + taxes
 
-  const studentGroups = groupByStudent(items)
+  const studentGroups = groupByStudentThenDay(items)
+
+  // Reference data for the edit modal
+  const { data: schools = [] } = useQuery({
+    queryKey: ['ordering-schools'],
+    queryFn: mealsService.getSchools,
+  })
+  const { data: categories = [] } = useQuery({
+    queryKey: ['ordering-categories'],
+    queryFn: mealsService.getCategories,
+  })
+  const { data: modalMeals = [] } = useQuery({
+    queryKey: ['meals-modal', editTarget?.weekId],
+    queryFn: () => mealsService.getMeals({ weekId: editTarget!.weekId }),
+    enabled: !!editTarget,
+  })
 
   const groupSubtotal = (groupItems: CartItem[]) =>
     groupItems.reduce((s, i) => s + i.meal.price * i.quantity, 0)
 
+  // Clear a student's items for a specific day then open the edit modal
+  const startEdit = (target: EditTarget, dayItems: CartItem[]) => {
+    dayItems.forEach((i) => removeItem(i.key ?? i.meal.id))
+    setEditTarget(target)
+  }
+
   return (
     <div className="min-h-screen bg-cx-page transition-colors duration-300">
 
-      {/* Page header */}
-      <div className="bg-cx-card border-b border-cx-line shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center gap-4">
+      {/* ── Wood page header ── */}
+      <div
+        className="relative overflow-hidden"
+        style={{ backgroundImage: `url('${woodTexture}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      >
+        <div className="absolute inset-0 bg-black/62" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-[13.5px] text-cx-soft hover:text-[#C41E3A]
+            className="flex items-center gap-2 text-[13.5px] text-white/70 hover:text-white
               transition-colors font-medium"
           >
             <ArrowLeft size={16} />
             Retour
           </button>
-          <div className="h-5 w-px bg-cx-edge" />
+          <div className="h-5 w-px bg-white/20" />
           <div className="flex items-center gap-2">
             <ShoppingCart size={18} className="text-[#C41E3A]" />
-            <h1 className="text-[17px] font-extrabold text-cx-base">Mon panier</h1>
+            <h1 className="text-[17px] font-extrabold text-white">Mon panier</h1>
             {count > 0 && (
               <span className="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5
                 rounded-full bg-[#C41E3A] text-white text-[11px] font-bold">
@@ -72,7 +134,7 @@ export default function CartPage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-28 lg:pb-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-28 lg:pb-8">
 
         {/* Empty state */}
         {items.length === 0 && (
@@ -101,216 +163,252 @@ export default function CartPage() {
         )}
 
         {items.length > 0 && (
-          <div className="flex flex-col lg:flex-row gap-6 items-start">
+          <div className="flex flex-col lg:flex-row gap-10 xl:gap-14 items-start">
 
-            {/* ── Item list grouped by student ── */}
-            <div className="flex-1 min-w-0 flex flex-col gap-6">
+            {/* ── Items grouped by student, then day ── */}
+            <div className="flex-1 min-w-0 flex flex-col gap-8">
 
               {/* List header */}
               <div className="flex items-center justify-between">
-                <p className="text-[13px] text-cx-soft font-medium">
+                <p className="text-[15px] text-cx-soft font-semibold">
                   {count} repas sélectionné{count > 1 ? 's' : ''}
                 </p>
                 <button
                   onClick={clearCart}
-                  className="flex items-center gap-1.5 text-[12.5px] text-cx-soft
+                  className="flex items-center gap-1.5 text-[14px] text-cx-soft
                     hover:text-[#C41E3A] transition-colors"
                 >
-                  <Trash2 size={13} />
+                  <Trash2 size={14} />
                   Vider le panier
                 </button>
               </div>
 
-              {/* Student groups */}
-              {studentGroups.map((group, gi) => (
-                <div key={gi} className="flex flex-col gap-3">
+              {studentGroups.map((sg) => (
+                <div key={sg.studentKey} className="flex flex-col gap-4">
 
-                  {/* Student header */}
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl
-                      bg-[#7B2535]/8 border border-[#7B2535]/20">
-                      <User size={13} className="text-[#7B2535]" />
-                      <span className="text-[12.5px] font-extrabold text-[#7B2535]">
-                        {group.name}
-                      </span>
+                  {/* ── Student heading ── */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl
+                      bg-[#7B2535]/10 border border-[#7B2535]/25">
+                      <User size={15} className="text-[#7B2535]" />
+                      <span className="text-[15px] font-extrabold text-[#7B2535]">{sg.name}</span>
                     </div>
                     <div className="flex-1 h-px bg-cx-line" />
-                    <span className="text-[11px] text-cx-faint font-medium">
-                      {group.items.reduce((s, i) => s + i.quantity, 0)} repas
-                    </span>
                   </div>
 
-                  {/* Items for this student */}
-                  <AnimatePresence initial={false}>
-                    {group.items.map((item) => {
-                      const key = item.key ?? item.meal.id
-                      return (
-                        <motion.div
-                          key={key}
-                          layout
-                          initial={{ opacity: 0, x: -16 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 16, height: 0, marginBottom: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="bg-cx-card rounded-2xl border border-cx-line
-                            shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden"
-                        >
-                          <div className="flex items-start sm:items-center gap-3 sm:gap-4 p-4">
+                  {/* ── Day groups — each is its own card ── */}
+                  {sg.days.map((dg) => (
+                    <div key={dg.dayKey}
+                      className="bg-cx-card rounded-2xl border border-cx-line
+                        shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden">
 
-                            {/* Image */}
-                            <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-cx-muted">
-                              <img
-                                src={item.meal.image}
-                                alt={item.meal.name}
-                                className="w-full h-full object-cover"
-                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                              />
-                            </div>
+                      {/* Card header: date + Modifier button */}
+                      <div className="flex items-center justify-between gap-3
+                        px-5 py-4 border-b border-cx-line bg-cx-fill">
+                        <div className="flex items-center gap-2">
+                          <Calendar size={15} className="text-[#C41E3A]" />
+                          <span className="text-[15px] font-bold text-cx-base capitalize">
+                            {dg.label}
+                          </span>
+                        </div>
 
-                            {/* Info */}
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[14.5px] font-bold text-cx-base truncate">
-                                {item.meal.name}
-                              </p>
-                              {item.delivery && (
-                                <div className="flex items-center gap-1 mt-0.5">
-                                  <Calendar size={11} className="text-cx-faint" />
-                                  <span className="text-[11.5px] text-cx-soft capitalize">
-                                    {item.delivery.formattedDate}
-                                  </span>
+                        {sg.student && dg.weekId && (
+                          <button
+                            onClick={() => startEdit(
+                              { student: sg.student!, day: dg.day, weekId: dg.weekId },
+                              dg.items
+                            )}
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl
+                              text-[13px] font-bold border-2 border-[#7B2535]/30 text-[#7B2535]
+                              hover:bg-[#7B2535] hover:text-white hover:border-[#7B2535]
+                              transition-all duration-200"
+                          >
+                            <Pencil size={13} />
+                            Modifier la commande
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Items for this student+day */}
+                      <AnimatePresence initial={false}>
+                        {dg.items.map((item) => {
+                          const key = item.key ?? item.meal.id
+                          return (
+                            <motion.div
+                              key={key}
+                              layout
+                              initial={{ opacity: 0, x: -16 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: 16, height: 0 }}
+                              transition={{ duration: 0.25 }}
+                              className="border-b border-cx-line last:border-b-0"
+                            >
+                              <div className="flex items-center gap-4 px-5 py-4">
+
+                                {/* Image */}
+                                <div className="flex-shrink-0 w-[72px] h-[72px] rounded-xl overflow-hidden bg-cx-muted">
+                                  <img
+                                    src={item.meal.image}
+                                    alt={item.meal.name}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                                  />
                                 </div>
-                              )}
-                              <p className="text-[13px] font-semibold text-[#C41E3A] mt-1">
-                                {fmt(item.meal.price)} / repas
-                              </p>
-                            </div>
 
-                            {/* Right: qty + subtotal + remove */}
-                            <div className="flex flex-col items-end gap-3 flex-shrink-0">
-                              <p className="text-[15px] font-extrabold text-cx-base">
-                                {fmt(item.meal.price * item.quantity)}
-                              </p>
+                                {/* Info */}
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[16px] font-bold text-cx-base truncate">
+                                    {item.meal.name}
+                                  </p>
+                                  <p className="text-[14px] font-semibold text-[#C41E3A] mt-0.5">
+                                    {fmt(item.meal.price)} / repas
+                                  </p>
+                                </div>
 
-                              <div className="flex items-center gap-1 bg-cx-fill rounded-xl p-1">
-                                <button
-                                  onClick={() => updateQty(key, -1)}
-                                  className="w-7 h-7 flex items-center justify-center rounded-lg
-                                    text-cx-soft hover:bg-[#C41E3A]/10 hover:text-[#C41E3A]
-                                    transition-colors duration-150"
-                                >
-                                  <Minus size={13} />
-                                </button>
-                                <span className="w-7 text-center text-[13.5px] font-bold text-cx-base">
-                                  {item.quantity}
-                                </span>
-                                <button
-                                  onClick={() => updateQty(key, +1)}
-                                  className="w-7 h-7 flex items-center justify-center rounded-lg
-                                    text-cx-soft hover:bg-[#C41E3A]/10 hover:text-[#C41E3A]
-                                    transition-colors duration-150"
-                                >
-                                  <Plus size={13} />
-                                </button>
+                                {/* Price + controls */}
+                                <div className="flex flex-col items-end gap-2.5 flex-shrink-0">
+                                  <p className="text-[17px] font-extrabold text-cx-base">
+                                    {fmt(item.meal.price * item.quantity)}
+                                  </p>
+
+                                  {item.isAddon ? (
+                                    /* Add-on: full qty stepper + remove */
+                                    <>
+                                      <div className="flex items-center gap-1 bg-cx-fill rounded-xl p-1">
+                                        <button
+                                          onClick={() => updateQty(key, -1)}
+                                          className="w-8 h-8 flex items-center justify-center rounded-lg
+                                            text-cx-soft hover:bg-[#C41E3A]/10 hover:text-[#C41E3A]
+                                            transition-colors duration-150"
+                                        >
+                                          <Minus size={14} />
+                                        </button>
+                                        <span className="w-8 text-center text-[15px] font-bold text-cx-base">
+                                          {item.quantity}
+                                        </span>
+                                        <button
+                                          onClick={() => updateQty(key, +1)}
+                                          className="w-8 h-8 flex items-center justify-center rounded-lg
+                                            text-cx-soft hover:bg-[#C41E3A]/10 hover:text-[#C41E3A]
+                                            transition-colors duration-150"
+                                        >
+                                          <Plus size={14} />
+                                        </button>
+                                      </div>
+                                      <button
+                                        onClick={() => removeItem(key)}
+                                        className="text-cx-faint hover:text-red-500 transition-colors p-1"
+                                      >
+                                        <Trash2 size={15} />
+                                      </button>
+                                    </>
+                                  ) : (
+                                    /* Main meal: fixed × 1 — use "Modifier la commande" to change */
+                                    <span className="px-3 py-1.5 rounded-xl bg-cx-fill border border-cx-edge
+                                      text-[13px] font-bold text-cx-soft">
+                                      × 1 repas
+                                    </span>
+                                  )}
+                                </div>
                               </div>
+                            </motion.div>
+                          )
+                        })}
+                      </AnimatePresence>
 
-                              <button
-                                onClick={() => removeItem(key)}
-                                className="text-cx-faint hover:text-[#C41E3A] transition-colors"
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )
-                    })}
-                  </AnimatePresence>
-
-                  {/* Student subtotal */}
-                  <div className="flex justify-end pr-1">
-                    <span className="text-[12px] text-cx-soft">
-                      Sous-total {group.name} :{' '}
-                      <span className="font-bold text-cx-base">
-                        {fmt(groupSubtotal(group.items))}
-                      </span>
-                    </span>
-                  </div>
+                      {/* Day subtotal — inside card footer */}
+                      <div className="flex justify-end px-5 py-3 border-t border-cx-line bg-cx-fill/50">
+                        <span className="text-[14px] text-cx-soft">
+                          {dg.label} :{' '}
+                          <span className="font-extrabold text-cx-base text-[15px]">
+                            {fmt(groupSubtotal(dg.items))}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ))}
 
               {/* Continue shopping */}
               <Link
                 to="/commander"
-                className="flex items-center gap-2 text-[13px] text-[#C41E3A]
+                className="flex items-center gap-2 text-[15px] text-[#C41E3A]
                   font-semibold hover:underline underline-offset-2 w-fit"
               >
-                <Plus size={14} />
+                <Plus size={15} />
                 Ajouter d'autres repas
               </Link>
             </div>
 
             {/* ── Order summary ── */}
-            <div className="w-full sm:w-full lg:w-80 flex-shrink-0">
-              <div className="bg-cx-card rounded-2xl border border-cx-line
-                shadow-[0_4px_24px_rgba(0,0,0,0.07)] overflow-hidden sticky top-[96px]">
+            <div className="w-full lg:w-[360px] xl:w-[380px] flex-shrink-0">
+              {/* Vertical divider — desktop only */}
+              <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-px bg-cx-line
+                -translate-x-5 xl:-translate-x-7 pointer-events-none" />
 
-                <div className="px-6 py-4 border-b border-cx-line">
-                  <h2 className="text-[15px] font-extrabold text-cx-base">Récapitulatif</h2>
+              <div className="bg-cx-card rounded-2xl border border-cx-line
+                shadow-[0_4px_32px_rgba(0,0,0,0.10)] overflow-hidden sticky top-[96px]">
+
+                {/* Summary header */}
+                <div className="px-6 py-5 border-b border-cx-line bg-cx-fill">
+                  <h2 className="text-[18px] font-extrabold text-cx-base">Récapitulatif</h2>
                 </div>
 
-                {/* Summary by student */}
-                <div className="px-6 py-4 flex flex-col gap-4 max-h-72 overflow-y-auto">
-                  {studentGroups.map((group, gi) => (
-                    <div key={gi} className="flex flex-col gap-1.5">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <User size={11} className="text-[#7B2535]" />
-                        <span className="text-[11px] font-extrabold text-[#7B2535] uppercase tracking-wide">
-                          {group.name}
+                {/* Line items by student */}
+                <div className="px-6 py-5 flex flex-col gap-5 max-h-72 overflow-y-auto">
+                  {studentGroups.map((sg) => (
+                    <div key={sg.studentKey} className="flex flex-col gap-2.5">
+                      <div className="flex items-center gap-1.5 pb-1 border-b border-cx-line">
+                        <User size={13} className="text-[#7B2535]" />
+                        <span className="text-[13px] font-extrabold text-[#7B2535] uppercase tracking-wide">
+                          {sg.name}
                         </span>
                       </div>
-                      {group.items.map((item) => (
-                        <div key={item.key ?? item.meal.id} className="flex items-center justify-between gap-3">
-                          <p className="text-[12.5px] text-cx-soft truncate flex-1">
-                            <span className="font-semibold text-cx-base">{item.quantity}×</span>{' '}
-                            {item.meal.name}
-                          </p>
-                          <p className="text-[12.5px] font-semibold text-cx-base flex-shrink-0">
-                            {fmt(item.meal.price * item.quantity)}
-                          </p>
-                        </div>
-                      ))}
+                      {sg.days.map((dg) =>
+                        dg.items.map((item) => (
+                          <div key={item.key ?? item.meal.id} className="flex items-center justify-between gap-3 pl-2">
+                            <p className="text-[14px] text-cx-body truncate flex-1">
+                              <span className="font-bold text-cx-base">{item.quantity}×</span>{' '}
+                              {item.meal.name}
+                            </p>
+                            <p className="text-[14px] font-semibold text-cx-base flex-shrink-0">
+                              {fmt(item.meal.price * item.quantity)}
+                            </p>
+                          </div>
+                        ))
+                      )}
                     </div>
                   ))}
                 </div>
 
-                {/* Totals */}
-                <div className="px-6 py-4 border-t border-cx-line flex flex-col gap-2.5">
-                  <div className="flex justify-between text-[13px]">
+                <div className="px-6 py-4 border-t border-cx-line flex flex-col gap-3">
+                  <div className="flex justify-between text-[15px]">
                     <span className="text-cx-soft">Sous-total</span>
                     <span className="font-semibold text-cx-base">{fmt(total)}</span>
                   </div>
-                  <div className="flex justify-between text-[13px]">
+                  <div className="flex justify-between text-[14px]">
                     <span className="text-cx-soft flex items-center gap-1">
-                      <Tag size={11} />
+                      <Tag size={12} />
                       TPS + TVQ (14,975 %)
                     </span>
                     <span className="font-semibold text-cx-base">{fmt(taxes)}</span>
                   </div>
-                  <div className="mt-2 pt-3 border-t border-cx-line flex justify-between">
-                    <span className="text-[15px] font-extrabold text-cx-base">Total</span>
-                    <span className="text-[15px] font-extrabold text-[#C41E3A]">{fmt(grandTotal)}</span>
+                  <div className="mt-1 pt-3 border-t border-cx-line flex justify-between">
+                    <span className="text-[17px] font-extrabold text-cx-base">Total</span>
+                    <span className="text-[17px] font-extrabold text-[#C41E3A]">{fmt(grandTotal)}</span>
                   </div>
                 </div>
 
                 <div className="px-6 pb-6">
                   <button
                     className="w-full bg-[#C41E3A] hover:bg-[#a01830] text-white font-bold
-                      text-[14.5px] py-3.5 rounded-xl transition-all duration-200
+                      text-[16px] py-4 rounded-xl transition-all duration-200
                       hover:shadow-[0_4px_20px_rgba(196,30,58,0.4)] active:scale-[0.98]"
                   >
                     Passer la commande
                   </button>
-                  <p className="mt-3 text-center text-[11.5px] text-cx-soft">
+                  <p className="mt-3 text-center text-[13px] text-cx-soft">
                     Paiement sécurisé · Visa / Mastercard / Interac
                   </p>
                 </div>
@@ -341,6 +439,21 @@ export default function CartPage() {
           </button>
         </div>
       )}
+
+      {/* ── Edit modal — reopens the full wizard for one child + one day ── */}
+      <AnimatePresence>
+        {editTarget && (
+          <DayOrderModal
+            day={editTarget.day}
+            weekId={editTarget.weekId}
+            meals={modalMeals}
+            categories={categories}
+            students={[editTarget.student]}
+            schools={schools}
+            onClose={() => setEditTarget(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

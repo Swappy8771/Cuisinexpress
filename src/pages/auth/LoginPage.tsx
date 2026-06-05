@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useAuthStore } from '../../store/authStore'
 import { authService } from '../../services/authService'
+import { useUiStore } from '../../store/uiStore'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
@@ -23,6 +24,7 @@ type FormData = z.infer<typeof schema>
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const { setAuth } = useAuthStore()
+  const { showLoader, hideLoader } = useUiStore()
   const { t } = useLang()
   const navigate = useNavigate()
   const location = useLocation()
@@ -39,7 +41,11 @@ export default function LoginPage() {
       const { user, tokens } = await authService.login(data)
       setAuth(user, tokens.accessToken)
       toast.success('Connexion réussie !')
+      showLoader('Connexion réussie, redirection…')
+      // Brief branded pause so the loader is visible, then navigate
+      await new Promise((r) => setTimeout(r, 1200))
       navigate(from, { replace: true })
+      hideLoader()
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>
       toast.error(error.response?.data?.message ?? 'Identifiants incorrects')

@@ -5,8 +5,28 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
 import ErrorBoundary from './components/ErrorBoundary'
+import RouteProgressBar from './components/RouteProgressBar'
+import PageLoader from './components/PageLoader'
 import AppRoutes from './routes'
 import { useThemeStore } from './store/themeStore'
+import { useUiStore } from './store/uiStore'
+
+function AppInner() {
+  const { pageLoading, pageLoadingMsg } = useUiStore()
+
+  return (
+    <>
+      <RouteProgressBar />
+      <PageLoader visible={pageLoading} message={pageLoadingMsg} />
+      <ScrollToTop />
+      <div className="min-h-screen bg-cx-page transition-colors duration-300">
+        <Header />
+        <AppRoutes />
+        <Footer />
+      </div>
+    </>
+  )
+}
 
 export default function App() {
   const { theme } = useThemeStore()
@@ -19,12 +39,7 @@ export default function App() {
     <LangProvider>
       <BrowserRouter>
         <ErrorBoundary>
-          <ScrollToTop />
-          <div className="min-h-screen bg-cx-page transition-colors duration-300">
-            <Header />
-            <AppRoutes />
-            <Footer />
-          </div>
+          <AppInner />
         </ErrorBoundary>
       </BrowserRouter>
     </LangProvider>

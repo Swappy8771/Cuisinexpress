@@ -43,7 +43,7 @@ function NavColumn({
     >
       <div className="flex items-center gap-2 mb-1">
         <span className="h-px w-6 bg-[#C41E3A]" />
-        <h4 className="text-white/40 text-[11px] font-semibold tracking-widest uppercase">{tag}</h4>
+        <h4 className="text-white/50 text-[12px] font-semibold tracking-widest uppercase">{tag}</h4>
       </div>
       <h3 className="text-white font-bold text-[18px] tracking-tight">{title}</h3>
       <ul className="flex flex-col gap-2.5 mt-1">
@@ -51,8 +51,8 @@ function NavColumn({
           <li key={idx}>
             <Link
               to={link.href}
-              className="group/nav flex items-start gap-2 text-white/50
-                hover:text-white text-[13.5px] transition-colors duration-200"
+              className="group/nav flex items-start gap-2 text-white/60
+                hover:text-white text-[15px] transition-colors duration-200"
             >
               <span className="mt-[5px] flex-shrink-0 w-1 h-1 rounded-full bg-[#C41E3A]/50
                 group-hover/nav:bg-[#C41E3A] transition-colors duration-200" />
@@ -99,8 +99,8 @@ export default function Footer() {
 
             {/* Tagline */}
             <div>
-              <p className="text-white/90 font-semibold text-[15px] mb-1">CuisineXpress</p>
-              <p className="text-white/50 text-[14px] leading-relaxed">
+              <p className="text-white/90 font-semibold text-[16px] mb-1">CuisineXpress</p>
+              <p className="text-white/65 text-[15px] leading-relaxed">
                 {t.footer.tagline}
               </p>
             </div>
@@ -111,8 +111,8 @@ export default function Footer() {
                 <li key={text}>
                   <a
                     href={href}
-                    className="flex items-center gap-3 text-white/50 hover:text-white
-                      text-[13.5px] transition-colors duration-200 group/contact"
+                    className="flex items-center gap-3 text-white/60 hover:text-white
+                      text-[15px] transition-colors duration-200 group/contact"
                   >
                     <span className="flex-shrink-0 w-7 h-7 rounded-md bg-white/5
                       group-hover/contact:bg-[#C41E3A]/20 flex items-center justify-center
@@ -137,14 +137,14 @@ export default function Footer() {
           >
             <div className="flex items-center gap-2 mb-1">
               <span className="h-px w-6 bg-[#C41E3A]" />
-              <h4 className="text-white/40 text-[11px] font-semibold tracking-widest uppercase">
+              <h4 className="text-white/50 text-[12px] font-semibold tracking-widest uppercase">
                 {t.footer.partnerTag}
               </h4>
             </div>
             <h3 className="text-white font-bold text-[18px] tracking-tight">
               {t.footer.partnerTitle}
             </h3>
-            <p className="text-white/50 text-[13.5px] leading-[1.75]">
+            <p className="text-white/65 text-[15px] leading-[1.75]">
               {t.footer.partnerText}
             </p>
           </motion.div>
@@ -168,11 +168,11 @@ export default function Footer() {
       {/* Copyright bar */}
       <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 py-5 sm:py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
-          <p className="text-white/35 text-[12.5px]">
+          <p className="text-white/50 text-[14px]">
             Copyright ©2026{' '}
             <a
               href="#"
-              className="text-white/55 hover:text-[#C41E3A] underline underline-offset-2
+              className="text-white/70 hover:text-[#C41E3A] underline underline-offset-2
                 transition-colors duration-200"
             >
               Studio créatif kntera INC.
@@ -181,7 +181,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C41E3A] animate-pulse" />
-            <span className="text-white/25 text-[11px] tracking-wide">
+            <span className="text-white/40 text-[13px] tracking-wide">
               {t.footer.madeWith}
             </span>
           </div>

@@ -16,7 +16,6 @@ import { useLang } from '../../contexts/LangContext'
 
 interface ChildOrder {
   mainMeal: Meal | null
-  mainQty: number
   addonQtys: Map<string, number>
 }
 
@@ -47,7 +46,7 @@ export default function DayOrderModal({
   const selectedWeek = allWeeks.find((w) => w.id === weekId)
 
   const [childOrders, setChildOrders] = useState<ChildOrder[]>(() =>
-    students.map(() => ({ mainMeal: null, mainQty: 1, addonQtys: new Map() }))
+    students.map(() => ({ mainMeal: null, addonQtys: new Map() }))
   )
   const [pos, setPos] = useState<WizardPos>({ phase: 'meal', childIdx: 0 })
   const [addonTab, setAddonTab] = useState(0)
@@ -138,9 +137,6 @@ export default function DayOrderModal({
     v <= 0 ? m.delete(mealId) : m.set(mealId, v)
     patchOrder(ci, { addonQtys: m })
   }
-  const changeMainQtyForChild = (ci: number, delta: number) =>
-    patchOrder(ci, { mainQty: Math.max(1, childOrders[ci].mainQty + delta) })
-
   // ── Navigation ────────────────────────────────────────────────────────────
   // Flow: meal(0)→meal(1)→…→addons(0,tab0)→addons(0,tab1)→…→addons(1,tab0)→…→review
   const lastTab = addonGroups.length - 1
@@ -215,7 +211,7 @@ export default function DayOrderModal({
     const addons = Array.from(order.addonQtys.entries()).reduce(
       (s, [id, q]) => s + (meals.find((x) => x.id === id)?.price ?? 0) * q, 0
     )
-    return order.mainMeal.price * order.mainQty + addons
+    return order.mainMeal.price + addons
   }
   const grandTotal = childOrders.reduce((s, o) => s + childSubtotal(o), 0)
 
@@ -223,11 +219,11 @@ export default function DayOrderModal({
     students.forEach((student, i) => {
       const order = childOrders[i]
       if (!order.mainMeal) return
-      const si = { id: student.id, firstName: student.firstName, lastName: student.lastName }
-      for (let q = 0; q < order.mainQty; q++) addItem(order.mainMeal, delivery, si)
+      const si = { id: student.id, firstName: student.firstName, lastName: student.lastName, school: student.school, grade: student.grade }
+      addItem(order.mainMeal, delivery, si, false)           // main meal — qty locked
       order.addonQtys.forEach((qty, id) => {
         const m = meals.find((x) => x.id === id)
-        if (m) for (let q = 0; q < qty; q++) addItem(m, delivery, si)
+        if (m) for (let q = 0; q < qty; q++) addItem(m, delivery, si, true)  // add-on — qty editable
       })
     })
     onClose()
@@ -494,19 +490,10 @@ export default function DayOrderModal({
                           <p className="text-[13.5px] font-extrabold text-cx-base truncate">{currentOrder.mainMeal.name}</p>
                           <p className="text-[12px] font-bold text-[#C41E3A]">{fmt(currentOrder.mainMeal.price)}</p>
                         </div>
-                        <div className="flex items-center rounded-xl overflow-hidden border border-cx-edge bg-cx-fill flex-shrink-0">
-                          <button type="button"
-                            onClick={() => patchOrder(childIdx, { mainQty: Math.max(1, currentOrder.mainQty - 1) })}
-                            className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors">
-                            <Minus size={12} />
-                          </button>
-                          <span className="w-7 text-center text-[13px] font-bold text-cx-base">{currentOrder.mainQty}</span>
-                          <button type="button"
-                            onClick={() => patchOrder(childIdx, { mainQty: currentOrder.mainQty + 1 })}
-                            className="w-8 h-8 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors">
-                            <Plus size={12} />
-                          </button>
-                        </div>
+                        <span className="flex-shrink-0 px-3 py-1.5 rounded-xl bg-[#C41E3A]/10
+                          text-[12px] font-bold text-[#C41E3A] border border-[#C41E3A]/20">
+                          × 1 repas
+                        </span>
                       </div>
                     </div>
 
@@ -674,19 +661,12 @@ export default function DayOrderModal({
                                       </div>
                                       <div className="flex-1 min-w-0">
                                         <p className="text-[12.5px] font-semibold text-cx-base truncate">{order.mainMeal.name}</p>
-                                        <p className="text-[11.5px] font-bold text-[#C41E3A]">{fmt(order.mainMeal.price * order.mainQty)}</p>
+                                        <p className="text-[11.5px] font-bold text-[#C41E3A]">{fmt(order.mainMeal.price)}</p>
                                       </div>
-                                      <div className="flex items-center rounded-lg overflow-hidden border border-cx-edge bg-cx-card flex-shrink-0">
-                                        <button type="button" onClick={() => changeMainQtyForChild(i, -1)}
-                                          className="w-6 h-6 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors">
-                                          <Minus size={10} />
-                                        </button>
-                                        <span className="w-5 text-center text-[11.5px] font-bold text-cx-base">{order.mainQty}</span>
-                                        <button type="button" onClick={() => changeMainQtyForChild(i, 1)}
-                                          className="w-6 h-6 flex items-center justify-center text-[#C41E3A] hover:bg-[#C41E3A]/10 transition-colors">
-                                          <Plus size={10} />
-                                        </button>
-                                      </div>
+                                      <span className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-[#C41E3A]/10
+                                        text-[11px] font-bold text-[#C41E3A] border border-[#C41E3A]/20">
+                                        × 1
+                                      </span>
                                     </div>
 
                                     {/* Add-ons with remove + qty */}

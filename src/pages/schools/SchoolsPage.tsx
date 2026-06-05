@@ -192,8 +192,8 @@ export default function SchoolsPage() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Rechercher une école…"
-                className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-cx-edge text-[13.5px]
-                  bg-cx-fill outline-none placeholder:text-cx-faint transition-all duration-200
+                className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-cx-edge text-[15px]
+                  bg-cx-fill outline-none placeholder:text-cx-soft transition-all duration-200
                   focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]"
               />
               {search && (

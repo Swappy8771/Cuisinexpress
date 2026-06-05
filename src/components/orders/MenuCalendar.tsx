@@ -21,7 +21,7 @@ export default function MenuCalendar({ allMeals, weeks, onDayClick }: Props) {
       <div className="sticky top-[136px] z-10 bg-cx-page/90 backdrop-blur-sm grid grid-cols-5 gap-3 mb-3 py-2 -mx-1 px-1">
         {DAYS.map((day) => (
           <div key={day} className="text-center">
-            <span className="text-[11px] sm:text-[12px] font-extrabold uppercase tracking-[0.15em] text-cx-soft">
+            <span className="text-[12px] sm:text-[14px] font-extrabold uppercase tracking-[0.18em] text-cx-sub">
               {t.menu.dayLabels[day]}
             </span>
           </div>
@@ -113,12 +113,12 @@ export default function MenuCalendar({ allMeals, weeks, onDayClick }: Props) {
                             +{dayMeals.length - 1} {lang === 'en' ? 'more' : 'autre' + (dayMeals.length - 1 > 1 ? 's' : '')}
                           </span>
                         )}
-                        <p className="text-[11px] sm:text-[12.5px] font-bold text-white
+                        <p className="text-[12px] sm:text-[14px] font-bold text-white
                           leading-snug line-clamp-2 drop-shadow-sm">
                           {featured.name}
                         </p>
                         {/* Price */}
-                        <p className="text-[10px] sm:text-[11px] font-semibold text-white/60 mt-0.5">
+                        <p className="text-[11px] sm:text-[12px] font-semibold text-white/70 mt-0.5">
                           {new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(featured.price)}
                         </p>
                       </div>

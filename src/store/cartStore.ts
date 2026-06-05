@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Meal, CartItem, DeliveryInfo } from '../types'
 
-type StudentInfo = { id: string; firstName: string; lastName: string }
+type StudentInfo = { id: string; firstName: string; lastName: string; school: string; grade: string }
 
 const makeKey = (meal: Meal, delivery?: DeliveryInfo, student?: StudentInfo) => {
   const base = delivery ? `${meal.id}__${delivery.weekId}__${delivery.day}` : meal.id
@@ -13,7 +13,7 @@ interface CartStore {
   items: CartItem[]
   schoolId: string | null
   weekId: string | null
-  addItem: (meal: Meal, delivery?: DeliveryInfo, student?: StudentInfo) => void
+  addItem: (meal: Meal, delivery?: DeliveryInfo, student?: StudentInfo, isAddon?: boolean) => void
   removeItem: (key: string) => void
   updateQty: (key: string, delta: number) => void
   clearCart: () => void
@@ -27,7 +27,7 @@ export const useCartStore = create<CartStore>()(
       schoolId: null,
       weekId: null,
 
-      addItem: (meal, delivery, student) =>
+      addItem: (meal, delivery, student, isAddon = false) =>
         set((state) => {
           const key = makeKey(meal, delivery, student)
           const existing = state.items.find((i) => i.key === key)
@@ -38,7 +38,7 @@ export const useCartStore = create<CartStore>()(
               ),
             }
           }
-          return { items: [...state.items, { key, meal, quantity: 1, delivery, student }] }
+          return { items: [...state.items, { key, meal, quantity: 1, isAddon, delivery, student }] }
         }),
 
       removeItem: (key) =>

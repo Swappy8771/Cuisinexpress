@@ -8,6 +8,7 @@ import { Eye, EyeOff, ChevronRight, Home, Mail, Lock, User, Phone, ArrowRight, S
 import { toast } from 'sonner'
 import { authService } from '../../services/authService'
 import { useAuthStore } from '../../store/authStore'
+import { useUiStore } from '../../store/uiStore'
 import { getFieldState, inputCls } from '../../lib/formHelpers'
 import { FieldError, StatusIcon } from '../../lib/formUtils'
 import { useLang } from '../../contexts/LangContext'
@@ -33,6 +34,7 @@ type FormData = z.infer<typeof schema>
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const { setAuth } = useAuthStore()
+  const { showLoader, hideLoader } = useUiStore()
   const { t } = useLang()
   const navigate = useNavigate()
 
@@ -63,7 +65,10 @@ export default function RegisterPage() {
       })
       setAuth(user, tokens.accessToken)
       toast.success('Compte créé avec succès !')
+      showLoader('Compte créé, bienvenue !')
+      await new Promise((r) => setTimeout(r, 1200))
       navigate('/user/profile')
+      hideLoader()
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>
       toast.error(error.response?.data?.message ?? "Erreur lors de la création du compte")

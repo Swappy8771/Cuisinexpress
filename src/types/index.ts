@@ -143,6 +143,7 @@ export interface CartItem {
   key: string          // meal.id  OR  `${meal.id}__${weekId}__${day}__${studentId}`
   meal: Meal
   quantity: number
+  isAddon: boolean     // false = main meal (qty locked to 1), true = add-on (qty editable)
   delivery?: DeliveryInfo
-  student?: { id: string; firstName: string; lastName: string }
+  student?: { id: string; firstName: string; lastName: string; school: string; grade: string }
 }
