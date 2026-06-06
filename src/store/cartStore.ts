@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Meal, CartItem, DeliveryInfo } from '../types'
 
-type StudentInfo = { id: string; firstName: string; lastName: string; school: string; grade: string }
+type StudentInfo = { id: string; firstName: string; lastName: string; schoolName: string; grade: string }
 
 const makeKey = (meal: Meal, delivery?: DeliveryInfo, student?: StudentInfo) => {
   const base = delivery ? `${meal.id}__${delivery.weekId}__${delivery.day}` : meal.id

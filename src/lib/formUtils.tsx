@@ -40,7 +40,7 @@ interface FieldWrapperProps {
 export function FieldWrapper({ label, state, error, icon: Icon, children, hint }: FieldWrapperProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-[13px] font-semibold text-cx-sub">{label}</label>
+      <label className="text-[14px] font-semibold text-cx-base">{label}</label>
       <div className="relative">
         <span className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none
           transition-colors duration-200"

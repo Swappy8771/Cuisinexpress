@@ -25,6 +25,7 @@ import CookiePreferencesPage from '../pages/privacy/CookiePreferencesPage'
 // Pages — dashboard (authenticated)
 import ProfilePage from '../pages/dashboard/ProfilePage'
 import StudentsPage from '../pages/dashboard/StudentsPage'
+import AddChildPage from '../pages/dashboard/AddChildPage'
 import StatementPage from '../pages/dashboard/StatementPage'
 import InvoicesPage from '../pages/dashboard/InvoicesPage'
 
@@ -49,7 +50,8 @@ export default function AppRoutes() {
 
       {/* ── Authenticated ── */}
       <Route path="/user/profile"   element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
-      <Route path="/user/students"  element={<PrivateRoute><StudentsPage /></PrivateRoute>} />
+      <Route path="/user/students"      element={<PrivateRoute><StudentsPage /></PrivateRoute>} />
+      <Route path="/user/students/new" element={<PrivateRoute><AddChildPage /></PrivateRoute>} />
       <Route path="/user/statement" element={<PrivateRoute><StatementPage /></PrivateRoute>} />
       <Route path="/user/invoices"  element={<PrivateRoute><InvoicesPage /></PrivateRoute>} />
 

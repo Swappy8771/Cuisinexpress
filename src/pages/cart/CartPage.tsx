@@ -9,7 +9,8 @@ import {
 import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cartStore'
 import DayOrderModal from '../../components/orders/DayOrderModal'
 import { mealsService } from '../../services/mealsService'
-import type { CartItem } from '../../types'
+import { studentsService } from '../../services/studentsService'
+import type { CartItem, Student } from '../../types'
 import type { DayName } from '../../lib/menuConfig'
 import woodTexture from '../../assets/wooden-texture.png'
 
@@ -56,7 +57,7 @@ function groupByStudentThenDay(items: CartItem[]) {
 }
 
 type EditTarget = {
-  student: NonNullable<CartItem['student']>
+  student: Student
   day: DayName
   weekId: string
 }
@@ -79,6 +80,10 @@ export default function CartPage() {
   const studentGroups = groupByStudentThenDay(items)
 
   // Reference data for the edit modal
+  const { data: allStudents = [] } = useQuery({
+    queryKey: ['students'],
+    queryFn: studentsService.list,
+  })
   const { data: schools = [] } = useQuery({
     queryKey: ['ordering-schools'],
     queryFn: mealsService.getSchools,
@@ -214,10 +219,10 @@ export default function CartPage() {
 
                         {sg.student && dg.weekId && (
                           <button
-                            onClick={() => startEdit(
-                              { student: sg.student!, day: dg.day, weekId: dg.weekId },
-                              dg.items
-                            )}
+                            onClick={() => {
+                              const fullStudent = allStudents.find((s) => s.id === sg.student!.id)
+                              if (fullStudent) startEdit({ student: fullStudent, day: dg.day, weekId: dg.weekId }, dg.items)
+                            }}
                             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl
                               text-[13px] font-bold border-2 border-[#7B2535]/30 text-[#7B2535]
                               hover:bg-[#7B2535] hover:text-white hover:border-[#7B2535]

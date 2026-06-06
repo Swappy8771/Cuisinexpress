@@ -95,7 +95,7 @@ export default function DayOrderModal({
   )
 
   const getMealsForStudent = (student: Student) => {
-    const schoolId = schools.find((s) => s.name === student.school)?.id ?? ''
+    const schoolId = schools.find((s) => s.name === student.schoolName)?.id ?? ''
     return meals.filter(
       (m) =>
         m.categoryId === 'cat-1' && m.available &&
@@ -219,7 +219,7 @@ export default function DayOrderModal({
     students.forEach((student, i) => {
       const order = childOrders[i]
       if (!order.mainMeal) return
-      const si = { id: student.id, firstName: student.firstName, lastName: student.lastName, school: student.school, grade: student.grade }
+      const si = { id: student.id, firstName: student.firstName, lastName: student.lastName, schoolName: student.schoolName, grade: student.grade }
       addItem(order.mainMeal, delivery, si, false)           // main meal — qty locked
       order.addonQtys.forEach((qty, id) => {
         const m = meals.find((x) => x.id === id)
@@ -388,7 +388,7 @@ export default function DayOrderModal({
                           <h2 className="text-[17px] font-extrabold text-cx-base leading-tight">
                             {currentChild.firstName} {currentChild.lastName}
                           </h2>
-                          <p className="text-[12px] text-cx-soft">{currentChild.school}</p>
+                          <p className="text-[12px] text-cx-soft">{currentChild.schoolName}</p>
                         </div>
                       </div>
                     </div>
@@ -638,7 +638,7 @@ export default function DayOrderModal({
                                   <p className="text-[13.5px] font-extrabold text-cx-base truncate">
                                     {student.firstName} {student.lastName}
                                   </p>
-                                  <p className="text-[11.5px] text-cx-soft truncate">{student.school}</p>
+                                  <p className="text-[11.5px] text-cx-soft truncate">{student.schoolName}</p>
                                 </div>
                                 <button
                                   onClick={() => { setAddonTab(0); setPos({ phase: 'meal', childIdx: i }) }}

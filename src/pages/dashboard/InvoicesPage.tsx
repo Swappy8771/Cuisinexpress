@@ -90,8 +90,8 @@ export default function InvoicesPage() {
           <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
           <div className="p-6 sm:p-8 flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">{t.invoicesPage.title}</h2>
-              <p className="text-cx-soft text-[13px] mt-0.5">
+              <h2 className="text-cx-base text-[26px] font-extrabold tracking-tight">{t.invoicesPage.title}</h2>
+              <p className="text-cx-body text-[14px] mt-1">
                 {t.invoicesPage.subtitle}
               </p>
             </div>
@@ -137,7 +137,7 @@ export default function InvoicesPage() {
           <div className="hidden sm:grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 px-8 py-3.5
             border-b border-cx-line bg-cx-fill">
             {[t.invoicesPage.colNumber, t.invoicesPage.colPeriod, t.invoicesPage.colDate, t.invoicesPage.colAmount, t.invoicesPage.colActions].map(h => (
-              <span key={h} className="text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest">
+              <span key={h} className="text-[12px] font-semibold text-cx-sub uppercase tracking-widest">
                 {h}
               </span>
             ))}
@@ -152,8 +152,8 @@ export default function InvoicesPage() {
               <div className="w-16 h-16 rounded-2xl bg-cx-fill flex items-center justify-center mb-4">
                 <Receipt size={28} className="text-cx-faint" />
               </div>
-              <p className="text-cx-base font-semibold text-[15px] mb-1">{t.invoicesPage.noInvoices}</p>
-              <p className="text-cx-soft text-[13px]">{t.invoicesPage.noInvoicesHint}</p>
+              <p className="text-cx-base font-bold text-[17px] mb-1.5">{t.invoicesPage.noInvoices}</p>
+              <p className="text-cx-body text-[14px]">{t.invoicesPage.noInvoicesHint}</p>
             </div>
           ) : (
             <div className="divide-y divide-cx-line">
@@ -176,7 +176,7 @@ export default function InvoicesPage() {
                           <span className="block text-[13px] font-mono font-semibold text-cx-sub truncate">
                             {inv.id}
                           </span>
-                          <span className="block text-[13.5px] font-semibold text-cx-base">{inv.period}</span>
+                          <span className="block text-[15px] font-semibold text-cx-base">{inv.period}</span>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
@@ -215,15 +215,15 @@ export default function InvoicesPage() {
                         <span className="text-[13px] font-mono font-semibold text-cx-sub">{inv.id}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-[14px] font-semibold text-cx-base">{inv.period}</span>
+                        <span className="text-[15px] font-semibold text-cx-base">{inv.period}</span>
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
                           text-[11.5px] font-semibold ${cfg.bg} ${cfg.text}`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
                           {cfg.label}
                         </span>
                       </div>
-                      <span className="text-[13px] text-cx-soft whitespace-nowrap">{fmtDate(inv.date)}</span>
-                      <span className="text-[14px] font-bold text-cx-base whitespace-nowrap">{fmt(inv.amount)}</span>
+                      <span className="text-[14px] text-cx-soft whitespace-nowrap">{fmtDate(inv.date)}</span>
+                      <span className="text-[15px] font-bold text-cx-base whitespace-nowrap">{fmt(inv.amount)}</span>
                       <div className="flex items-center gap-1.5">
                         <button className="p-2 rounded-lg hover:bg-cx-muted text-cx-soft
                           hover:text-cx-base transition-colors" title="Voir">

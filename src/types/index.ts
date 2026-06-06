@@ -37,10 +37,28 @@ export interface ApiError {
 
 export interface Student {
   id: string
+  // Child info
   firstName: string
   lastName: string
-  school: string
+  dob?: string
+  // School hierarchy
+  cssId: string
+  cssName: string
+  schoolId: string
+  schoolName: string   // used by DayOrderModal for meal filtering
+  schoolCity: string
+  // Grade & class
+  gradeId: string
   grade: string
+  classId: string | null
+  className: string | null
+  manualAssignmentRequired: boolean
+  classAssignmentStatus: 'assigned' | 'pending_manual_assignment'
+  // Identity
+  colorCode: string
+  // Allergies
+  allergens: string[]
+  allergenNotes?: string
 }
 
 export interface Transaction {
@@ -145,5 +163,5 @@ export interface CartItem {
   quantity: number
   isAddon: boolean     // false = main meal (qty locked to 1), true = add-on (qty editable)
   delivery?: DeliveryInfo
-  student?: { id: string; firstName: string; lastName: string; school: string; grade: string }
+  student?: { id: string; firstName: string; lastName: string; schoolName: string; grade: string }
 }

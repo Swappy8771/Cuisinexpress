@@ -10,17 +10,42 @@ const mockStudents: Student[] = [
     id: 'mock-default-1',
     firstName: 'Emma',
     lastName: 'Tremblay',
-    school: 'École Primaire Saint-Jean',
+    dob: '2017-03-14',
+    cssId: 'css-navigateurs',
+    cssName: 'CSS des Navigateurs',
+    schoolId: 'school-nav-4',
+    schoolName: 'École Primaire Saint-Jean',
+    schoolCity: 'Lévis',
+    gradeId: '3e',
     grade: '3e année',
+    classId: 't-nav4-3e-1',
+    className: 'Mme Geneviève Paré',
+    manualAssignmentRequired: false,
+    classAssignmentStatus: 'assigned',
+    colorCode: 'blue',
+    allergens: [],
   },
   {
     id: 'mock-default-2',
     firstName: 'Lucas',
     lastName: 'Tremblay',
-    school: 'École des Sommets',
+    dob: '2015-09-22',
+    cssId: 'css-navigateurs',
+    cssName: 'CSS des Navigateurs',
+    schoolId: 'school-nav-5',
+    schoolName: 'École des Sommets',
+    schoolCity: 'Charny',
+    gradeId: '5e',
     grade: '5e année',
+    classId: 't-nav5-5e-1',
+    className: 'Mme Andrée Champagne',
+    manualAssignmentRequired: false,
+    classAssignmentStatus: 'assigned',
+    colorCode: 'green',
+    allergens: ['peanuts'],
   },
 ]
+
 let nextId = 1
 
 function delay(ms = 300) {
@@ -42,6 +67,10 @@ export const studentsService = {
       await delay()
       const student: Student = { ...data, id: `mock-${nextId++}` }
       mockStudents.push(student)
+      // If manual assignment required, log notification (mock)
+      if (student.manualAssignmentRequired) {
+        console.info('[CuisineXpress] Manual class assignment required for:', student.firstName, student.lastName)
+      }
       return student
     }
     const res = await api.post<Student>('/user/students', data)

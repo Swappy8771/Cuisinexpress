@@ -37,7 +37,7 @@ const inputCls = `w-full px-4 py-3 rounded-xl border border-cx-edge text-[15px]
   bg-cx-fill text-cx-base outline-none transition-all placeholder:text-cx-soft
   focus:bg-cx-card focus:border-[#C41E3A] focus:shadow-[0_0_0_3px_rgba(196,30,58,0.08)]`
 
-const labelCls = 'text-[14px] font-semibold text-cx-sub'
+const labelCls = 'text-[14px] font-semibold text-cx-base'
 
 export default function ContactPage() {
   const { t, lang } = useLang()

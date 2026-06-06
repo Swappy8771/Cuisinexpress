@@ -80,14 +80,26 @@ export default function SchoolClosurePolicy() {
               </motion.div>
             ))}
           </div>
+        </motion.div>
 
-          {/* Bottom note */}
-          <div className="relative z-10 mx-8 sm:mx-12 mb-8 sm:mb-10 flex items-center gap-3
-            bg-[#C41E3A]/10 border border-[#C41E3A]/15 rounded-xl px-5 py-4">
-            <span className="flex-shrink-0 w-1.5 h-8 rounded-full bg-[#C41E3A]" />
-            <p className="text-[#7B2535] text-[13px] font-medium leading-relaxed">
+        {/* Contact note — separate card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-5 rounded-2xl bg-cx-card border border-[#C41E3A]/20
+            shadow-[0_4px_20px_rgba(196,30,58,0.06)] overflow-hidden"
+        >
+          <div className="h-1 w-full bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
+          <div className="flex items-center gap-4 px-6 sm:px-8 py-5">
+            <span className="flex-shrink-0 w-1 h-10 rounded-full bg-[#C41E3A]" />
+            <p className="text-cx-body text-[15px] leading-relaxed">
               {t.closure.note}{' '}
-              <a href="tel:5819929952" className="font-bold hover:underline underline-offset-2">
+              <a
+                href="tel:5819929952"
+                className="font-semibold text-[#C41E3A] hover:underline underline-offset-2 transition-colors"
+              >
                 581-992-9952
               </a>.
             </p>

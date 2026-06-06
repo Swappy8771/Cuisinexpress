@@ -139,7 +139,7 @@ export default function RegisterPage() {
                     const fs = getFieldState(touchedFields[name], !!errors[name])
                     return (
                       <div key={name} className="flex flex-col gap-1.5">
-                        <label className="text-[13px] font-semibold text-cx-sub">{label}</label>
+                        <label className="text-[14px] font-semibold text-cx-base">{label}</label>
                         <div className="relative">
                           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                             <User size={14} />
@@ -158,7 +158,7 @@ export default function RegisterPage() {
 
                 {/* Email */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-cx-sub">{t.auth.emailLabel}</label>
+                  <label className="text-[14px] font-semibold text-cx-base">{t.auth.emailLabel}</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Mail size={16} />
@@ -174,7 +174,7 @@ export default function RegisterPage() {
 
                 {/* Phone */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-cx-sub">
+                  <label className="text-[14px] font-semibold text-cx-base">
                     <span>{t.auth.phoneLabel}</span>{' '}
                     <span className="text-cx-faint font-normal">{t.auth.phoneOptional}</span>
                   </label>
@@ -189,7 +189,7 @@ export default function RegisterPage() {
 
                 {/* Password */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-cx-sub">{t.auth.passwordLabel}</label>
+                  <label className="text-[14px] font-semibold text-cx-base">{t.auth.passwordLabel}</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cx-soft pointer-events-none">
                       <Lock size={16} />

@@ -129,10 +129,10 @@ export default function ProfilePage() {
           {/* Heading */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">
+              <h2 className="text-cx-base text-[26px] font-extrabold tracking-tight">
                 {t.profilePage.title}
               </h2>
-              <p className="text-cx-soft text-[13px] mt-0.5">
+              <p className="text-cx-body text-[14px] mt-1">
                 {t.profilePage.subtitle}
               </p>
             </div>

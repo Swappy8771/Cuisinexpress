@@ -61,8 +61,8 @@ export default function StatementPage() {
         <div className="bg-cx-card rounded-2xl border border-cx-line shadow-[0_2px_16px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] overflow-hidden">
           <div className="h-1 bg-gradient-to-r from-[#C41E3A] via-[#7B2535] to-[#C41E3A]" />
           <div className="p-6 sm:p-8">
-            <h2 className="text-cx-base text-[22px] font-extrabold tracking-tight">{t.statementPage.title}</h2>
-            <p className="text-cx-soft text-[13px] mt-0.5">{t.statementPage.subtitle}</p>
+            <h2 className="text-cx-base text-[26px] font-extrabold tracking-tight">{t.statementPage.title}</h2>
+            <p className="text-cx-body text-[14px] mt-1">{t.statementPage.subtitle}</p>
           </div>
         </div>
 
@@ -87,8 +87,8 @@ export default function StatementPage() {
                   <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center mb-4`}>
                     <Icon size={18} className={color} strokeWidth={1.75} />
                   </div>
-                  <p className="text-cx-soft text-[12.5px] font-medium mb-1">{label}</p>
-                  <p className={`text-[22px] font-extrabold tracking-tight ${color}`}>{value}</p>
+                  <p className="text-cx-body text-[13px] font-semibold mb-1.5">{label}</p>
+                  <p className={`text-[24px] font-extrabold tracking-tight ${color}`}>{value}</p>
                 </motion.div>
               ))
           }
@@ -100,9 +100,9 @@ export default function StatementPage() {
 
           <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] gap-4 px-6 sm:px-8 py-3.5
             border-b border-cx-line bg-cx-fill">
-            <span className="hidden sm:block text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest">{t.statementPage.colDate}</span>
-            <span className="text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest">{t.statementPage.colDescription}</span>
-            <span className="text-[11.5px] font-semibold text-cx-soft uppercase tracking-widest text-right">{t.statementPage.colAmount}</span>
+            <span className="hidden sm:block text-[12px] font-semibold text-cx-sub uppercase tracking-widest">{t.statementPage.colDate}</span>
+            <span className="text-[12px] font-semibold text-cx-sub uppercase tracking-widest">{t.statementPage.colDescription}</span>
+            <span className="text-[12px] font-semibold text-cx-sub uppercase tracking-widest text-right">{t.statementPage.colAmount}</span>
           </div>
 
           {isLoading ? (
@@ -120,7 +120,7 @@ export default function StatementPage() {
                     className="grid grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] gap-4 items-center
                       px-6 sm:px-8 py-4 hover:bg-cx-fill transition-colors"
                   >
-                    <span className="hidden sm:block text-[13px] text-cx-soft whitespace-nowrap">
+                    <span className="hidden sm:block text-[14px] text-cx-soft whitespace-nowrap">
                       {fmtDate(t.date)}
                     </span>
                     <div className="flex items-center gap-3 min-w-0">
@@ -131,9 +131,9 @@ export default function StatementPage() {
                           : <ArrowUpRight size={14} className="text-[#C41E3A]" />
                         }
                       </div>
-                      <span className="text-[13.5px] text-cx-sub truncate">{t.label}</span>
+                      <span className="text-[15px] text-cx-body truncate">{t.label}</span>
                     </div>
-                    <span className={`text-[14px] font-bold text-right whitespace-nowrap
+                    <span className={`text-[15px] font-bold text-right whitespace-nowrap
                       ${t.type === 'credit' ? 'text-green-600' : 'text-[#C41E3A]'}`}>
                       {t.type === 'credit' ? '+' : ''}{fmt(t.amount)}
                     </span>
@@ -143,8 +143,8 @@ export default function StatementPage() {
 
               <div className="flex items-center justify-between px-6 sm:px-8 py-4
                 border-t-2 border-cx-line bg-cx-fill">
-                <span className="text-[13px] font-semibold text-cx-soft">{t.statementPage.currentBalance}</span>
-                <span className={`text-[16px] font-extrabold ${(data?.balance ?? 0) >= 0 ? 'text-cx-base' : 'text-[#C41E3A]'}`}>
+                <span className="text-[14px] font-semibold text-cx-body">{t.statementPage.currentBalance}</span>
+                <span className={`text-[18px] font-extrabold ${(data?.balance ?? 0) >= 0 ? 'text-cx-base' : 'text-[#C41E3A]'}`}>
                   {fmt(data?.balance ?? 0)}
                 </span>
               </div>
