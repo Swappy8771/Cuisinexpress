@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
 import {
   SlidersHorizontal, Search, ChevronDown, ShoppingCart,
-  X, School, Calendar,
+  X, School,
 } from 'lucide-react'
 import { mealsService } from '../../services/mealsService'
 import { studentsService } from '../../services/studentsService'
@@ -124,16 +124,58 @@ export default function OrderPage() {
       <div className="sticky top-[80px] z-30 bg-cx-card border-b border-cx-line
         shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
         <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center gap-3 h-14">
 
-            {/* Left: title + meta */}
+          {/* ── Week pills row ── */}
+          {weeks.length > 0 && (
+            <div className="flex items-center gap-2 pt-3 pb-2 overflow-x-auto
+              [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              <button
+                onClick={() => patchFilters({ weekId: '' })}
+                className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-[12.5px] font-bold
+                  border-2 transition-all duration-200
+                  ${filters.weekId === ''
+                    ? 'bg-[#C41E3A] border-[#C41E3A] text-white shadow-[0_2px_10px_rgba(196,30,58,0.3)]'
+                    : 'bg-cx-fill border-cx-edge text-cx-sub hover:border-[#C41E3A]/50 hover:text-cx-base'
+                  }`}
+              >
+                {lang === 'en' ? 'All weeks' : 'Toutes les semaines'}
+              </button>
+              {weeks.map((w) => {
+                const active = filters.weekId === w.id
+                const dateRange = fmtWeekRange(w)
+                return (
+                  <button
+                    key={w.id}
+                    onClick={() => patchFilters({ weekId: w.id })}
+                    className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full
+                      text-[12.5px] font-bold border-2 transition-all duration-200
+                      ${active
+                        ? 'bg-[#C41E3A] border-[#C41E3A] text-white shadow-[0_2px_10px_rgba(196,30,58,0.3)]'
+                        : 'bg-cx-fill border-cx-edge text-cx-sub hover:border-[#C41E3A]/50 hover:text-cx-base'
+                      }`}
+                  >
+                    <span>{t.filter.weekPrefix} {w.label.replace(/[^\d]/g, '').trim()}</span>
+                    {dateRange && (
+                      <span className={`text-[11px] font-medium ${active ? 'text-white/80' : 'text-cx-faint'}`}>
+                        · {dateRange}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
+          <div className="flex items-center gap-3 h-12">
+
+            {/* Left: title */}
             <div className="hidden lg:flex flex-col justify-center min-w-0 mr-2">
               <span className="text-[14px] font-extrabold text-cx-base leading-none">
                 {t.order.title}
               </span>
-              {selectedSchool && selectedWeek && (
+              {selectedSchool && (
                 <span className="text-[11.5px] text-cx-soft mt-0.5 truncate">
-                  {selectedSchool.name} · {fmtWeekRange(selectedWeek)}
+                  {selectedSchool.name}
                 </span>
               )}
             </div>
@@ -161,7 +203,6 @@ export default function OrderPage() {
                 </button>
               )}
             </div>
-
 
             {/* Sort dropdown */}
             <div className="relative">
@@ -230,15 +271,11 @@ export default function OrderPage() {
       <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 py-4">
 
         {/* Context bar (mobile) */}
-        {selectedSchool && selectedWeek && (
+        {selectedSchool && (
           <div className="lg:hidden flex items-center gap-4 mb-4 text-[13px] text-cx-soft">
             <span className="flex items-center gap-1.5">
               <School size={13} className="text-[#C41E3A]" />
               {selectedSchool.name}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Calendar size={13} className="text-[#C41E3A]" />
-              {fmtWeekRange(selectedWeek)}
             </span>
           </div>
         )}
@@ -250,8 +287,6 @@ export default function OrderPage() {
             <div className="sticky top-[132px]">
               <FilterSidebar
                 filters={filters}
-                schools={schools}
-                weeks={weeks}
                 categories={categories}
                 activeCount={activeFilterCount}
                 onFiltersChange={patchFilters}
@@ -316,8 +351,6 @@ export default function OrderPage() {
               <div className="p-4">
                 <FilterSidebar
                   filters={filters}
-                  schools={schools}
-                  weeks={weeks}
                   categories={categories}
                   activeCount={activeFilterCount}
                   onFiltersChange={patchFilters}

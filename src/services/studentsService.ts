@@ -23,7 +23,8 @@ const mockStudents: Student[] = [
     manualAssignmentRequired: false,
     classAssignmentStatus: 'assigned',
     colorCode: 'blue',
-    allergens: [],
+    allergens: ['a-3'],               // Noix — appears in only 4 meals
+    allergenNotes: 'Allergie aux noix de toute sorte.',
   },
   {
     id: 'mock-default-2',
@@ -42,7 +43,8 @@ const mockStudents: Student[] = [
     manualAssignmentRequired: false,
     classAssignmentStatus: 'assigned',
     colorCode: 'green',
-    allergens: ['peanuts'],
+    allergens: ['a-4', 'a-5'],        // Œufs + Soja — appears in ~15 meals combined
+    allergenNotes: 'Intolérance aux œufs et au soja.',
   },
 ]
 

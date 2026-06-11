@@ -364,6 +364,7 @@ const translations = {
       noMeals: 'Aucun repas disponible ce jour',
       mealsLabel: 'repas',
       tabsTitle: 'Commander par jour',
+      confirmDay: 'Confirmer le jour —',
     },
     // ── Meal modal ────────────────────────────────────────────────
     mealModal: {
@@ -881,6 +882,7 @@ const translations = {
       noMeals: 'No meals available this day',
       mealsLabel: 'meals',
       tabsTitle: 'Order by day',
+      confirmDay: 'Confirm day —',
     },
     // ── Meal modal ────────────────────────────────────────────────
     mealModal: {
