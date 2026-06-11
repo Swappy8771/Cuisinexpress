@@ -203,7 +203,7 @@ export default function HowItWorks() {
 
                 {/* Large ghost step number */}
                 <span className="absolute -bottom-3 -right-1
-                  text-[100px] sm:text-[120px] font-black leading-none select-none
+                  text-[80px] sm:text-[100px] md:text-[110px] lg:text-[120px] font-black leading-none select-none
                   text-cx-line group-hover:text-[#C41E3A]/8 transition-colors duration-500">
                   {num}
                 </span>

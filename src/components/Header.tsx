@@ -176,7 +176,7 @@ export default function Header() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden text-cx-base p-2 rounded-md hover:bg-cx-muted transition-colors"
+              className="md:hidden text-cx-base p-2.5 rounded-xl hover:bg-cx-muted transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center"
               aria-label="Toggle menu"
             >
               {menuOpen ? <X size={22} /> : <Menu size={22} />}

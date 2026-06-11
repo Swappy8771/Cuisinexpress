@@ -121,7 +121,7 @@ export default function OrderPage() {
     <div className="min-h-screen bg-cx-page transition-colors duration-300">
 
       {/* ── Sticky top toolbar ────────────────────────────────────────── */}
-      <div className="sticky top-[80px] z-30 bg-cx-card border-b border-cx-line
+      <div className="sticky top-[56px] sm:top-[80px] z-30 bg-cx-card border-b border-cx-line
         shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
         <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6">
 
@@ -284,7 +284,7 @@ export default function OrderPage() {
 
           {/* ── Desktop sidebar ─────────────────────────────────────── */}
           <aside className="hidden lg:block w-60 flex-shrink-0">
-            <div className="sticky top-[132px]">
+            <div className="sticky top-[108px] lg:top-[132px]">
               <FilterSidebar
                 filters={filters}
                 categories={categories}

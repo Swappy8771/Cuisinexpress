@@ -117,8 +117,8 @@ export default function StatementPage() {
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05, duration: 0.35 }}
-                    className="grid grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] gap-4 items-center
-                      px-6 sm:px-8 py-4 hover:bg-cx-fill transition-colors"
+                    className="grid grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] gap-3 sm:gap-4 items-center
+                      px-4 sm:px-6 lg:px-8 py-3 sm:py-4 hover:bg-cx-fill transition-colors"
                   >
                     <span className="hidden sm:block text-[14px] text-cx-soft whitespace-nowrap">
                       {fmtDate(t.date)}

@@ -248,7 +248,7 @@ export default function PrivacyPage() {
     <div className="min-h-screen bg-cx-page transition-colors duration-300">
 
       {/* ── Hero banner ── */}
-      <div className="relative w-full h-52 overflow-hidden">
+      <div className="relative w-full h-36 sm:h-44 md:h-52 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0A0A0A] via-[#1a0608] to-[#7B2535]" />
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #C41E3A 0%, transparent 60%), radial-gradient(circle at 80% 50%, #7B2535 0%, transparent 60%)' }} />

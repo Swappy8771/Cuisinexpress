@@ -74,7 +74,7 @@ export default function Footer() {
 
       {/* Main footer body */}
       <div className="max-w-[1380px] mx-auto px-3 sm:px-4 lg:px-6 pt-12 sm:pt-16 pb-10 sm:pb-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 md:gap-12 lg:gap-16">
 
           {/* Column 1 — Brand */}
           <motion.div

@@ -353,7 +353,7 @@ export default function CartPage() {
                 -translate-x-5 xl:-translate-x-7 pointer-events-none" />
 
               <div className="bg-cx-card rounded-2xl border border-cx-line
-                shadow-[0_4px_32px_rgba(0,0,0,0.10)] overflow-hidden sticky top-[96px]">
+                shadow-[0_4px_32px_rgba(0,0,0,0.10)] overflow-hidden sticky top-[72px] sm:top-[96px]">
 
                 {/* Summary header */}
                 <div className="px-6 py-5 border-b border-cx-line bg-cx-fill">

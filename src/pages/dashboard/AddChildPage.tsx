@@ -261,7 +261,7 @@ function StepGrade({ data, patch, lang }: {
   data: WizardData; patch: (p: Partial<WizardData>) => void; lang: Lang
 }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
       {GRADES.map((g) => {
         const isSel = data.gradeId === g.id
         const label = lang === 'en' ? g.labelEn : g.label
@@ -838,7 +838,7 @@ export default function AddChildPage() {
       </div>
 
       {/* ── Step content ── */}
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-6">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 pb-4 sm:pb-6">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={step}

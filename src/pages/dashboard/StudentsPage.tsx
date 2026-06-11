@@ -89,11 +89,11 @@ function StudentCard({
 
         {/* School info */}
         <div className="flex flex-col gap-2 mb-4">
-          <div className="flex items-center gap-2 text-[13px]">
-            <span className="text-cx-soft">École :</span>
-            <span className="font-semibold text-cx-base">{student.schoolName}</span>
-            <span className="text-cx-faint">·</span>
-            <span className="text-cx-soft">{student.schoolCity}</span>
+          <div className="flex items-center gap-2 text-[13px] min-w-0">
+            <span className="text-cx-soft flex-shrink-0">École :</span>
+            <span className="font-semibold text-cx-base truncate">{student.schoolName}</span>
+            <span className="text-cx-faint flex-shrink-0">·</span>
+            <span className="text-cx-soft flex-shrink-0">{student.schoolCity}</span>
           </div>
           <div className="flex items-center gap-2 text-[13px]">
             <span className="text-cx-soft">CSS :</span>
@@ -207,7 +207,7 @@ export default function StudentsPage() {
 
         {/* Student grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : students.length === 0 ? (
@@ -233,7 +233,7 @@ export default function StudentsPage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {students.map((s) => (
               <StudentCard
                 key={s.id}

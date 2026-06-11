@@ -41,8 +41,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* Mobile nav tabs */}
-      <div className="md:hidden bg-cx-card border-b border-cx-line overflow-x-auto
-        [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <div className="md:hidden relative bg-cx-card border-b border-cx-line overflow-x-auto
+        [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden
+        after:pointer-events-none after:absolute after:right-0 after:top-0 after:bottom-0
+        after:w-8 after:bg-gradient-to-l after:from-cx-card after:to-transparent">
         <div className="flex items-center gap-1 px-4 py-2 min-w-max">
           {navItems.map(({ label, href, icon: Icon }) => (
             <NavLink
@@ -82,7 +84,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex flex-col md:flex-row gap-6 lg:gap-8">
 
           {/* Sidebar — desktop only */}
-          <aside className="hidden md:flex w-56 lg:w-64 flex-shrink-0 flex-col gap-4">
+          <aside className="hidden md:flex w-52 lg:w-60 xl:w-64 flex-shrink-0 flex-col gap-4">
 
             {/* User card */}
             <div className="bg-cx-card rounded-2xl border border-cx-line

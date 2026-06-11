@@ -17,21 +17,25 @@ export default function MenuCalendar({ allMeals, weeks, onDayClick }: Props) {
   return (
     <div className="mb-2">
 
-      {/* Day column headers — sticky */}
-      <div className="sticky top-[136px] z-10 bg-cx-page/90 backdrop-blur-sm grid grid-cols-5 gap-3 mb-3 py-2 -mx-1 px-1">
-        {DAYS.map((day) => (
-          <div key={day} className="text-center">
-            <span className="text-[12px] sm:text-[14px] font-extrabold uppercase tracking-[0.18em] text-cx-sub">
-              {t.menu.dayLabels[day]}
-            </span>
-          </div>
-        ))}
+      {/* Day column headers — sticky, horizontally scrolls with the grid on mobile */}
+      <div className="sticky top-[56px] sm:top-[80px] lg:top-[136px] z-10
+        bg-cx-page/90 backdrop-blur-sm mb-3 py-2 -mx-1 px-1 overflow-x-auto
+        [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <div className="grid grid-cols-5 gap-2 sm:gap-3 min-w-[480px]">
+          {DAYS.map((day) => (
+            <div key={day} className="text-center">
+              <span className="text-[11px] sm:text-[13px] font-extrabold uppercase tracking-[0.14em] sm:tracking-[0.18em] text-cx-sub">
+                {t.menu.dayLabels[day]}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Week rows */}
-      <div className="flex flex-col gap-5">
+      {/* Week rows — horizontally scrollable on mobile */}
+      <div className="flex flex-col gap-5 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {weeks.map((week) => (
-          <div key={week.id} className="grid grid-cols-5 gap-3">
+          <div key={week.id} className="grid grid-cols-5 gap-2 sm:gap-3 min-w-[480px]">
             {DAYS.map((day, di) => {
               const dayMeals = allMeals.filter(
                 (m) =>
@@ -58,7 +62,7 @@ export default function MenuCalendar({ allMeals, weeks, onDayClick }: Props) {
                   transition={{ duration: 0.2, ease: 'easeOut' }}
                   onClick={() => featured && onDayClick(day, week.id)}
                   disabled={!featured}
-                  className={`group relative overflow-hidden rounded-3xl aspect-[3/4]
+                  className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl aspect-[3/4]
                     transition-shadow duration-300
                     ${featured
                       ? 'cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.22)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.4)]'

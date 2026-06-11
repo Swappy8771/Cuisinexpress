@@ -245,7 +245,7 @@ export default function SchoolsPage() {
         <div className="hidden lg:flex gap-6 py-8 items-start">
 
           {/* Scrollable list */}
-          <div className="w-[44%] flex-shrink-0 flex flex-col gap-3">
+          <div className="w-full lg:w-[44%] flex-shrink-0 flex flex-col gap-3">
             {filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
                 <div className="w-14 h-14 rounded-2xl bg-cx-card shadow-sm flex items-center justify-center mb-4">

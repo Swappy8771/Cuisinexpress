@@ -95,7 +95,7 @@ export default function ContactPage() {
     <div className="min-h-screen bg-cx-page transition-colors duration-300">
 
       {/* ── Wood hero banner ── */}
-      <div className="relative w-full h-52 overflow-hidden">
+      <div className="relative w-full h-36 sm:h-44 md:h-52 overflow-hidden">
         <img
           src={woodTexture}
           alt="Contact"
