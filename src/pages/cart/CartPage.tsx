@@ -10,6 +10,7 @@ import { useCartStore, selectCartTotal, selectCartCount } from '../../store/cart
 import DayOrderModal from '../../components/orders/DayOrderModal'
 import { mealsService } from '../../services/mealsService'
 import { studentsService } from '../../services/studentsService'
+import { getColorById } from '../../lib/mockSchoolData'
 import type { CartItem, Student } from '../../types'
 import type { DayName } from '../../lib/menuConfig'
 import woodTexture from '../../assets/wooden-texture.png'
@@ -188,30 +189,34 @@ export default function CartPage() {
                 </button>
               </div>
 
-              {studentGroups.map((sg) => (
+              {studentGroups.map((sg) => {
+                const fullStudent = allStudents.find((s) => s.id === sg.student?.id)
+                const hex = getColorById(fullStudent?.colorCode ?? '')?.hex ?? '#7B2535'
+
+                return (
                 <div key={sg.studentKey} className="flex flex-col gap-4">
 
                   {/* ── Student heading ── */}
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl
-                      bg-[#7B2535]/10 border border-[#7B2535]/25">
-                      <User size={15} className="text-[#7B2535]" />
-                      <span className="text-[15px] font-extrabold text-[#7B2535]">{sg.name}</span>
+                    <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl border"
+                      style={{ backgroundColor: hex + '15', borderColor: hex + '40' }}>
+                      <User size={15} style={{ color: hex }} />
+                      <span className="text-[15px] font-extrabold" style={{ color: hex }}>{sg.name}</span>
                     </div>
-                    <div className="flex-1 h-px bg-cx-line" />
+                    <div className="flex-1 h-px" style={{ backgroundColor: hex + '30' }} />
                   </div>
 
                   {/* ── Day groups — each is its own card ── */}
                   {sg.days.map((dg) => (
                     <div key={dg.dayKey}
-                      className="bg-cx-card rounded-2xl border border-cx-line
-                        shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden">
+                      className="bg-cx-card rounded-2xl border-2 shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden"
+                      style={{ borderColor: hex + '70' }}>
 
                       {/* Card header: date + Modifier button */}
-                      <div className="flex items-center justify-between gap-3
-                        px-5 py-4 border-b border-cx-line bg-cx-fill">
+                      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b"
+                        style={{ backgroundColor: hex + '0d', borderColor: hex + '30' }}>
                         <div className="flex items-center gap-2">
-                          <Calendar size={15} className="text-[#C41E3A]" />
+                          <Calendar size={15} style={{ color: hex }} />
                           <span className="text-[15px] font-bold text-cx-base capitalize">
                             {dg.label}
                           </span>
@@ -220,13 +225,13 @@ export default function CartPage() {
                         {sg.student && dg.weekId && (
                           <button
                             onClick={() => {
-                              const fullStudent = allStudents.find((s) => s.id === sg.student!.id)
                               if (fullStudent) startEdit({ student: fullStudent, day: dg.day, weekId: dg.weekId }, dg.items)
                             }}
                             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl
-                              text-[13px] font-bold border-2 border-[#7B2535]/30 text-[#7B2535]
-                              hover:bg-[#7B2535] hover:text-white hover:border-[#7B2535]
-                              transition-all duration-200"
+                              text-[13px] font-bold border-2 transition-all duration-200 hover:text-white"
+                            style={{ borderColor: hex + '50', color: hex }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = hex; (e.currentTarget as HTMLButtonElement).style.borderColor = hex }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = ''; (e.currentTarget as HTMLButtonElement).style.borderColor = hex + '50' }}
                           >
                             <Pencil size={13} />
                             Modifier la commande
@@ -333,7 +338,7 @@ export default function CartPage() {
                     </div>
                   ))}
                 </div>
-              ))}
+              )})}
 
               {/* Continue shopping */}
               <Link
@@ -362,11 +367,14 @@ export default function CartPage() {
 
                 {/* Line items by student */}
                 <div className="px-6 py-5 flex flex-col gap-5 max-h-72 overflow-y-auto">
-                  {studentGroups.map((sg) => (
+                  {studentGroups.map((sg) => {
+                    const fullSt = allStudents.find((s) => s.id === sg.student?.id)
+                    const sgHex = getColorById(fullSt?.colorCode ?? '')?.hex ?? '#7B2535'
+                    return (
                     <div key={sg.studentKey} className="flex flex-col gap-2.5">
-                      <div className="flex items-center gap-1.5 pb-1 border-b border-cx-line">
-                        <User size={13} className="text-[#7B2535]" />
-                        <span className="text-[13px] font-extrabold text-[#7B2535] uppercase tracking-wide">
+                      <div className="flex items-center gap-1.5 pb-1 border-b" style={{ borderColor: sgHex + '40' }}>
+                        <User size={13} style={{ color: sgHex }} />
+                        <span className="text-[13px] font-extrabold uppercase tracking-wide" style={{ color: sgHex }}>
                           {sg.name}
                         </span>
                       </div>
@@ -384,7 +392,7 @@ export default function CartPage() {
                         ))
                       )}
                     </div>
-                  ))}
+                  )})}
                 </div>
 
                 <div className="px-6 py-4 border-t border-cx-line flex flex-col gap-3">
