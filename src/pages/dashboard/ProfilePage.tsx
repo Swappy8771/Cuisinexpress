@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
-import { Mail, Phone, MapPin, User, Bell, Save, Loader2 } from 'lucide-react'
+import { Mail, Phone, User, Bell, Save, Loader2 } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import DashboardLayout from '../../layouts/DashboardLayout'
@@ -20,7 +20,6 @@ const schema = z.object({
   email: z.string().email('E-mail invalide'),
   emailConfirm: z.string().email('E-mail invalide'),
   phone: z.string().min(7, 'Numéro invalide'),
-  address: z.string().optional(),
   notifications: z.boolean(),
 }).refine((d) => d.email === d.emailConfirm, {
   message: 'Les e-mails ne correspondent pas',
@@ -60,7 +59,6 @@ export default function ProfilePage() {
         email: updated.email,
         emailConfirm: updated.email,
         phone: updated.phone,
-        address: updated.address,
         notifications: updated.notifications,
       })
     },
@@ -83,7 +81,6 @@ export default function ProfilePage() {
       email: '',
       emailConfirm: '',
       phone: '',
-      address: '',
       notifications: false,
     },
   })
@@ -96,7 +93,6 @@ export default function ProfilePage() {
         email: profile.email,
         emailConfirm: profile.email,
         phone: profile.phone,
-        address: profile.address,
         notifications: profile.notifications,
       })
     }
@@ -108,7 +104,6 @@ export default function ProfilePage() {
       lastName: data.lastName,
       email: data.email,
       phone: data.phone,
-      address: data.address ?? '',
       notifications: data.notifications,
     })
   }
@@ -189,11 +184,6 @@ export default function ProfilePage() {
                     className={inputCls(getFieldState(touchedFields.phone, !!errors.phone))} />
                 </FieldWrapper>
 
-                <FieldWrapper label={t.profilePage.address} icon={MapPin}
-                  state="default" error={undefined}>
-                  <input {...register('address')} placeholder="123 rue Exemple, Québec"
-                    className={inputCls('default')} />
-                </FieldWrapper>
               </div>
 
               {/* Notifications */}

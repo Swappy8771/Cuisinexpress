@@ -304,9 +304,12 @@ export default function DayOrderModal({
                         const hex = getColorById(child.colorCode)?.hex ?? '#C41E3A'
 
                         return (
-                          <div key={child.id}>
+                          <div key={child.id}
+                            className="rounded-2xl border-2 p-4"
+                            style={{ borderColor: hex + '80', backgroundColor: hex + '08' }}>
                             {/* Child section header */}
-                            <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-cx-line">
+                            <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b"
+                              style={{ borderColor: hex + '30' }}>
                               <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
                                 style={{ backgroundColor: hex + '20' }}>
                                 <User size={15} style={{ color: hex }} />
@@ -370,12 +373,13 @@ export default function DayOrderModal({
                                       whileHover={isBlocked ? {} : { y: -2 }}
                                       transition={{ duration: 0.18 }}
                                       onClick={() => !isBlocked && patchOrder(ci, { mainMeal: meal })}
-                                      className={`relative flex flex-col rounded-2xl overflow-hidden border-2 transition-all duration-200 bg-cx-card ${
+                                      style={isBlocked ? { backgroundColor: hex + '18', borderColor: hex + '55' } : undefined}
+                                      className={`relative flex flex-col rounded-2xl overflow-hidden border-2 transition-all duration-200 ${
                                         isBlocked
-                                          ? 'border-orange-200 opacity-60 cursor-not-allowed'
+                                          ? 'opacity-80 cursor-not-allowed'
                                           : isSelected
-                                            ? 'cursor-pointer border-[#C41E3A] shadow-[0_0_0_3px_rgba(196,30,58,0.12)]'
-                                            : 'cursor-pointer border-cx-line hover:border-[#C41E3A]/40 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]'
+                                            ? 'bg-cx-card cursor-pointer border-[#C41E3A] shadow-[0_0_0_3px_rgba(196,30,58,0.12)]'
+                                            : 'bg-cx-card cursor-pointer border-cx-line hover:border-[#C41E3A]/40 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]'
                                       }`}
                                     >
                                       <div className="relative aspect-[4/3] overflow-hidden bg-cx-muted">
@@ -392,14 +396,15 @@ export default function DayOrderModal({
                                           )}
                                           {isBlocked && (
                                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                              className="absolute inset-0 bg-orange-50/85 backdrop-blur-[2px] flex flex-col items-center justify-center gap-1 p-2">
+                                              style={{ backgroundColor: hex + 'cc' }}
+                                              className="absolute inset-0 backdrop-blur-[2px] flex flex-col items-center justify-center gap-1 p-2">
                                               <span className="text-lg">⚠️</span>
-                                              <p className="text-[9.5px] font-extrabold text-orange-700 uppercase tracking-wide text-center">
+                                              <p className="text-[9.5px] font-extrabold text-white uppercase tracking-wide text-center">
                                                 {lang === 'en' ? 'Allergen' : 'Allergène'}
                                               </p>
                                               <div className="flex flex-wrap justify-center gap-0.5 mt-0.5">
                                                 {triggered.map(a => (
-                                                  <span key={a.id} className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[8.5px] font-bold bg-orange-100 text-orange-700 border border-orange-200">
+                                                  <span key={a.id} className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[8.5px] font-bold bg-white/30 text-white border border-white/50">
                                                     {a.emoji} {a.label}
                                                   </span>
                                                 ))}
@@ -510,9 +515,12 @@ export default function DayOrderModal({
                         const groupItems = addonGroups[addonTab]?.items ?? []
 
                         return (
-                          <div key={child.id}>
+                          <div key={child.id}
+                            className="rounded-2xl border-2 p-4"
+                            style={{ borderColor: hex + '80', backgroundColor: hex + '08' }}>
                             {/* Child + meal context header */}
-                            <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-cx-line">
+                            <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b"
+                              style={{ borderColor: hex + '30' }}>
                               <span
                                 style={{ backgroundColor: hex, color: '#fff' }}
                                 className="flex-shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold"
