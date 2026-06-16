@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
@@ -71,7 +71,8 @@ export default function ProfilePage() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isDirty, touchedFields },
+    control,
+    formState: { errors, touchedFields },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: 'onTouched',
@@ -81,7 +82,7 @@ export default function ProfilePage() {
       email: '',
       emailConfirm: '',
       phone: '',
-      notifications: false,
+      notifications: true,
     },
   })
 
@@ -188,26 +189,32 @@ export default function ProfilePage() {
 
               {/* Notifications */}
               <div className="mt-6">
-                <label className="flex items-center gap-3 cursor-pointer group w-fit">
-                  <div className="relative">
-                    <input type="checkbox" {...register('notifications')} className="peer sr-only" />
-                    <div className="w-5 h-5 rounded-md border-2 border-cx-edge bg-cx-card
-                      peer-checked:bg-[#7B2535] peer-checked:border-[#7B2535]
-                      group-hover:border-[#C41E3A] transition-all duration-200
-                      flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white hidden peer-checked:block" viewBox="0 0 12 10" fill="none">
-                        <path d="M1 5l3.5 3.5L11 1" stroke="currentColor" strokeWidth="2"
-                          strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </div>
-                    <input type="checkbox" {...register('notifications')}
-                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
-                  </div>
-                  <div className="flex items-center gap-2 text-[13.5px] text-cx-sub">
-                    <Bell size={14} className="text-cx-soft" />
-                    {t.profilePage.notifications}
-                  </div>
-                </label>
+                <Controller
+                  name="notifications"
+                  control={control}
+                  render={({ field }) => (
+                    <button
+                      type="button"
+                      onClick={() => field.onChange(!field.value)}
+                      className="flex items-center gap-3 cursor-pointer group w-fit"
+                    >
+                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0
+                        transition-all duration-200 group-hover:border-[#C41E3A]
+                        ${field.value ? 'bg-[#7B2535] border-[#7B2535]' : 'bg-cx-card border-cx-edge'}`}>
+                        {field.value && (
+                          <svg className="w-3 h-3 text-white" viewBox="0 0 12 10" fill="none">
+                            <path d="M1 5l3.5 3.5L11 1" stroke="currentColor" strokeWidth="2"
+                              strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 text-[13.5px] text-cx-sub">
+                        <Bell size={14} className="text-cx-soft" />
+                        {t.profilePage.notifications}
+                      </div>
+                    </button>
+                  )}
+                />
               </div>
 
               <div className="mt-8 h-px bg-cx-line" />
@@ -215,7 +222,7 @@ export default function ProfilePage() {
               <div className="mt-6 flex justify-end">
                 <button
                   type="submit"
-                  disabled={mutation.isPending || !isDirty}
+                  disabled={mutation.isPending}
                   className="inline-flex items-center gap-2.5 px-8 py-3 rounded-xl
                     bg-[#7B2535] hover:bg-[#9B3045]
                     disabled:bg-cx-muted disabled:text-cx-soft disabled:cursor-not-allowed
