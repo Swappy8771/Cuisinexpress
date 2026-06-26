@@ -373,13 +373,19 @@ export default function DayOrderModal({
                                       whileHover={isBlocked ? {} : { y: -2 }}
                                       transition={{ duration: 0.18 }}
                                       onClick={() => !isBlocked && patchOrder(ci, { mainMeal: meal })}
-                                      style={isBlocked ? { backgroundColor: hex + '18', borderColor: hex + '55' } : undefined}
+                                      style={
+                                        isBlocked
+                                          ? { backgroundColor: hex + '18', borderColor: hex + '55' }
+                                          : isSelected
+                                            ? { borderColor: hex, boxShadow: `0 0 0 3px ${hex}1f` }
+                                            : { borderColor: hex + '55' }
+                                      }
                                       className={`relative flex flex-col rounded-2xl overflow-hidden border-2 transition-all duration-200 ${
                                         isBlocked
                                           ? 'opacity-80 cursor-not-allowed'
                                           : isSelected
-                                            ? 'bg-cx-card cursor-pointer border-[#C41E3A] shadow-[0_0_0_3px_rgba(196,30,58,0.12)]'
-                                            : 'bg-cx-card cursor-pointer border-cx-line hover:border-[#C41E3A]/40 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]'
+                                            ? 'bg-cx-card cursor-pointer'
+                                            : 'bg-cx-card cursor-pointer hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]'
                                       }`}
                                     >
                                       <div className="relative aspect-[4/3] overflow-hidden bg-cx-muted">
@@ -390,7 +396,8 @@ export default function DayOrderModal({
                                           {isSelected && !isBlocked && (
                                             <motion.div
                                               initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }}
-                                              className="absolute top-2 right-2 w-6 h-6 rounded-full bg-[#C41E3A] flex items-center justify-center shadow-[0_2px_8px_rgba(196,30,58,0.5)]">
+                                              style={{ backgroundColor: hex, boxShadow: `0 2px 8px ${hex}80` }}
+                                              className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center">
                                               <Check size={11} className="text-white" strokeWidth={3} />
                                             </motion.div>
                                           )}
